@@ -11,6 +11,10 @@ namespace MediaFileParser
 {
     public class TvFile : MediaFile
     {
+        protected static char[] TrimChars = {' ', '-', '.'};
+        protected string NameVar;
+        protected string TitleVar;
+
         public TvFile(string file) : base(file)
         {
             Episode = new List<uint>();
@@ -37,12 +41,16 @@ namespace MediaFileParser
                 }
 
                 // Get Episode from an E00 block
-                matches = Regex.Matches(SectorList[i], @"(e|E)[0-9]{1,2}");
+                matches = Regex.Matches(SectorList[i], @"(e|E)[0-9]{1,2}(-[0-9]{1,2})?");
                 if (matches.Count > 0)
                 {
                     foreach (Match match in matches)
                     {
-                        Episode.Add(uint.Parse(match.Value.Substring(1)));
+                        var split = match.Value.Substring(1).Split('-');
+                        foreach (var s in split)
+                        {
+                            Episode.Add(uint.Parse(s));
+                        }
                     }
                     if (i > blockEnd) blockEnd = i;
                     if (i < blockStart) blockStart = i;
@@ -143,18 +151,22 @@ namespace MediaFileParser
                 blockStart = SectorList.Count;
                 begin = blockEnd + 1;
             }
+            var name = "";
             for (var i = begin; i < blockStart; i++)
             {
-                Name += SectorList[i] + ((i + 1 != blockStart) ? " " : "");
+                name += SectorList[i] + ((i + 1 != blockStart) ? " " : "");
             }
+            Name = name;
 
             // Get show title (or swap if wrong way around)
             if (begin == 0)
             {
+                var title = "";
                 for (var i = blockEnd + 1; i < SectorList.Count; i++)
                 {
-                    Title += SectorList[i] + ((i + 1 != SectorList.Count) ? " " : "");
+                    title += SectorList[i] + ((i + 1 != SectorList.Count) ? " " : "");
                 }
+                Title = title;
             }
             else
             {
@@ -163,10 +175,20 @@ namespace MediaFileParser
             }
         }
 
-        public string Name { get; protected set; }
+        public string Name
+        {
+            get { return NameVar; }
+            protected set { NameVar = value.Trim(TrimChars); }
+        }
+
         public uint Season { get; protected set; }
         public List<uint> Episode { get; protected set; }
-        public string Title { get; protected set; }
+
+        public string Title
+        {
+            get { return TitleVar; }
+            protected set { TitleVar = value.Trim(TrimChars); }
+        }
 
         public override string Cleaned
         {

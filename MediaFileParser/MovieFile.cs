@@ -4,14 +4,7 @@
     {
         public MovieFile(string file) : base(file)
         {
-            if (SectorList.Count <= 1) return;
-
-            // Attempt to remove year made
-            int num;
-            if (int.TryParse(SectorList[SectorList.Count - 1], out num) && num > 1500 && num < 3000)
-            {
-                SectorList.RemoveAt(SectorList.Count - 1);
-            }
+            // No further parsing required.
         }
 
         public override string Cleaned

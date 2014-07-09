@@ -20,22 +20,47 @@
 
         private void RemoveJunk()
         {
+            var year = -1;
             for (var i = 0; i < SectorList.Count; i++)
             {
+                int temp;
+                if (int.TryParse(SectorList[i], out temp) && temp > 2000 && temp < 2020 && i > year)
+                {
+                    year = i;
+                }
+
                 var sec = SectorList[i].ToLower().Trim();
                 foreach (var junkString in JunkStrings)
                 {
                     if (SectorList[i].Length <= 3)
                     {
                         if (sec != junkString) continue;
-                        SectorList.RemoveRange(i, SectorList.Count - i);
+                        SectorRangeRemove(i, year);
                         return;
                     }
                     if (!sec.StartsWith(junkString)) continue;
-                    SectorList.RemoveRange(i, SectorList.Count - i);
+                    SectorRangeRemove(i, year);
                     return;
                 }
             }
+
+            
+        }
+
+        private void SectorRangeRemove(int i, int year)
+        {
+            if (year != -1)
+            {
+                Year = int.Parse(SectorList[year]);
+                if (year < i)
+                {
+                    SectorList.Remove(SectorList[year]);
+                    i--;
+                }
+            }
+
+            if(SectorList.Count - i == 0) return;
+            SectorList.RemoveRange(i, SectorList.Count - i);
         }
     }
 }

@@ -12,13 +12,14 @@ namespace MediaFileParser
 {
     public abstract partial class MediaFile
     {
-        protected static readonly char[] DelimChars = {',', '.', '_', ' ', '-'};
+        protected static readonly char[] DelimChars = {',', '.', '_', ' '};
         protected static readonly char[] PathSeperators = {Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar};
         protected List<string> SectorList = new List<string>();
 
         protected MediaFile(string file)
         {
             Origional = file;
+            Year = -1;
 
             // Location
             int pathSep;
@@ -42,13 +43,21 @@ namespace MediaFileParser
             // Raw
             file = file.Substring(pathSep, pathExt - pathSep);
             SectorList.AddRange(file.Split(DelimChars, StringSplitOptions.RemoveEmptyEntries));
-            RemoveJunk();
 
             // Autocapitalise first letter in each word
             // And merge alone letters. eg "A M" -> "AM"
+            // And add splits along num-letter boundries
             for (var i = 0; i < SectorList.Count; i++)
             {
+                var match = Regex.Match(SectorList[i], @"([0-9])+-([a-zA-Z])+");
+                if (match.Success)
+                {
+                    var ind = match.Value.IndexOf('-') + match.Index;
+                    SectorList.Insert(i + 1, SectorList[i].Substring(ind + 1));
+                    SectorList[i] = SectorList[i].Substring(0, ind);
+                }
                 if (String.IsNullOrEmpty(SectorList[i])) continue;
+
                 var a = SectorList[i].ToCharArray();
                 a[0] = Char.ToUpper(a[0], CultureInfo.InvariantCulture);
                 SectorList[i] = new string(a);
@@ -60,11 +69,15 @@ namespace MediaFileParser
                     SectorList.RemoveAt(i + 1);
                 }
             }
+
+            // Remove junk names
+            RemoveJunk();
         }
 
         public string Origional { get; protected set; }
         public string Extension { get; protected set; }
         public string Location { get; protected set; }
+        public int Year { get; protected set; }
 
         public string Folder
         {

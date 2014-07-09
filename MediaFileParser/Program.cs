@@ -2,6 +2,7 @@
 
 using System;
 using System.IO;
+using System.Linq;
 
 #endregion
 
@@ -9,7 +10,7 @@ namespace MediaFileParser
 {
     internal class Program
     {
-        private static void Main(string[] args)
+        private static void Main()
         {
             var reader = new StreamReader("../tests.csv");
             var i = 0;
@@ -28,17 +29,19 @@ namespace MediaFileParser
                 if (test[0].Trim() != test[1].Trim())
                 {
                     f++;
-                    Console.WriteLine(i + ":\t" + test[0]);
+                    Console.ForegroundColor = ConsoleColor.Cyan;
+                    Console.WriteLine(i + ":\t" + mediaFile.Origional);
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine("\t" + test[0]);
+                    Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine("\t" + test[1]);
                     var ep = "";
                     if (mediaFile.Episode != null)
                     {
-                        foreach (var episode in mediaFile.Episode)
-                        {
-                            ep += episode + ",";
-                        }
+                        ep = mediaFile.Episode.Aggregate(ep, (current, episode) => current + (episode + ","));
                     }
                     Console.WriteLine("\tS: " + mediaFile.Season + "\tE: " + ep);
+                    Console.ForegroundColor = ConsoleColor.Gray;
                     Console.WriteLine("---");
                 }
             }
