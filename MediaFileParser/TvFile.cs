@@ -62,15 +62,8 @@ namespace MediaFileParser
                 matches = Regex.Matches(SectorList[i], @"[0-9]{1,2}(x|X)[0-9]{1,2}(-[0-9]{1,2})?");
                 if (matches.Count == 1)
                 {
-                    var split = matches[0].Value.ToLower().Split('x');
-                    Season = uint.Parse(split[0]);
-                    split = split[1].Split('-');
-                    foreach (var s in split)
-                    {
-                        Episode.Add(uint.Parse(s));
-                    }
-                    if (i > blockEnd) blockEnd = i;
-                    if (i < blockStart) blockStart = i;
+                    SectorList[i] = "S" + Regex.Replace(matches[0].Value, "x", "E", RegexOptions.IgnoreCase);
+                    i--;
                     continue;
                 }
                 if (matches.Count != 0)
