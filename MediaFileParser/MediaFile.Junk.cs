@@ -5,16 +5,16 @@
         private static readonly string[] JunkStrings =
         {
             "xvid", "hdtv", "uncut", "[vtv]", "dvdscr", "dvdrip", "rerip", "(",
-            "repack", "xor", "proper", "notv", "uncut", "dvdrip", "xvid", "saints",
+            "repack", "xor", "proper", "notv", "uncut", "xvid", "saints",
             "caph", "aph", "cam", "camrip", "ts", "telesync", "pdvd", "wp",
-            "workprint", "tc", "telecine", "ppv", "ppvrip", "screener", "dvdscr",
-            "dvdscreener", "bdscr", "ddc", "r5", "r5.line", "ac3", "hq", "dvdrip",
+            "workprint", "tc", "telecine", "ppv", "ppvrip", "screener",
+            "dvdscreener", "bdscr", "ddc", "r5", "r5.line", "ac3", "hq",
             "dvd-rip", "dvdr", "dvd-full", "full-rip", "iso rip", "lossless",
             "rip", "dvd-5", "ws", "720p", "ntsc", "dvd", "dts", "1080p", "dvd-9",
-            "dsr", "dsrip", "dthrip", "dvbrip", "hdtv", "pdtv", "tvrip", "hdtvrip",
+            "dsr", "dsrip", "dthrip", "dvbrip", "pdtv", "tvrip", "hdtvrip",
             "vodrip", "vodr", "bdrip", "brrip", "blu-ray", "bluray", "bdr", "bd5",
             "bd9", "bd25", "bd50", "web-rip", "webrip", "web rip", "webdl",
-            "web-dl", "web dl", "h.264", "x264", "xvid", "divx", "r0", "r1", "r2",
+            "web-dl", "web dl", "h.264", "x264", "divx", "r0", "r1", "r2",
             "r3", "r4", "r6", "r7", "r8", "r9"
         };
 
@@ -43,8 +43,6 @@
                     return;
                 }
             }
-
-            
         }
 
         private void SectorRangeRemove(int i, int year)
@@ -59,7 +57,7 @@
                 }
             }
 
-            if(SectorList.Count - i == 0) return;
+            if (SectorList.Count - i == 0) return;
             SectorList.RemoveRange(i, SectorList.Count - i);
         }
     }

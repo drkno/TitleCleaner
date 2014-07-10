@@ -24,7 +24,8 @@ namespace MediaFileParser
                     continue;
                 }
                 var test = line.Split(',');
-                var mediaFile = new TvFile(test[0]);
+                var mediaFile = MediaTypeTester.GetMediaFile(test[0]);
+                //var mediaFile = new TvFile(test[0]);
                 test[0] = mediaFile.ToString("C.E");
                 if (test[0].Trim() != test[1].Trim())
                 {
@@ -35,12 +36,12 @@ namespace MediaFileParser
                     Console.WriteLine("\t" + test[0]);
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine("\t" + test[1]);
-                    var ep = "";
+                    /*var ep = "";
                     if (mediaFile.Episode != null)
                     {
                         ep = mediaFile.Episode.Aggregate(ep, (current, episode) => current + (episode + ","));
                     }
-                    Console.WriteLine("\tS: " + mediaFile.Season + "\tE: " + ep);
+                    Console.WriteLine("\tS: " + mediaFile.Season + "\tE: " + ep);*/
                     Console.ForegroundColor = ConsoleColor.Gray;
                     Console.WriteLine("---");
                 }

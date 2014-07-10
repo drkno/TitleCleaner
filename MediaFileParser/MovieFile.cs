@@ -1,4 +1,10 @@
-﻿namespace MediaFileParser
+﻿#region
+
+using System.Text.RegularExpressions;
+
+#endregion
+
+namespace MediaFileParser
 {
     public class MovieFile : MediaFile
     {
@@ -20,6 +26,11 @@
                 result = result.Trim();
                 return result;
             }
+        }
+
+        public override bool Test()
+        {
+            return true;
         }
     }
 }

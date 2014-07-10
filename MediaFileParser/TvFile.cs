@@ -113,10 +113,10 @@ namespace MediaFileParser
                 if (0 > blockEnd) blockEnd = 0;
             }
 
-            // Episode/Season mised into a short number
+            // Episode/Season mixed into a short number
             var k = false;
             var j = -1;
-            for (var i = 0; i < SectorList.Count; i++)
+            for (var i = 0; i < SectorList.Count + ((j == -1) ? 0 : -1); i++)
             {
                 if (Regex.IsMatch(SectorList[i], @"^[0-9]{1,3}$"))
                 {
@@ -170,8 +170,17 @@ namespace MediaFileParser
             }
             else
             {
-                Title = Name;
-                Name = "Unknown";
+                var split = Name.Split('-');
+                if (split.Length == 2 && split[0][split[0].Length - 1] == split[1][0] && split[1][0] == ' ')
+                {
+                    Title = split[1];
+                    Name = split[0];
+                }
+                else
+                {
+                    Title = Name;
+                    Name = "Unknown";
+                }
             }
         }
 
@@ -193,6 +202,13 @@ namespace MediaFileParser
         public override string Cleaned
         {
             get { return ToString("N - [Sxe]" + ((!string.IsNullOrWhiteSpace(Title)) ? " - T" : "")); }
+        }
+
+        public override bool Test()
+        {
+            return
+                Regex.IsMatch(Cleaned,
+                    @"[a-zA-Z0-9 ]*[ ]?[a-zA-Z0-9]+ - \[[0-9]{2}x[0-9]{2}(-[0-9]{2})?\]( - [a-zA-Z0-9&' -]*)?( \([0-9]+\))?");
         }
 
         public new string ToString(string format)

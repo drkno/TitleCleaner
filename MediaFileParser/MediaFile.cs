@@ -93,6 +93,8 @@ namespace MediaFileParser
 
         public abstract string Cleaned { get; }
 
+        public abstract bool Test();
+
         public override string ToString()
         {
             return ToString("");

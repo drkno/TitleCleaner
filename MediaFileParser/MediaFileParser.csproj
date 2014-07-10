@@ -43,6 +43,7 @@
   <ItemGroup>
     <Compile Include="MediaFile.cs" />
     <Compile Include="MediaFile.Junk.cs" />
+    <Compile Include="MediaTypeTester.cs" />
     <Compile Include="MovieFile.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
