@@ -1,22 +1,28 @@
-﻿using System;
+﻿#region
+
+using System;
+
+#endregion
 
 namespace MediaFileParser
 {
-    class MediaTypeTester
+    internal class MediaTypeTester
     {
         protected static Type[] MediaTypes =
         {
-            typeof(TvFile),
-            typeof(MovieFile)
+            typeof (TvFile),
+            typeof (MovieFile)
         };
 
-        protected MediaTypeTester(){}
+        protected MediaTypeTester()
+        {
+        }
 
         public static MediaFile GetMediaFile(string file)
         {
             foreach (var mediaType in MediaTypes)
             {
-                var mediaFile = (MediaFile)Activator.CreateInstance(mediaType, file);
+                var mediaFile = (MediaFile) Activator.CreateInstance(mediaType, file);
                 if (mediaFile.Test())
                 {
                     return mediaFile;

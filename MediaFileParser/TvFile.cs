@@ -14,6 +14,7 @@ namespace MediaFileParser
         protected static char[] TrimChars = {' ', '-', '.'};
         protected string NameVar;
         protected string TitleVar;
+        private uint _season;
 
         public TvFile(string file) : base(file)
         {
@@ -190,7 +191,21 @@ namespace MediaFileParser
             protected set { NameVar = value.Trim(TrimChars); }
         }
 
-        public uint Season { get; protected set; }
+        public uint Season
+        {
+            get
+            {
+                if (_season != 0) return _season;
+                var match = Regex.Match(Folder, "((?<=((Season|Series).))[1-9][0-9]*|Specials?)", RegexOptions.IgnoreCase);
+                if (match.Success && !Regex.IsMatch(Folder,"Specials",RegexOptions.IgnoreCase))
+                {
+                    uint.TryParse(match.Value, out _season);
+                }
+                return _season;
+            }
+            protected set { _season = value; }
+        }
+
         public List<uint> Episode { get; protected set; }
 
         public string Title

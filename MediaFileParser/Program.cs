@@ -2,7 +2,6 @@
 
 using System;
 using System.IO;
-using System.Linq;
 
 #endregion
 
@@ -36,12 +35,6 @@ namespace MediaFileParser
                     Console.WriteLine("\t" + test[0]);
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine("\t" + test[1]);
-                    /*var ep = "";
-                    if (mediaFile.Episode != null)
-                    {
-                        ep = mediaFile.Episode.Aggregate(ep, (current, episode) => current + (episode + ","));
-                    }
-                    Console.WriteLine("\tS: " + mediaFile.Season + "\tE: " + ep);*/
                     Console.ForegroundColor = ConsoleColor.Gray;
                     Console.WriteLine("---");
                 }
