@@ -1,4 +1,6 @@
-﻿namespace MediaFileParser
+﻿using System;
+
+namespace MediaFileParser
 {
     public abstract partial class MediaFile
     {
@@ -15,16 +17,17 @@
             "vodrip", "vodr", "bdrip", "brrip", "blu-ray", "bluray", "bdr", "bd5",
             "bd9", "bd25", "bd50", "web-rip", "webrip", "web rip", "webdl",
             "web-dl", "web dl", "h.264", "x264", "divx", "r0", "r1", "r2",
-            "r3", "r4", "r6", "r7", "r8", "r9"
+            "r3", "r4", "r6", "r7", "r8", "r9", "french", "truefrench", "unrated",
+            "limited", "stv", "rapax-249", "[dvdrip]"
         };
 
         private void RemoveJunk()
         {
             var year = -1;
-            for (var i = 0; i < SectorList.Count; i++)
+            for (var i = 1; i < SectorList.Count; i++)
             {
                 int temp;
-                if (int.TryParse(SectorList[i], out temp) && temp > 2000 && temp < 2020 && i > year)
+                if (int.TryParse(SectorList[i], out temp) && temp > 1950 && temp <= DateTime.Now.Year && i > year)
                 {
                     year = i;
                 }
@@ -43,6 +46,7 @@
                     return;
                 }
             }
+            SectorRangeRemove(SectorList.Count, year);
         }
 
         private void SectorRangeRemove(int i, int year)

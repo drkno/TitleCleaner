@@ -11,7 +11,7 @@ namespace MediaFileParser
 {
     public class TvFile : MediaFile
     {
-        protected static char[] TrimChars = {' ', '-', '.'};
+        protected static char[] TrimChars = { ' ', '-', '.' };
         protected string NameVar;
         protected string TitleVar;
         private uint _season;
@@ -99,7 +99,7 @@ namespace MediaFileParser
                 }
             }
             // Get Episode from a "00 Blah Blah.ext" type file
-            var initMatch = Regex.Match(SectorList[0], @"[0-9]{1,2}");
+            var initMatch = Regex.Match(SectorList[0], @"[0-9]{1,2}(?<![0-9])");
             if (Episode.Count == 0 && initMatch.Success)
             {
                 Episode.Add(uint.Parse(initMatch.Value));
@@ -126,16 +126,18 @@ namespace MediaFileParser
             if (k && SectorList[j].Length <= 4 && Episode.Count == 0)
             {
                 var len = SectorList[j].Length;
-
                 if (SectorList[j].Length >= 3)
                 {
                     Season = uint.Parse(SectorList[j].Substring(0, len - 2));
                 }
-                Episode.Add(uint.Parse(SectorList[j].Substring(len - 2, 2)));
+                if ((len-2)>=0)
+                {
+                    Episode.Add(uint.Parse(SectorList[j].Substring(len - 2, 2)));
+                }
+                
                 if (j < blockStart) blockStart = j;
                 if (j > blockEnd) blockEnd = j;
             }
-
             // Get show name
             if (blockStart == int.MaxValue) blockStart = 0;
             if (blockEnd == int.MinValue) blockEnd = 0;
@@ -190,7 +192,7 @@ namespace MediaFileParser
             {
                 if (_season != 0) return _season;
                 var match = Regex.Match(Folder, "((?<=((Season|Series).))[1-9][0-9]*|Specials?)", RegexOptions.IgnoreCase);
-                if (match.Success && !Regex.IsMatch(Folder,"Specials",RegexOptions.IgnoreCase))
+                if (match.Success && !Regex.IsMatch(Folder, "Specials", RegexOptions.IgnoreCase))
                 {
                     uint.TryParse(match.Value, out _season);
                 }
@@ -229,21 +231,24 @@ namespace MediaFileParser
                     case 'T':
                         result += Title;
                         break;
+
                     case 'N':
                         result += Name;
                         break;
+
                     case 'S':
                         result += Season.ToString("00");
                         break;
+
                     case 'e':
-                    {
-                        for (var i = 0; i < Episode.Count; i++)
                         {
-                            result += Episode[i].ToString("00");
-                            result += (i + 1 != Episode.Count) ? "-" : "";
+                            for (var i = 0; i < Episode.Count; i++)
+                            {
+                                result += Episode[i].ToString("00");
+                                result += (i + 1 != Episode.Count) ? "-" : "";
+                            }
+                            break;
                         }
-                        break;
-                    }
                     default:
                         result += base.ToString(c.ToString(CultureInfo.InvariantCulture));
                         break;

@@ -1,7 +1,9 @@
 ﻿#region
 
 using System;
+using System.Diagnostics;
 using System.IO;
+using System.Linq;
 
 #endregion
 
@@ -11,12 +13,16 @@ namespace MediaFileParser
     {
         private static void Main()
         {
-            var reader = new StreamReader("../tests.csv");
+            var reader = new StreamReader("../movie.csv");
             var i = 0;
             var f = 0;
             while (!reader.EndOfStream)
             {
                 i++;
+                if (i == 27)
+                {
+                    Debug.Write("");
+                }
                 var line = reader.ReadLine();
                 if (string.IsNullOrWhiteSpace(line))
                 {
@@ -36,6 +42,7 @@ namespace MediaFileParser
                     Console.ForegroundColor = ConsoleColor.White;
                     Console.WriteLine("\t" + test[1]);
                     Console.ForegroundColor = ConsoleColor.Gray;
+                    Console.WriteLine("Type:\t"+mediaFile.GetType().FullName.Split('.').Last());
                     Console.WriteLine("---");
                 }
             }

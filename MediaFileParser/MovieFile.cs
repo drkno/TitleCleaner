@@ -1,10 +1,4 @@
-﻿#region
-
-
-
-#endregion
-
-namespace MediaFileParser
+﻿namespace MediaFileParser
 {
     public class MovieFile : MediaFile
     {
