@@ -7,9 +7,9 @@ using System.Text.RegularExpressions;
 
 #endregion
 
-namespace MediaFileParser.MediaFile.TvFile
+namespace MediaFileParser.MediaTypes.TvFile
 {
-    public class TvFile : MediaFile
+    public class TvFile : MediaFile.MediaFile
     {
         protected static char[] TrimChars = { ' ', '-', '.' };
         protected string NameVar;
@@ -112,16 +112,14 @@ namespace MediaFileParser.MediaFile.TvFile
             var j = -1;
             for (var i = 0; i < SectorList.Count + ((j == -1) ? 0 : -1); i++)
             {
-                if (Regex.IsMatch(SectorList[i], @"^[0-9]{1,3}$"))
+                if (!Regex.IsMatch(SectorList[i], @"^[0-9]{1,3}$")) continue;
+                if (k)
                 {
-                    if (k)
-                    {
-                        k = false;
-                        break;
-                    }
-                    k = true;
-                    j = i;
+                    k = false;
+                    break;
                 }
+                k = true;
+                j = i;
             }
             if (k && SectorList[j].Length <= 4 && Episode.Count == 0)
             {

@@ -4,7 +4,7 @@ using System.IO;
 using System.Net;
 using System.Xml.Serialization;
 
-namespace MediaFileParser.MediaFile.TvFile.Tvdb
+namespace MediaFileParser.MediaTypes.TvFile.Tvdb
 {
     internal class TvdbServerTime
     {
@@ -52,8 +52,8 @@ namespace MediaFileParser.MediaFile.TvFile.Tvdb
             streamWriter.Close();
         }
 
-        [XmlTypeAttribute(AnonymousType = true)]
-        [XmlRootAttribute(Namespace = "", IsNullable = false)]
+        [XmlType(AnonymousType = true)]
+        [XmlRoot(Namespace = "", IsNullable = false)]
         public class TvdbXmlUpdateParser
         {
             public uint Time { get; set; }

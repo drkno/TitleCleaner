@@ -4,25 +4,23 @@ using System;
 
 #endregion
 
-namespace MediaFileParser.MediaFile
+namespace MediaFileParser.MediaTypes
 {
     internal class MediaTypeTester
     {
         protected static Type[] MediaTypes =
         {
             typeof (TvFile.TvFile),
-            typeof (MovieFile)
+            typeof (MovieFile.MovieFile)
         };
 
-        protected MediaTypeTester()
-        {
-        }
+        protected MediaTypeTester() {}
 
-        public static MediaFile GetMediaFile(string file)
+        public static MediaFile.MediaFile GetMediaFile(string file)
         {
             foreach (var mediaType in MediaTypes)
             {
-                var mediaFile = (MediaFile) Activator.CreateInstance(mediaType, file);
+                var mediaFile = (MediaFile.MediaFile) Activator.CreateInstance(mediaType, file);
                 if (mediaFile.Test())
                 {
                     return mediaFile;

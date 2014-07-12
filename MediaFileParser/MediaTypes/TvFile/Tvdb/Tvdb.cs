@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MediaFileParser.MediaFile.TvFile.Tvdb
+namespace MediaFileParser.MediaTypes.TvFile.Tvdb
 {
     public class Tvdb
     {

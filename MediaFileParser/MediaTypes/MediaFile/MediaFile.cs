@@ -8,7 +8,7 @@ using System.Text.RegularExpressions;
 
 #endregion
 
-namespace MediaFileParser.MediaFile
+namespace MediaFileParser.MediaTypes.MediaFile
 {
     public abstract partial class MediaFile
     {

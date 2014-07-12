@@ -4,9 +4,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using MediaFileParser.MediaFile;
-using MediaFileParser.MediaFile.TvFile;
-using MediaFileParser.MediaFile.TvFile.Tvdb;
+using MediaFileParser.MediaTypes;
+using MediaFileParser.MediaTypes.TvFile;
+using MediaFileParser.MediaTypes.TvFile.Tvdb;
 
 #endregion
 

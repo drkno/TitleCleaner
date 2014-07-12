@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace MediaFileParser.MediaFile.TvFile.Tvdb
+namespace MediaFileParser.MediaTypes.TvFile.Tvdb
 {
     [XmlType(AnonymousType = true)]
     [XmlRoot(Namespace = "", IsNullable = false)]

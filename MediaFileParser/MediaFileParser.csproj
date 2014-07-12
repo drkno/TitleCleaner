@@ -41,18 +41,18 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MediaFile\MediaFile.cs" />
-    <Compile Include="MediaFile\MediaFile.Junk.cs" />
-    <Compile Include="MediaFile\MediaTypeTester.cs" />
-    <Compile Include="MediaFile\MovieFile.cs" />
-    <Compile Include="MediaFile\TvFile\Tvdb\Tvdb.cs" />
-    <Compile Include="MediaFile\TvFile\Tvdb\TvdbDetailedSeries.cs" />
-    <Compile Include="MediaFile\TvFile\Tvdb\TvdbSeries.cs" />
-    <Compile Include="MediaFile\TvFile\Tvdb\TvdbSeriesSearch.cs" />
-    <Compile Include="MediaFile\TvFile\Tvdb\TvdbServerTime.cs" />
+    <Compile Include="MediaTypes\MediaFile\MediaFile.cs" />
+    <Compile Include="MediaTypes\MediaFile\MediaFile.Junk.cs" />
+    <Compile Include="MediaTypes\MediaTypeTester.cs" />
+    <Compile Include="MediaTypes\MovieFile\MovieFile.cs" />
+    <Compile Include="MediaTypes\TvFile\Tvdb\Tvdb.cs" />
+    <Compile Include="MediaTypes\TvFile\Tvdb\TvdbDetailedSeries.cs" />
+    <Compile Include="MediaTypes\TvFile\Tvdb\TvdbSeries.cs" />
+    <Compile Include="MediaTypes\TvFile\Tvdb\TvdbSeriesSearch.cs" />
+    <Compile Include="MediaTypes\TvFile\Tvdb\TvdbServerTime.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="MediaFile\TvFile\TvFile.cs" />
+    <Compile Include="MediaTypes\TvFile\TvFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

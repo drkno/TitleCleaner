@@ -1,6 +1,6 @@
-﻿namespace MediaFileParser.MediaFile
+﻿namespace MediaFileParser.MediaTypes.MovieFile
 {
-    public class MovieFile : MediaFile
+    public class MovieFile : MediaFile.MediaFile
     {
         public MovieFile(string file) : base(file)
         {
