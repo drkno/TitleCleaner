@@ -1,4 +1,4 @@
-﻿namespace MediaFileParser
+﻿namespace MediaFileParser.MediaFile
 {
     public class MovieFile : MediaFile
     {

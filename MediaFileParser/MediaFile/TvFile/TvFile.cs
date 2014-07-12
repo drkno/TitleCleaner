@@ -7,7 +7,7 @@ using System.Text.RegularExpressions;
 
 #endregion
 
-namespace MediaFileParser
+namespace MediaFileParser.MediaFile.TvFile
 {
     public class TvFile : MediaFile
     {
@@ -203,9 +203,25 @@ namespace MediaFileParser
 
         public List<uint> Episode { get; protected set; }
 
+        // Tvdb Lookup Section
+        public static bool TvdbLookup { get; set; }
+
+        public static string TvdbApiKey { get; set; }
+
+        protected static Tvdb.Tvdb Tvdb;
+
         public string Title
         {
-            get { return TitleVar; }
+            get
+            {
+                if (!string.IsNullOrWhiteSpace(TitleVar) || !TvdbLookup || Name == "Unknown" || Episode.Count == 0) return TitleVar;
+                if (Tvdb == null) Tvdb = new Tvdb.Tvdb(TvdbApiKey);
+                var seriesList = Tvdb.SearchSeries(Name);
+                var seriesId = Tvdb.SelectSeries(seriesList);
+                var series = Tvdb.LookupSeries(seriesId);
+                var title = series.GetEpisode(Season, Episode[0]);
+                return title == null ? "" : title.EpisodeName;
+            }
             protected set { TitleVar = value.Trim(TrimChars); }
         }
 

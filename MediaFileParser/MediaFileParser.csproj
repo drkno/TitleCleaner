@@ -41,17 +41,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="MediaFile.cs" />
-    <Compile Include="MediaFile.Junk.cs" />
-    <Compile Include="MediaTypeTester.cs" />
-    <Compile Include="MovieFile.cs" />
+    <Compile Include="MediaFile\MediaFile.cs" />
+    <Compile Include="MediaFile\MediaFile.Junk.cs" />
+    <Compile Include="MediaFile\MediaTypeTester.cs" />
+    <Compile Include="MediaFile\MovieFile.cs" />
+    <Compile Include="MediaFile\TvFile\Tvdb\Tvdb.cs" />
+    <Compile Include="MediaFile\TvFile\Tvdb\TvdbDetailedSeries.cs" />
+    <Compile Include="MediaFile\TvFile\Tvdb\TvdbSeries.cs" />
+    <Compile Include="MediaFile\TvFile\Tvdb\TvdbSeriesSearch.cs" />
+    <Compile Include="MediaFile\TvFile\Tvdb\TvdbServerTime.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TvFile.cs" />
+    <Compile Include="MediaFile\TvFile\TvFile.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

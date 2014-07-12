@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MediaFileParser
+namespace MediaFileParser.MediaFile
 {
     public abstract partial class MediaFile
     {

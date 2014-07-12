@@ -4,6 +4,9 @@ using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using MediaFileParser.MediaFile;
+using MediaFileParser.MediaFile.TvFile;
+using MediaFileParser.MediaFile.TvFile.Tvdb;
 
 #endregion
 
@@ -13,6 +16,9 @@ namespace MediaFileParser
     {
         private static void Main()
         {
+            TvFile.TvdbLookup = true;
+            Tvdb.SeriesSelectCallback += Tvdb_SeriesSelectCallback;
+
             var reader = new StreamReader("../movie.csv");
             var i = 0;
             var f = 0;
@@ -51,6 +57,11 @@ namespace MediaFileParser
             Console.WriteLine("Failures: " + f + "/" + i);
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.ReadKey(true);
+        }
+
+        static TvdbSeries Tvdb_SeriesSelectCallback(TvdbSeriesSearch seriesSearch)
+        {
+            throw new NotImplementedException();
         }
     }
 }

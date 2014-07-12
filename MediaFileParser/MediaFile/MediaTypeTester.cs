@@ -4,13 +4,13 @@ using System;
 
 #endregion
 
-namespace MediaFileParser
+namespace MediaFileParser.MediaFile
 {
     internal class MediaTypeTester
     {
         protected static Type[] MediaTypes =
         {
-            typeof (TvFile),
+            typeof (TvFile.TvFile),
             typeof (MovieFile)
         };
 
