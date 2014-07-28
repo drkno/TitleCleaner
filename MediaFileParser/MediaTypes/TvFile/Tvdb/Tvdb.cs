@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MediaFileParser.MediaTypes.TvFile.Tvdb
+﻿namespace MediaFileParser.MediaTypes.TvFile.Tvdb
 {
     public class Tvdb
     {
@@ -37,7 +35,7 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
 
         internal TvdbSeriesSearch SearchSeries(string name)
         {
-            var seriesSearch = new TvdbSeriesSearch(name, UseCache, CacheLocation);
+            var seriesSearch = new TvdbSeriesSearch(name, UserAgent, UseCache, CacheLocation);
             return seriesSearch;
         }
 
@@ -51,12 +49,12 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
 
         public TvdbDetailedSeries LookupSeries(TvdbSeries series)
         {
-            throw new NotImplementedException();
+            return LookupSeries(series.Id);
         }
 
         public TvdbDetailedSeries LookupSeries(uint seriesId)
         {
-            throw new NotImplementedException();
+            return TvdbDetailedSeries.Lookup(seriesId, UserAgent, ApiKey, UseCache, CacheLocation, _serverTime);
         }
     }
 }

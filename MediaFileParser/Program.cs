@@ -17,9 +17,10 @@ namespace MediaFileParser
         private static void Main()
         {
             TvFile.TvdbLookup = true;
+            TvFile.TvdbApiKey = "F9D98CE470B5ABAE";
             Tvdb.SeriesSelectCallback += Tvdb_SeriesSelectCallback;
 
-            var reader = new StreamReader("../movie.csv");
+            var reader = new StreamReader("../tv.csv");
             var i = 0;
             var f = 0;
             while (!reader.EndOfStream)
@@ -61,7 +62,21 @@ namespace MediaFileParser
 
         static TvdbSeries Tvdb_SeriesSelectCallback(TvdbSeriesSearch seriesSearch)
         {
-            throw new NotImplementedException();
+            var colour = Console.ForegroundColor;
+            Console.ForegroundColor = ConsoleColor.Magenta;
+            Console.WriteLine("Which show?");
+            for (int i = 0; i < seriesSearch.Length; i++)
+            {
+                Console.ForegroundColor = ConsoleColor.Cyan;
+                Console.WriteLine("[" + i + "] - " + seriesSearch[i].SeriesName);
+                Console.ForegroundColor = ConsoleColor.White;
+                Console.WriteLine(seriesSearch[i].Overview);
+                Console.WriteLine();
+            }
+            Console.Write(" : ");
+            Console.ForegroundColor = colour;
+            var result = int.Parse(Console.ReadLine());
+            return seriesSearch[result];
         }
     }
 }

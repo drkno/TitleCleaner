@@ -213,12 +213,16 @@ namespace MediaFileParser.MediaTypes.TvFile
             get
             {
                 if (!string.IsNullOrWhiteSpace(TitleVar) || !TvdbLookup || Name == "Unknown" || Episode.Count == 0) return TitleVar;
-                if (Tvdb == null) Tvdb = new Tvdb.Tvdb(TvdbApiKey);
+                if (Tvdb == null) Tvdb = new Tvdb.Tvdb(TvdbApiKey, true);
                 var seriesList = Tvdb.SearchSeries(Name);
-                var seriesId = Tvdb.SelectSeries(seriesList);
-                var series = Tvdb.LookupSeries(seriesId);
-                var title = series.GetEpisode(Season, Episode[0]);
-                return title == null ? "" : title.EpisodeName;
+                if (seriesList.Length > 0)
+                {
+                    var seriesId = Tvdb.SelectSeries(seriesList);
+                    var series = Tvdb.LookupSeries(seriesId);
+                    var title = series.GetEpisode(Season, Episode[0]);
+                    TitleVar = title == null ? "" : title.EpisodeName;
+                }
+                return TitleVar;
             }
             protected set { TitleVar = value.Trim(TrimChars); }
         }

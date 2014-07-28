@@ -6,7 +6,7 @@ using System.Xml.Serialization;
 
 namespace MediaFileParser.MediaTypes.TvFile.Tvdb
 {
-    internal class TvdbServerTime
+    public class TvdbServerTime
     {
         public uint Time { get; protected set; }
         public uint[] Series { get; protected set; }
@@ -53,11 +53,12 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
         }
 
         [XmlType(AnonymousType = true)]
-        [XmlRoot(Namespace = "", IsNullable = false)]
+        [XmlRoot(Namespace = "", IsNullable = false, ElementName = "Items")]
         public class TvdbXmlUpdateParser
         {
+            [XmlElement("Time")]
             public uint Time { get; set; }
-            [XmlElement("Series")]
+            [XmlArray("Series"), XmlArrayItem(ElementName = "Series", Type = typeof(uint))]
             public uint[] Series { get; set; }
         }
     }
