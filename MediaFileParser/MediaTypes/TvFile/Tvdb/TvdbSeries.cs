@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Xml.Serialization;
 
-namespace tvdbApi
+namespace MediaFileParser.MediaTypes.TvFile.Tvdb
 {
     [Serializable]
     [XmlType("Series", AnonymousType = true)]

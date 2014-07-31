@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace tvdbApi
+namespace MediaFileParser.MediaTypes.TvFile.Tvdb
 {
     /// <summary>
     /// Class to help with the usage of the various TVDB Api classes.

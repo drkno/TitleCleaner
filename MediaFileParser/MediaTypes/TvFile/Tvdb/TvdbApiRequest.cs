@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Xml.Serialization;
 
-namespace tvdbApi
+namespace MediaFileParser.MediaTypes.TvFile.Tvdb
 {
     /// <summary>
     /// Class to manage requests to the API and deserialise requests.

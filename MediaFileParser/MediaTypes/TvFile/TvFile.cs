@@ -201,31 +201,56 @@ namespace MediaFileParser.MediaTypes.TvFile
 
         public List<uint> Episode { get; protected set; }
 
-        // Tvdb Lookup Section
+        #region Tvdb Lookup Section
         public static bool TvdbLookup { get; set; }
+        public static bool TvdbLookupConfirm { get; set; }
+        public static string TvdbApiKey { protected get; set; }
+        protected static Dictionary<string, uint> TvdbSearchSelectionCache { get; set; }
 
-        public static string TvdbApiKey { get; set; }
+        protected static Tvdb.Tvdb TvdbApiManager;
 
-        protected static Tvdb.Tvdb Tvdb;
+        public delegate uint TvdbSearchSelectionRequiredEvent(Tvdb.TvdbSeries[] seriesSearch);
+
+        public event TvdbSearchSelectionRequiredEvent TvdbSearchSelectionRequired;
 
         public string Title
         {
             get
             {
+                // Avoid looking up unknown titles
                 if (!string.IsNullOrWhiteSpace(TitleVar) || !TvdbLookup || Name == "Unknown" || Episode.Count == 0) return TitleVar;
-                if (Tvdb == null) Tvdb = new Tvdb.Tvdb(TvdbApiKey, true);
-                var seriesList = Tvdb.SearchSeries(Name);
-                if (seriesList.Length > 0)
+                // Init API if not done already
+                if (TvdbApiManager == null) TvdbApiManager = new Tvdb.Tvdb(TvdbApiKey);
+                // Search for series
+                var seriesList = TvdbApiManager.Search(Name);
+                // No selection required, just assume (unless confirmation is always required
+                if (seriesList.Length == 1 && !TvdbLookupConfirm)
                 {
-                    var seriesId = Tvdb.SelectSeries(seriesList);
-                    var series = Tvdb.LookupSeries(seriesId);
-                    var title = series.GetEpisode(Season, Episode[0]);
-                    TitleVar = title == null ? "" : title.EpisodeName;
+                    // Get episode
+                    var seriesId = seriesList[0].Id;
+                    var episode = TvdbApiManager.LookupEpisode(seriesId, Season, Episode[0]);
+                    // Set title
+                    TitleVar = episode == null ? "" : episode.EpisodeName;
+                }
+                else if (seriesList.Length > 1 || TvdbLookupConfirm && seriesList.Length > 0)
+                {   // Selection required...
+                    if (TvdbSearchSelectionCache == null) TvdbSearchSelectionCache = new Dictionary<string, uint>();
+                    var searchCacheName = Name.ToLower().Trim();
+                    var id = TvdbSearchSelectionCache.ContainsKey(searchCacheName) ? TvdbSearchSelectionCache[searchCacheName] : TvdbSearchSelectionRequired(seriesList);
+                    // Add search selection to cache
+                    TvdbSearchSelectionCache.Add(searchCacheName, id);
+                    // 0 is a sentinal "none of them" value
+                    if (id == 0) return TitleVar;
+                    // Get episode
+                    var episode = TvdbApiManager.LookupEpisode(id, Season, Episode[0]);
+                    // Set title
+                    TitleVar = episode == null ? "" : episode.EpisodeName;
                 }
                 return TitleVar;
             }
             protected set { TitleVar = value.Trim(TrimChars); }
         }
+        #endregion
 
         public override string Cleaned
         {
