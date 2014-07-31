@@ -211,7 +211,7 @@ namespace MediaFileParser.MediaTypes.TvFile
 
         public delegate uint TvdbSearchSelectionRequiredEvent(Tvdb.TvdbSeries[] seriesSearch);
 
-        public event TvdbSearchSelectionRequiredEvent TvdbSearchSelectionRequired;
+        public static event TvdbSearchSelectionRequiredEvent TvdbSearchSelectionRequired;
 
         public string Title
         {
@@ -238,7 +238,7 @@ namespace MediaFileParser.MediaTypes.TvFile
                     var searchCacheName = Name.ToLower().Trim();
                     var id = TvdbSearchSelectionCache.ContainsKey(searchCacheName) ? TvdbSearchSelectionCache[searchCacheName] : TvdbSearchSelectionRequired(seriesList);
                     // Add search selection to cache
-                    TvdbSearchSelectionCache.Add(searchCacheName, id);
+                    if (!TvdbSearchSelectionCache.ContainsKey(searchCacheName)) TvdbSearchSelectionCache.Add(searchCacheName, id);
                     // 0 is a sentinal "none of them" value
                     if (id == 0) return TitleVar;
                     // Get episode
