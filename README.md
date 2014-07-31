@@ -9,4 +9,4 @@ https://code.google.com/p/title-cleaner/
 
 Any contributions/pull requests welcome.
 
-Licensed under the MIT Licence.
+License changed to the MIT Licence.
