@@ -17,10 +17,14 @@ namespace MediaFileParser
         private static void Main()
         {
             //TvFile.TvdbLookup = true;
+
+            // This Api Key is for TitleCleaner ONLY
             TvFile.TvdbApiKey = "F9D98CE470B5ABAE";
             TvFile.TvdbSearchSelectionRequired += TvFileOnTvdbSearchSelectionRequired;
 
-            var reader = new StreamReader("../tv.csv");
+            var reader = new StreamReader("../../Tests/tests.csv");
+            //var reader = new StreamReader("../../Tests/tv.csv");
+            //var reader = new StreamReader("../../Tests/movie.csv");
             var i = 0;
             var f = 0;
             while (!reader.EndOfStream)
