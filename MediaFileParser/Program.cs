@@ -16,9 +16,9 @@ namespace MediaFileParser
     {
         private static void Main()
         {
-            TvFile.TvdbLookup = true;
+            //TvFile.TvdbLookup = true;
             TvFile.TvdbApiKey = "F9D98CE470B5ABAE";
-            Tvdb.SeriesSelectCallback += Tvdb_SeriesSelectCallback;
+            TvFile.TvdbSearchSelectionRequired += TvFileOnTvdbSearchSelectionRequired;
 
             var reader = new StreamReader("../tv.csv");
             var i = 0;
@@ -37,7 +37,6 @@ namespace MediaFileParser
                 }
                 var test = line.Split(',');
                 var mediaFile = MediaTypeTester.GetMediaFile(test[0]);
-                //var mediaFile = new TvFile(test[0]);
                 test[0] = mediaFile.ToString("C.E");
                 if (test[0].Trim() != test[1].Trim())
                 {
@@ -60,23 +59,25 @@ namespace MediaFileParser
             Console.ReadKey(true);
         }
 
-        static TvdbSeries Tvdb_SeriesSelectCallback(TvdbSeriesSearch seriesSearch)
+        private static uint TvFileOnTvdbSearchSelectionRequired(TvdbSeries[] seriesSearch)
         {
             var colour = Console.ForegroundColor;
             Console.ForegroundColor = ConsoleColor.Magenta;
             Console.WriteLine("Which show?");
-            for (int i = 0; i < seriesSearch.Length; i++)
+            for (var i = 0; i < seriesSearch.Length; i++)
             {
                 Console.ForegroundColor = ConsoleColor.Cyan;
                 Console.WriteLine("[" + i + "] - " + seriesSearch[i].SeriesName);
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine(seriesSearch[i].Overview);
-                Console.WriteLine();
+                Console.WriteLine("---");
             }
             Console.Write(" : ");
             Console.ForegroundColor = colour;
-            var result = int.Parse(Console.ReadLine());
-            return seriesSearch[result];
+            var text = Console.ReadLine();
+            var result = int.MaxValue;
+            int.TryParse(text, out result);
+            return result == int.MaxValue || result < 0 || result >= seriesSearch.Length ? 0 : seriesSearch[result].Id;
         }
     }
 }
