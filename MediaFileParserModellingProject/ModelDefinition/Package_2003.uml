@@ -1,0 +1,333 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/LogicalClassDesigner"
+  dslVersion="1.0.0.0"
+  Id="4e002b7c-91f6-4379-8c65-053d7e0d57e4"
+  name="MediaFileParser"
+  visibility="Private" xmlns="http://schemas.microsoft.com/dsltools/ModelStore">
+  <referencesInternal>
+    <reference
+      Id="8da93084-600a-40c9-af26-0c28799bdc0b"
+      handle="viewcode://./CodeSchema_Namespace?Namespace%3DMediaFileParser"
+      tag="ViewCode" />
+  </referencesInternal>
+  <profileInstances>
+    <packageHasProfileInstances
+      Id="375716b7-70be-45d0-9dcb-0d79de987625">
+      <profileInstance
+        Id="57f9a0d3-d89e-4097-bb7f-2a1e2fed5ea0"
+        name="CSharpProfile" />
+    </packageHasProfileInstances>
+  </profileInstances>
+  <packagedElements>
+    <packageHasNamedElement>
+      <class
+        Id="23a06bf2-42db-4852-a238-cf81c669ec03"
+        name="Program"
+        visibility="Package"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <referencesInternal>
+          <reference
+            Id="c56efd69-f4ed-4812-8ce7-910ece7bf5d6"
+            handle="viewcode://./CodeSchema_Class?Assembly%3Dfile:%2F%2F%2FC:%2FUsers%2FMatthew%2FDocuments%2FDevelopment%2FMediaFileParser%2FMediaFileParser%2Fbin%2FDebug%2FMediaFileParser.exe Namespace%3DMediaFileParser Type%3DProgram"
+            tag="ViewCode" />
+        </referencesInternal>
+        <appliedStereotypesInternal>
+          <stereotypeInstance
+            Id="610fadd8-9317-49c7-b382-d583ee594da4"
+            name="class"
+            profile="CSharpProfile">
+            <propertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="86757058-c660-4bc4-88d2-297bf4e85b13">
+                <propertyInstance
+                  Id="a0ddeb43-b672-4078-996f-33bda38e3386"
+                  name="ClrAttributes" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="5772df2e-6cb3-4a2a-87cc-c6a8bf33f51d">
+                <propertyInstance
+                  Id="e499ded3-62fa-488c-9e4a-62ac5736aecf"
+                  name="IsPartial"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="8dc0dc7e-ef3a-494e-a586-a865729a40c1">
+                <propertyInstance
+                  Id="27b2f357-4525-4312-af14-605ca2955aae"
+                  name="IsStatic"
+                  value="False" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="304c5feb-fc01-4e75-ae40-e1c4b6d4563e">
+                <propertyInstance
+                  Id="d1787d74-7e1d-4b4f-8179-a5ccc2b12095"
+                  name="IsUnsafe"
+                  value="false" />
+              </stereotypeInstanceHasPropertyInstances>
+              <stereotypeInstanceHasPropertyInstances
+                Id="91995a2e-4d25-4232-b5f2-ea2275a3eee0">
+                <propertyInstance
+                  Id="3d89ff67-c774-48ce-aff0-b561eb80ed7a"
+                  name="PackageVisibility"
+                  value="internal" />
+              </stereotypeInstanceHasPropertyInstances>
+            </propertyInstances>
+          </stereotypeInstance>
+        </appliedStereotypesInternal>
+        <ownedOperationsInternal>
+          <operation
+            Id="687fe5b2-62ce-4239-a494-d68f87fd3b9a"
+            name="Main"
+            visibility="Private"
+            isLeaf="false"
+            isStatic="true"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <referencesInternal>
+              <reference
+                Id="cc80d9fc-42a8-40bf-b457-f4016e12a816"
+                handle="viewcode://./CodeSchema_Method?Assembly%3Dfile:%2F%2F%2FC:%2FUsers%2FMatthew%2FDocuments%2FDevelopment%2FMediaFileParser%2FMediaFileParser%2Fbin%2FDebug%2FMediaFileParser.exe Namespace%3DMediaFileParser Type%3DProgram Member%3DMain"
+                tag="ViewCode" />
+            </referencesInternal>
+            <appliedStereotypesInternal>
+              <stereotypeInstance
+                Id="4f7c917e-a9bc-4a44-9afa-d40de0b2407c"
+                name="method"
+                profile="CSharpProfile">
+                <propertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="9d141cf2-b985-416d-bde0-4fb462b926f1">
+                    <propertyInstance
+                      Id="ce2f7d37-536e-43ce-8995-37b489bcad7e"
+                      name="ClrAttributes" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="8193942d-f5bb-408b-b54e-16306c1ff348">
+                    <propertyInstance
+                      Id="fc2a5185-0db9-4b78-82e7-00c8f172e679"
+                      name="IsPartial"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="d538f5e4-9134-4265-a66b-4c50d0f46a9d">
+                    <propertyInstance
+                      Id="915e9311-393b-4f72-aa07-9fc2aafd54c3"
+                      name="IsUnsafe"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="e9366c8e-6afe-4152-a599-c672e352d153">
+                    <propertyInstance
+                      Id="2afe5acd-bed3-4f57-8776-7c9722b4f610"
+                      name="Inheritance"
+                      value="none" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="4eb0cd2c-937e-47ca-929a-9783602f1181">
+                    <propertyInstance
+                      Id="81ccff5a-1eb7-4d32-9077-a930f348d783"
+                      name="PackageVisibility"
+                      value="internal" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="9c322fcb-0687-4726-a6d5-99a3ff3522e8">
+                    <propertyInstance
+                      Id="7f8291ca-64ee-45e7-b547-fef1bcca8558"
+                      name="params"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                </propertyInstances>
+              </stereotypeInstance>
+            </appliedStereotypesInternal>
+          </operation>
+          <operation
+            Id="405db655-d831-4dac-98ac-27bc1bebb671"
+            name="TvFileOnTvdbSearchSelectionRequired"
+            visibility="Private"
+            isLeaf="false"
+            isStatic="true"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <referencesInternal>
+              <reference
+                Id="fa078e6c-6585-41ab-ad20-ca681d1dc275"
+                handle="viewcode://./CodeSchema_Method?Assembly%3Dfile:%2F%2F%2FC:%2FUsers%2FMatthew%2FDocuments%2FDevelopment%2FMediaFileParser%2FMediaFileParser%2Fbin%2FDebug%2FMediaFileParser.exe Namespace%3DMediaFileParser Type%3DProgram Member%3D(Name%3DTvFileOnTvdbSearchSelectionRequired OverloadingParameters%3D[(Assembly%3Dfile:%2F%2F%2FC:%2FUsers%2FMatthew%2FDocuments%2FDevelopment%2FMediaFileParser%2FMediaFileParser%2Fbin%2FDebug%2FMediaFileParser.exe Namespace%3DMediaFileParser.MediaTypes.TvFile.Tvdb Type%3D(Name%3DTvdbSeries ArrayRank%3D1 ParentType%3DTvdbSeries))])"
+                tag="ViewCode" />
+            </referencesInternal>
+            <appliedStereotypesInternal>
+              <stereotypeInstance
+                Id="9d5f7ac6-d831-4f34-92e7-32d17b93e6df"
+                name="method"
+                profile="CSharpProfile">
+                <propertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="3700b5ae-1279-43bd-afd8-d5d446e877d2">
+                    <propertyInstance
+                      Id="49ef0098-67b5-4422-828b-37db1fc94f54"
+                      name="ClrAttributes" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="778efa7a-9af6-4891-b50c-c95fcfcc533d">
+                    <propertyInstance
+                      Id="08ba031a-4e60-4f6b-ae80-6375b209eeb5"
+                      name="IsPartial"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="98ca2215-d797-490c-89ac-4ca2d61b897d">
+                    <propertyInstance
+                      Id="402fb353-a61c-4672-a252-1dc638c86d65"
+                      name="IsUnsafe"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="9cd3ac85-3d46-486f-bac3-9914023beabe">
+                    <propertyInstance
+                      Id="f4c29b1e-4aea-405e-9002-3b0d666eba78"
+                      name="Inheritance"
+                      value="none" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="c175c7af-a9aa-4f7a-b74c-f09679b92724">
+                    <propertyInstance
+                      Id="c5707db2-5d6a-4d7c-91e7-e728df4cdb35"
+                      name="PackageVisibility"
+                      value="internal" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="8c7fd53e-5dee-4918-910a-66607217277f">
+                    <propertyInstance
+                      Id="6e648ce6-9b37-459b-94a7-6901b93def9a"
+                      name="params"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                </propertyInstances>
+              </stereotypeInstance>
+            </appliedStereotypesInternal>
+            <ownedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="817e9749-5ef9-4b11-9344-2bf7210c078e"
+                  direction="Return">
+                  <type_NamedElement>
+                    <classMoniker
+                      Id="ea8766da-e3d0-4936-8815-3aa13ab9519c"
+                      LastKnownName="UInt32"
+                      LastKnownLocation="Package1_2003.uml" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+              <operationHasOwnedParameters>
+                <parameter
+                  Id="d3de798e-24ad-43a7-963c-5193eea5066e"
+                  name="seriesSearch"
+                  direction="In"
+                  isOrdered="true">
+                  <referencesInternal>
+                    <reference
+                      Id="9a1e4076-fca7-41d6-b9b7-29f303ad41cd"
+                      handle="viewcode://./CodeSchema_Parameter?Assembly%3Dfile:%2F%2F%2FC:%2FUsers%2FMatthew%2FDocuments%2FDevelopment%2FMediaFileParser%2FMediaFileParser%2Fbin%2FDebug%2FMediaFileParser.exe Namespace%3DMediaFileParser Type%3DProgram Member%3D(Name%3DTvFileOnTvdbSearchSelectionRequired OverloadingParameters%3D[(Assembly%3Dfile:%2F%2F%2FC:%2FUsers%2FMatthew%2FDocuments%2FDevelopment%2FMediaFileParser%2FMediaFileParser%2Fbin%2FDebug%2FMediaFileParser.exe Namespace%3DMediaFileParser.MediaTypes.TvFile.Tvdb Type%3D(Name%3DTvdbSeries ArrayRank%3D1 ParentType%3DTvdbSeries))]) ParameterIdentifier%3DseriesSearch"
+                      tag="ViewCode" />
+                  </referencesInternal>
+                  <lowerValueInternal>
+                    <literalString
+                      Id="06b1ed5d-d6e5-4ce8-8a6b-c383c112e17f"
+                      name="Lower"
+                      value="*" />
+                  </lowerValueInternal>
+                  <upperValueInternal>
+                    <literalString
+                      Id="c1b95962-e15d-4561-bb02-2c7a0a0c2ee1"
+                      name="Upper"
+                      value="*" />
+                  </upperValueInternal>
+                  <type_NamedElement>
+                    <classMoniker
+                      Id="164eee46-6a39-4d47-bea3-4806a48c6300"
+                      LastKnownName="TvdbSeries"
+                      LastKnownLocation="Package4_2003.uml" />
+                  </type_NamedElement>
+                </parameter>
+              </operationHasOwnedParameters>
+            </ownedParameters>
+          </operation>
+          <operation
+            Id="8788706c-a577-4bbf-8a5d-9024ae06e893"
+            name="Program"
+            isLeaf="false"
+            isStatic="false"
+            isAbstract="false"
+            concurrency="Sequential"
+            isQuery="false">
+            <referencesInternal>
+              <reference
+                Id="a021c466-e964-495a-9107-42064dc94d06"
+                handle="viewcode://./CodeSchema_Method?Assembly%3Dfile:%2F%2F%2FC:%2FUsers%2FMatthew%2FDocuments%2FDevelopment%2FMediaFileParser%2FMediaFileParser%2Fbin%2FDebug%2FMediaFileParser.exe Namespace%3DMediaFileParser Type%3DProgram Member%3D.ctor"
+                tag="ViewCode" />
+            </referencesInternal>
+            <appliedStereotypesInternal>
+              <stereotypeInstance
+                Id="58892c86-2437-4559-a3fa-bfee37afa5ef"
+                name="method"
+                profile="CSharpProfile">
+                <propertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="bc16bc77-fb95-4f11-aac2-d8575f5fb4a2">
+                    <propertyInstance
+                      Id="eb854d7c-6fdb-4094-960f-4478dfd0f4b4"
+                      name="ClrAttributes" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="966a6422-df3a-4d6e-b2f1-7d85c751a929">
+                    <propertyInstance
+                      Id="b7358211-64fc-4703-af96-32f60176dd38"
+                      name="IsPartial"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="da0a4afd-2472-4b2d-a4a6-42cbf6899281">
+                    <propertyInstance
+                      Id="559d64a4-65b6-440a-b107-db0b10838bac"
+                      name="IsUnsafe"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="1762b8ba-ebe8-4fcc-afbe-a12990ca6263">
+                    <propertyInstance
+                      Id="785d9618-a6aa-4c17-a516-4fb53e1bb9bb"
+                      name="Inheritance"
+                      value="none" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="66f27194-d5af-458d-9fde-fb61b62502b5">
+                    <propertyInstance
+                      Id="0864c8c1-a8ed-413f-bbf9-121224ee5b06"
+                      name="PackageVisibility"
+                      value="internal" />
+                  </stereotypeInstanceHasPropertyInstances>
+                  <stereotypeInstanceHasPropertyInstances
+                    Id="60d5965c-cad4-42f0-9d1a-40ef079e4ba4">
+                    <propertyInstance
+                      Id="f7b93075-0f22-4184-8766-a45e957c0a0d"
+                      name="params"
+                      value="false" />
+                  </stereotypeInstanceHasPropertyInstances>
+                </propertyInstances>
+              </stereotypeInstance>
+            </appliedStereotypesInternal>
+          </operation>
+        </ownedOperationsInternal>
+      </class>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <packageMoniker
+        Id="07eb93df-6526-4fff-ae43-dbbb05b05f32"
+        LastKnownName="MediaTypes"
+        LastKnownLocation="Package2_2003.uml" />
+    </packageHasNamedElement>
+  </packagedElements>
+</package>
