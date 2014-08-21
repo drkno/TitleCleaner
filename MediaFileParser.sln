@@ -5,8 +5,6 @@ VisualStudioVersion = 12.0.30324.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MediaFileParser", "MediaFileParser\MediaFileParser.csproj", "{F082F620-ACE9-448A-8CFB-9B135F742D62}"
 EndProject
-Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "MediaFileParserModellingProject", "MediaFileParserModellingProject\MediaFileParserModellingProject.modelproj", "{BEA99E68-BB29-4633-92D8-F67AC74EEB3B}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -17,10 +15,6 @@ Global
 		{F082F620-ACE9-448A-8CFB-9B135F742D62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F082F620-ACE9-448A-8CFB-9B135F742D62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F082F620-ACE9-448A-8CFB-9B135F742D62}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BEA99E68-BB29-4633-92D8-F67AC74EEB3B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BEA99E68-BB29-4633-92D8-F67AC74EEB3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BEA99E68-BB29-4633-92D8-F67AC74EEB3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BEA99E68-BB29-4633-92D8-F67AC74EEB3B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

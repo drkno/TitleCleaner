@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using MediaFileParser.MediaTypes.TvFile.Tvdb;
 
 #endregion
 
@@ -209,9 +210,42 @@ namespace MediaFileParser.MediaTypes.TvFile
 
         protected static Tvdb.Tvdb TvdbApiManager;
 
-        public delegate uint TvdbSearchSelectionRequiredEvent(Tvdb.TvdbSeries[] seriesSearch);
+        public delegate uint TvdbSearchSelectionRequiredEvent(TvdbSeries[] seriesSearch);
 
         public static event TvdbSearchSelectionRequiredEvent TvdbSearchSelectionRequired;
+
+        public TvdbEpisode GetTvdbEpisode()
+        {
+            // Avoid looking up unknown titles
+            if (!string.IsNullOrWhiteSpace(TitleVar) || Name == "Unknown" || Episode.Count == 0) return null;
+            // Init API if not done already
+            if (TvdbApiManager == null) TvdbApiManager = new Tvdb.Tvdb(TvdbApiKey);
+            // Search for series
+            var seriesList = TvdbApiManager.Search(Name);
+            // No selection required, just assume (unless confirmation is always required
+            TvdbEpisode episode;
+            if (seriesList.Length == 1 && !TvdbLookupConfirm)
+            {
+                // Get episode
+                var seriesId = seriesList[0].Id;
+                episode = TvdbApiManager.LookupEpisode(seriesId, Season, Episode[0]);
+                // Return episode
+                return episode;
+            }
+            if (seriesList.Length <= 1 && (!TvdbLookupConfirm || seriesList.Length <= 0)) return null;
+            // Selection required...
+            if (TvdbSearchSelectionCache == null) TvdbSearchSelectionCache = new Dictionary<string, uint>();
+            var searchCacheName = Name.ToLower().Trim();
+            var id = TvdbSearchSelectionCache.ContainsKey(searchCacheName) ? TvdbSearchSelectionCache[searchCacheName] : TvdbSearchSelectionRequired(seriesList);
+            // Add search selection to cache
+            if (!TvdbSearchSelectionCache.ContainsKey(searchCacheName)) TvdbSearchSelectionCache.Add(searchCacheName, id);
+            // 0 is a sentinal "none of them" value
+            if (id == 0) return null;
+            // Get episode
+            episode = TvdbApiManager.LookupEpisode(id, Season, Episode[0]);
+            // Return episode
+            return episode;
+        }
 
         public string Title
         {
@@ -219,34 +253,10 @@ namespace MediaFileParser.MediaTypes.TvFile
             {
                 // Avoid looking up unknown titles
                 if (!string.IsNullOrWhiteSpace(TitleVar) || !TvdbLookup || Name == "Unknown" || Episode.Count == 0) return TitleVar;
-                // Init API if not done already
-                if (TvdbApiManager == null) TvdbApiManager = new Tvdb.Tvdb(TvdbApiKey);
-                // Search for series
-                var seriesList = TvdbApiManager.Search(Name);
-                // No selection required, just assume (unless confirmation is always required
-                if (seriesList.Length == 1 && !TvdbLookupConfirm)
-                {
-                    // Get episode
-                    var seriesId = seriesList[0].Id;
-                    var episode = TvdbApiManager.LookupEpisode(seriesId, Season, Episode[0]);
-                    // Set title
-                    TitleVar = episode == null ? "" : episode.EpisodeName;
-                }
-                else if (seriesList.Length > 1 || TvdbLookupConfirm && seriesList.Length > 0)
-                {   // Selection required...
-                    if (TvdbSearchSelectionCache == null) TvdbSearchSelectionCache = new Dictionary<string, uint>();
-                    var searchCacheName = Name.ToLower().Trim();
-                    var id = TvdbSearchSelectionCache.ContainsKey(searchCacheName) ? TvdbSearchSelectionCache[searchCacheName] : TvdbSearchSelectionRequired(seriesList);
-                    // Add search selection to cache
-                    if (!TvdbSearchSelectionCache.ContainsKey(searchCacheName)) TvdbSearchSelectionCache.Add(searchCacheName, id);
-                    // 0 is a sentinal "none of them" value
-                    if (id == 0) return TitleVar;
-                    // Get episode
-                    var episode = TvdbApiManager.LookupEpisode(id, Season, Episode[0]);
-                    // Set title
-                    TitleVar = episode == null ? "" : episode.EpisodeName;
-                }
-                return TitleVar;
+                // Get episode
+                var episode = GetTvdbEpisode();
+                // Return name
+                return episode == null ? TitleVar : episode.EpisodeName;
             }
             protected set { TitleVar = value.Trim(TrimChars); }
         }

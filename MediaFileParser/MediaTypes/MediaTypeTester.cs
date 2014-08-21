@@ -8,6 +8,8 @@ namespace MediaFileParser.MediaTypes
 {
     internal class MediaTypeTester
     {
+        protected static Type MediaType = null;
+
         protected static Type[] MediaTypes =
         {
             typeof (TvFile.TvFile),
@@ -18,6 +20,11 @@ namespace MediaFileParser.MediaTypes
 
         public static MediaFile.MediaFile GetMediaFile(string file)
         {
+            if (MediaType != null)
+            {
+                return (MediaFile.MediaFile) Activator.CreateInstance(MediaType, file);
+            }
+
             foreach (var mediaType in MediaTypes)
             {
                 var mediaFile = (MediaFile.MediaFile) Activator.CreateInstance(mediaType, file);
@@ -27,6 +34,11 @@ namespace MediaFileParser.MediaTypes
                 }
             }
             return null;
+        }
+
+        public static void SetMediaType(Type type)
+        {
+            
         }
     }
 }

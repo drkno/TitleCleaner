@@ -49,6 +49,8 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -56,6 +58,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Arguments\Arguments.cs" />
+    <Compile Include="Error\ErrorType.cs" />
+    <Compile Include="Gui\Windowed\MainWindow.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Gui\Windowed\MainWindow.Designer.cs">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ModeManagers\FileManager.cs" />
+    <Compile Include="Gui\Cli.cs" />
+    <Compile Include="Gui\IGui.cs" />
     <Compile Include="MediaTypes\MediaFile\MediaFile.cs" />
     <Compile Include="MediaTypes\MediaFile\MediaFile.Junk.cs" />
     <Compile Include="MediaTypes\MediaTypeTester.cs" />
@@ -66,6 +79,8 @@
     <Compile Include="MediaTypes\TvFile\Tvdb\TvdbDetailedSeries.cs" />
     <Compile Include="MediaTypes\TvFile\Tvdb\TvdbSeries.cs" />
     <Compile Include="MediaTypes\TvFile\Tvdb\TvdbSeriesCommon.cs" />
+    <Compile Include="Arguments\SetupParser.cs" />
+    <Compile Include="ModeManagers\TestManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="MediaTypes\TvFile\TvFile.cs" />
@@ -92,6 +107,11 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Gui\Windowed\MainWindow.resx">
+      <DependentUpon>MainWindow.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -23,7 +23,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
 
             // Location
             int pathSep;
-            if ((pathSep = file.IndexOfAny(PathSeperators)) != -1)
+            if ((pathSep = file.LastIndexOfAny(PathSeperators)) != -1)
             {
                 Location = file.Substring(0, pathSep);
             }
