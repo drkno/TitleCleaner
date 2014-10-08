@@ -2,8 +2,14 @@
 
 namespace MediaFileParser.MediaTypes.MediaFile
 {
+    /// <summary>
+    /// Superclass of all media files
+    /// </summary>
     public abstract partial class MediaFile
     {
+        /// <summary>
+        /// Common junk strings that are contained in filenames.
+        /// </summary>
         private static readonly string[] JunkStrings =
         {
             "xvid", "hdtv", "uncut", "[vtv]", "dvdscr", "dvdrip", "rerip", "(",
@@ -21,6 +27,9 @@ namespace MediaFileParser.MediaTypes.MediaFile
             "limited", "stv", "rapax-249", "[dvdrip]"
         };
 
+        /// <summary>
+        /// Removes junk strings from the sectorlist.
+        /// </summary>
         private void RemoveJunk()
         {
             var year = -1;
@@ -29,7 +38,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
                 int temp;
                 if (int.TryParse(SectorList[i], out temp) && temp > 1950 && temp <= DateTime.Now.Year && i > year)
                 {
-                    year = i;
+                    year = i;   // we've found the year (we think)
                 }
 
                 var sec = SectorList[i].ToLower().Trim();
@@ -49,11 +58,17 @@ namespace MediaFileParser.MediaTypes.MediaFile
             SectorRangeRemove(SectorList.Count, year);
         }
 
+        /// <summary>
+        /// Removes a range of sectors starting at the index provided and going
+        /// on to the end of the sector list.
+        /// </summary>
+        /// <param name="i">The index to start removing from.</param>
+        /// <param name="year">The year found or -1 if the year is still unknown.</param>
         private void SectorRangeRemove(int i, int year)
         {
             if (year != -1)
             {
-                Year = int.Parse(SectorList[year]);
+                Year = int.Parse(SectorList[year]); // extract year before removing sectors
                 if (year < i)
                 {
                     SectorList.Remove(SectorList[year]);

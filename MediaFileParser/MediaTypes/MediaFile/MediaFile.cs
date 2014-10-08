@@ -10,12 +10,31 @@ using System.Text.RegularExpressions;
 
 namespace MediaFileParser.MediaTypes.MediaFile
 {
+    /// <summary>
+    /// Superclass of all media files
+    /// </summary>
     public abstract partial class MediaFile
     {
+        /// <summary>
+        /// Delimeter chars of separator strings.
+        /// </summary>
         protected static readonly char[] DelimChars = {',', '.', '_', ' '};
+
+        /// <summary>
+        /// OS Path Separators
+        /// </summary>
         protected static readonly char[] PathSeperators = {Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar};
+
+        /// <summary>
+        /// List of sectors of the media file name.
+        /// </summary>
         protected List<string> SectorList = new List<string>();
 
+        /// <summary>
+        /// Constructor for a media file.
+        /// Performs common tasks for name cleanup.
+        /// </summary>
+        /// <param name="file">Name to clean.</param>
         protected MediaFile(string file)
         {
             Origional = file;
@@ -74,32 +93,72 @@ namespace MediaFileParser.MediaTypes.MediaFile
             RemoveJunk();
         }
 
+        /// <summary>
+        /// Origional file name for this file (excluding file extension).
+        /// </summary>
         public string Origional { get; protected set; }
+
+        /// <summary>
+        /// File extension for this media file.
+        /// </summary>
         public string Extension { get; protected set; }
+
+        /// <summary>
+        /// Location on the HD that this media file is stored.
+        /// </summary>
         public string Location { get; protected set; }
+
+        /// <summary>
+        /// Year that the media in this media file was made.
+        /// </summary>
         public int Year { get; protected set; }
 
+        /// <summary>
+        /// Folder this file is stored in.
+        /// </summary>
         public string Folder
         {
             get
             {
                 if (string.IsNullOrWhiteSpace(Location) || Location.LastIndexOfAny(PathSeperators) == -1)
                 {
-                    return "";
+                    return "";      // not stored in a directory (probably root)
                 }
                 return Location.Substring(Location.LastIndexOfAny(PathSeperators) + 1);
             }
         }
 
+        /// <summary>
+        /// Gets the default cleaned name of this file.
+        /// </summary>
         public abstract string Cleaned { get; }
 
+        /// <summary>
+        /// Tests if the media file is of this type.
+        /// </summary>
+        /// <returns>If this file is of this media type.</returns>
         public abstract bool Test();
 
+        /// <summary>
+        /// Returns the string representation of this object.
+        /// </summary>
+        /// <returns>The string representation of this object.</returns>
         public override string ToString()
         {
             return ToString("");
         }
 
+        /// <summary>
+        /// Returns the string representation of this object.
+        /// </summary>
+        /// <param name="str">
+        /// Format string to base this representation on.
+        /// L:  Location
+        /// O:  Origional Filename
+        /// C:  Cleaned Filename
+        /// E:  File Extension
+        /// </param>
+        /// <returns>The string representation of this object.</returns>
         public string ToString(string str)
         {
             var result = "";

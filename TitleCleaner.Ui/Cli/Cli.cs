@@ -4,17 +4,13 @@ using MediaFileParser.MediaTypes.TvFile;
 using MediaFileParser.MediaTypes.TvFile.Tvdb;
 using MediaFileParser.ModeManagers;
 
-namespace MediaFileParser.Gui
+namespace TitleCleaner.Ui.Cli
 {
-    class Cli : IGui
+    public class Cli : IUi
     {
-        public void Start(SetupParser.RunMode runMode, bool confirm)
+        public void Run(string[] args)
         {
-            switch (runMode)
-            {
-                    case SetupParser.RunMode.File: FileMode(confirm); break;
-                    case SetupParser.RunMode.Test: TestMode(confirm); break;
-            }
+
         }
 
         private void FileMode(bool confirm)
@@ -50,7 +46,7 @@ namespace MediaFileParser.Gui
             return number;
         }
 
-        private void fileManager_OnFileMoveFailed(MediaTypes.MediaFile.MediaFile file, string destination)
+        private void fileManager_OnFileMoveFailed(MediaFileParser.MediaTypes.MediaFile.MediaFile file, string destination)
         {
             WriteLnColor("Rename/Move Failed.", ConsoleColor.Red);
             WriteColor("From:\t\t", ConsoleColor.Yellow);
@@ -61,7 +57,7 @@ namespace MediaFileParser.Gui
             WriteLnColor(destination, ConsoleColor.White);
         }
 
-        private void fileManager_OnFileMove(MediaTypes.MediaFile.MediaFile file, string destination)
+        private void fileManager_OnFileMove(MediaFileParser.MediaTypes.MediaFile.MediaFile file, string destination)
         {
             WriteLnColor("Rename/Move Done.", ConsoleColor.Green);
             WriteColor("From:\t\t", ConsoleColor.Yellow);
@@ -72,7 +68,7 @@ namespace MediaFileParser.Gui
             WriteLnColor(destination, ConsoleColor.White);
         }
 
-        private bool FileManagerConfirmAutomaticMove(MediaTypes.MediaFile.MediaFile file, string destination)
+        private bool FileManagerConfirmAutomaticMove(MediaFileParser.MediaTypes.MediaFile.MediaFile file, string destination)
         {
             WriteLnColor("Perform this rename/move? " + destination, ConsoleColor.Gray);
             WriteColor("Origional:\t", ConsoleColor.Yellow);

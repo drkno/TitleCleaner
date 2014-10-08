@@ -10,13 +10,32 @@ using MediaFileParser.MediaTypes.TvFile.Tvdb;
 
 namespace MediaFileParser.MediaTypes.TvFile
 {
+    /// <summary>
+    /// Type to store TV files.
+    /// </summary>
     public class TvFile : MediaFile.MediaFile
     {
+        /// <summary>
+        /// Characters to trim from file names.
+        /// </summary>
         protected static char[] TrimChars = { ' ', '-', '.' };
+        /// <summary>
+        /// Temporary name of the episode variable.
+        /// </summary>
         protected string NameVar;
+        /// <summary>
+        /// Temporary title of the episode variable.
+        /// </summary>
         protected string TitleVar;
+        /// <summary>
+        /// Storage for the season number.
+        /// </summary>
         private uint _season;
 
+        /// <summary>
+        /// Creates a new TV File
+        /// </summary>
+        /// <param name="file">File to base the TV File on</param>
         public TvFile(string file) : base(file)
         {
             Episode = new List<uint>();
@@ -179,12 +198,18 @@ namespace MediaFileParser.MediaTypes.TvFile
             }
         }
 
+        /// <summary>
+        /// Gets the series name.
+        /// </summary>
         public string Name
         {
             get { return NameVar; }
             protected set { NameVar = value.Trim(TrimChars); }
         }
 
+        /// <summary>
+        /// Gets the season number.
+        /// </summary>
         public uint Season
         {
             get
@@ -200,20 +225,50 @@ namespace MediaFileParser.MediaTypes.TvFile
             protected set { _season = value; }
         }
 
+        /// <summary>
+        /// Gets the episode numbers of this episode.
+        /// </summary>
         public List<uint> Episode { get; protected set; }
 
         #region Tvdb Lookup Section
+        /// <summary>
+        /// Set wheather to lookup info from the TVDB automatically.
+        /// </summary>
         public static bool TvdbLookup { get; set; }
+        /// <summary>
+        /// Set wheather to confirm automatic selections with the user when using the TVDB.
+        /// </summary>
         public static bool TvdbLookupConfirm { get; set; }
+        /// <summary>
+        /// API Key to use with the TVDB.
+        /// </summary>
         public static string TvdbApiKey { protected get; set; }
+        /// <summary>
+        /// Runtime cache to use with the TVDB.
+        /// </summary>
         protected static Dictionary<string, uint> TvdbSearchSelectionCache { get; set; }
 
+        /// <summary>
+        /// TVDB API Manager
+        /// </summary>
         protected static Tvdb.Tvdb TvdbApiManager;
 
+        /// <summary>
+        /// TVDB requires a search selection.
+        /// </summary>
+        /// <param name="seriesSearch">The resultant series returned from the search.</param>
+        /// <returns>The ID of the series that is selected by the event.</returns>
         public delegate uint TvdbSearchSelectionRequiredEvent(TvdbSeries[] seriesSearch);
 
+        /// <summary>
+        /// Fired on a TVDB request requiring selection.
+        /// </summary>
         public static event TvdbSearchSelectionRequiredEvent TvdbSearchSelectionRequired;
 
+        /// <summary>
+        /// Gets the TVDB representation of this episode.
+        /// </summary>
+        /// <returns></returns>
         public TvdbEpisode GetTvdbEpisode()
         {
             // Avoid looking up unknown titles
@@ -247,6 +302,9 @@ namespace MediaFileParser.MediaTypes.TvFile
             return episode;
         }
 
+        /// <summary>
+        /// Gets the title of the episode.
+        /// </summary>
         public string Title
         {
             get
@@ -262,11 +320,18 @@ namespace MediaFileParser.MediaTypes.TvFile
         }
         #endregion
 
+        /// <summary>
+        /// Gets a cleaner file name.
+        /// </summary>
         public override string Cleaned
         {
             get { return ToString("N - [Sxe]" + ((!string.IsNullOrWhiteSpace(Title)) ? " - T" : "")); }
         }
 
+        /// <summary>
+        /// Tests if a media file is a valid tv file.
+        /// </summary>
+        /// <returns>If a file is a tv file.</returns>
         public override bool Test()
         {
             return
@@ -274,6 +339,21 @@ namespace MediaFileParser.MediaTypes.TvFile
                     @"[a-zA-Z0-9 ]*[ ]?[a-zA-Z0-9]+ - \[[0-9]{2}x[0-9]{2}(-[0-9]{2})?\]( - [a-zA-Z0-9&' -]*)?( \([0-9]+\))?");
         }
 
+        /// <summary>
+        /// Returns the string representation of this object.
+        /// </summary>
+        /// <param name="format">
+        /// Format string to base this representation on.
+        /// L:  Location
+        /// O:  Origional Filename
+        /// C:  Cleaned Filename
+        /// E:  File Extension
+        /// T:  Title of the Episode
+        /// N:  Name of the Episode
+        /// S:  Season Number of the Episode
+        /// e:  Episode Number of the Episode
+        /// </param>
+        /// <returns>The string representation of this object.</returns>
         public new string ToString(string format)
         {
             var result = "";
