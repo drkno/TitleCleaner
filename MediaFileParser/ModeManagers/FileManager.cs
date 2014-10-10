@@ -134,7 +134,7 @@ namespace MediaFileParser.ModeManagers
             try
             {
                 Directory.CreateDirectory(destination);
-                File.Move(file.Origional, path);
+                File.Move(file.Location + Path.DirectorySeparatorChar + file.ToString("O.E"), path);
                 NotifyOnMove(file, destination, true);
             }
             catch (Exception)

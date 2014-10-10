@@ -66,6 +66,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
             if ((pathSep = file.LastIndexOfAny(PathSeperators)) != -1)
             {
                 Location = file.Substring(0, pathSep);
+                Origional = Origional.Substring(Location.Length + 1);
             }
 
             // Extension
@@ -79,6 +80,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
             }
             var pathExt = file.LastIndexOf('.');
             Extension = file.Substring(pathExt + 1);
+            Origional = Origional.Substring(0, Origional.Length - Extension.Length - 1);
 
             // Raw
             file = file.Substring(pathSep, pathExt - pathSep);
