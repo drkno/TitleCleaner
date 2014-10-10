@@ -70,20 +70,12 @@ namespace MediaFileParser.MediaTypes.MediaFile
             }
 
             // Extension
-            if (pathSep != -1)
-            {
-                pathSep += 2;
-            }
-            else
-            {
-                pathSep += 1;
-            }
             var pathExt = file.LastIndexOf('.');
             Extension = file.Substring(pathExt + 1);
             Origional = Origional.Substring(0, Origional.Length - Extension.Length - 1);
 
             // Raw
-            file = file.Substring(pathSep, pathExt - pathSep);
+            file = Origional;
             SectorList.AddRange(file.Split(DelimChars, StringSplitOptions.RemoveEmptyEntries));
 
             // Autocapitalise first letter in each word
