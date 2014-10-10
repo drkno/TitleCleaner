@@ -31,6 +31,27 @@ namespace MediaFileParser.MediaTypes.MediaFile
         protected List<string> SectorList = new List<string>();
 
         /// <summary>
+        /// Storage of the default ToString() output format.
+        /// </summary>
+        protected static string DefaultFormatToString = "C.E";
+
+        /// <summary>
+        /// Gets or sets the default ToString() output format.
+        /// </summary>
+        public static string DefaultFormatString
+        {
+            get
+            {
+                return DefaultFormatToString;
+
+            }
+            set
+            {
+                DefaultFormatToString = value;
+            }
+        }
+
+        /// <summary>
         /// Constructor for a media file.
         /// Performs common tasks for name cleanup.
         /// </summary>

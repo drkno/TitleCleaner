@@ -389,5 +389,24 @@ namespace MediaFileParser.MediaTypes.TvFile
             }
             return result;
         }
+
+        /// <summary>
+        /// Storage for a MovieFile specific ToString format.
+        /// </summary>
+        private static string _defaultFormatToString;
+
+        /// <summary>
+        /// Gets or sets the default ToString() output format for MovieFile and its inheritors.
+        /// </summary>
+        public new static string DefaultFormatString
+        {
+            get
+            {
+                return string.IsNullOrWhiteSpace(_defaultFormatToString)
+                    ? DefaultFormatToString
+                    : _defaultFormatToString;
+            }
+            set { _defaultFormatToString = value; }
+        }
     }
 }
