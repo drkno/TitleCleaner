@@ -9,7 +9,7 @@ namespace MediaFileParser.ModeManagers
     /// <summary>
     /// Manages testing the TitleCleanerLib and proposed outputs.
     /// </summary>
-    class TestManager
+    public class TestManager
     {
         /// <summary>
         /// MediaFile type to use for tests.
