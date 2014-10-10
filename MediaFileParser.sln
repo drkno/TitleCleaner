@@ -5,6 +5,8 @@ VisualStudioVersion = 12.0.30723.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TitleCleanerLib", "MediaFileParser\TitleCleanerLib.csproj", "{F082F620-ACE9-448A-8CFB-9B135F742D62}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TitleCleanerConsole", "TitleCleanerConsole\TitleCleanerConsole.csproj", "{F214AF78-20E5-4FB4-AE6E-EF05C4E5431C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +17,10 @@ Global
 		{F082F620-ACE9-448A-8CFB-9B135F742D62}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F082F620-ACE9-448A-8CFB-9B135F742D62}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F082F620-ACE9-448A-8CFB-9B135F742D62}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F214AF78-20E5-4FB4-AE6E-EF05C4E5431C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F214AF78-20E5-4FB4-AE6E-EF05C4E5431C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F214AF78-20E5-4FB4-AE6E-EF05C4E5431C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F214AF78-20E5-4FB4-AE6E-EF05C4E5431C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
