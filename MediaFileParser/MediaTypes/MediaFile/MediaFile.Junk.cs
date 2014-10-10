@@ -24,7 +24,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
             "bd9", "bd25", "bd50", "web-rip", "webrip", "web rip", "webdl",
             "web-dl", "web dl", "h.264", "x264", "divx", "r0", "r1", "r2",
             "r3", "r4", "r6", "r7", "r8", "r9", "french", "truefrench", "unrated",
-            "limited", "stv", "rapax-249", "[dvdrip]"
+            "limited", "stv", "rapax-249", "[dvdrip]", "korsub", "hdrip", "readnfo"
         };
 
         /// <summary>
