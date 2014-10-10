@@ -123,7 +123,11 @@ namespace MediaFileParser.ModeManagers
             var move = true;
             if (_confirm)
             {
-                move = ConfirmMove(file, destination);
+                if (file.ToString("O.E") != file.ToString("C.E") ||
+                    NormalisePath(destination) != NormalisePath(file.Location))
+                {
+                    move = ConfirmMove(file, destination);
+                }
             }
             if (!move)
             {
@@ -141,6 +145,19 @@ namespace MediaFileParser.ModeManagers
             {
                 NotifyOnMove(file, destination, false);
             }
+        }
+
+        /// <summary>
+        /// Converts the path to one that can be compared.
+        /// Based on http://stackoverflow.com/questions/2281531/how-can-i-compare-directory-paths-in-c
+        /// </summary>
+        /// <param name="path">Directory path</param>
+        /// <returns>Normalised Path</returns>
+        private static string NormalisePath(string path)
+        {
+            return Path.GetFullPath(new Uri(path).LocalPath)
+                       .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
+                       .ToUpperInvariant();
         }
 
         /// <summary>
