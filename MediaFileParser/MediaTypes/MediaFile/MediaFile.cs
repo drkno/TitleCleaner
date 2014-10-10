@@ -166,7 +166,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// <returns>The string representation of this object.</returns>
         public override string ToString()
         {
-            return ToString("");
+            return ToString(DefaultFormatString);
         }
 
         /// <summary>
