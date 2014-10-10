@@ -64,6 +64,12 @@ namespace TitleCleanerConsole
                     Environment.Exit(0);
                 }
 
+                // API Key for this program and the program it was
+                // designed to be used as a part of (TitleCleaner) ONLY
+                // If you modify this program, or use parts of its code
+                // get your own API key.
+                TvFile.TvdbApiKey = "F9D98CE470B5ABAE";
+
                 if (confirm)
                 {
                     TvFile.TvdbLookupConfirm = true;
@@ -80,7 +86,7 @@ namespace TitleCleanerConsole
                     }
                     case "test":
                     {
-                        //TestMode.Run(confirm, inputDir, outputDir, type);
+                        TestMode.Run(confirm, inputDir, outputDir, type);
                         break;
                     }
                     default: goto case "normal";

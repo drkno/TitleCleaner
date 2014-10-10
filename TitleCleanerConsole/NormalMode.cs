@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using MediaFileParser.MediaTypes.TvFile;
 using MediaFileParser.MediaTypes.TvFile.Tvdb;
 using MediaFileParser.ModeManagers;
@@ -24,11 +25,20 @@ namespace TitleCleanerConsole
             var mediaFiles = fileManager.GetMediaFileList(inputDir);
             fileManager.MoveFiles(mediaFiles, outputDir);
 
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.WriteLine("----\nComplete");
+
+            if (confirm)
+            {
+                Console.ReadKey(true);
+            }
+
             Console.ForegroundColor = consoleColor;
         }
 
         private static uint TvFileTvdbSearchSelectionRequired(TvdbSeries[] seriesSearch)
         {
+            Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Which TV Series does the file refer to?");
             int num = 0;
@@ -42,16 +52,19 @@ namespace TitleCleanerConsole
             }
 
             Console.ForegroundColor = ConsoleColor.White;
-            Console.Write("(number/enter for none): ");
+            Console.Write("[Number/Enter/Ctrl-C]: ");
             Console.ForegroundColor = ConsoleColor.Gray;
             int result;
             string temp;
-            while (!int.TryParse((temp = Console.ReadLine()), out result) || temp != "" || result < 0 || result > num)
+            while (!int.TryParse((temp = Console.ReadLine()), out result) && temp != "" || result < 0 || result > num)
             {
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("Invalid Input. ");
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.Write("Please type a valid number/press enter for none: ");
+                Console.Write("[Number/Enter/Ctrl-C]: ");
                 Console.ForegroundColor = ConsoleColor.Gray;
             }
+            Console.WriteLine();
             return result == 0 ? 0 : seriesSearch[result-1].Id;
         }
 
@@ -88,22 +101,9 @@ namespace TitleCleanerConsole
             Console.ForegroundColor = ConsoleColor.Red;
             Console.Write("Fail");
             Console.ForegroundColor = ConsoleColor.Gray;
-            Console.Write("] ");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(file.ToString("O.E"));
-            Console.ForegroundColor = ConsoleColor.Gray;
-            Console.Write("   -> ");
-            Console.ForegroundColor = ConsoleColor.Magenta;
-            Console.WriteLine(file.ToString());
-            Console.ForegroundColor = ConsoleColor.Gray;
-            Console.Write(" DIR: ");
-            Console.ForegroundColor = ConsoleColor.Cyan;
-            Console.WriteLine(destination + Environment.NewLine);
-
-            if (_conf)
-            {
-                Console.ReadKey();
-            }
+            Console.Write("]\t");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(file);
         }
 
         private static void fileManager_OnFileMove(MediaFile file, string destination)
@@ -113,18 +113,14 @@ namespace TitleCleanerConsole
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("Done");
             Console.ForegroundColor = ConsoleColor.Gray;
-            Console.Write("] ");
+            Console.Write("]\t");
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine(file + Environment.NewLine);
-
-            if (_conf)
-            {
-                Console.ReadKey();
-            }
+            Console.WriteLine(file);
         }
 
         private static bool FileManagerConfirmAutomaticMove(MediaFile file, string destination)
         {
+            Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("Move\t");
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -134,15 +130,20 @@ namespace TitleCleanerConsole
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(file.ToString());
             Console.ForegroundColor = ConsoleColor.White;
-            Console.Write("(yes/no): ");
+            Console.Write("[Yes/No/Ctrl-C]: ");
             Console.ForegroundColor = ConsoleColor.Gray;
             bool result;
-            while (!GetBool(Console.ReadLine(), out result))
+            while (!GetBool(Console.ReadKey().KeyChar.ToString(CultureInfo.InvariantCulture), out result))
             {
+                Console.WriteLine();
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.Write("Invalid Input. ");
                 Console.ForegroundColor = ConsoleColor.White;
-                Console.Write("Please type yes or no: ");
+                Console.Write("[Yes/No/Ctrl-C]: ");
                 Console.ForegroundColor = ConsoleColor.Gray;
             }
+            Console.WriteLine();
+            Console.WriteLine();
             return result;
         }
     }
