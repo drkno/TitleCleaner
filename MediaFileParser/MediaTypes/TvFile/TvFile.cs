@@ -361,7 +361,7 @@ namespace MediaFileParser.MediaTypes.TvFile
             }
 
             var earliest = SectorList.TakeWhile(sector => !Regex.Match(sector, "^[0-9]+$").Success).Count();
-            if (SectorList.Count >= earliest && earliest >= 0 && Name == "Unknown"
+            if (SectorList.Count > earliest && earliest >= 0 && Name == "Unknown"
                 && !(SectorList[earliest+1] == "-" || SectorList[earliest+1] == ":" || SectorList[earliest+1] == "."))
             {
                 return false;

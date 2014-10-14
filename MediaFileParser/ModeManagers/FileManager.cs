@@ -5,6 +5,8 @@ using System.IO;
 using System.Linq;
 using MediaFileParser.MediaTypes;
 using MediaFileParser.MediaTypes.MediaFile;
+using MediaFileParser.MediaTypes.MovieFile;
+using MediaFileParser.MediaTypes.TvFile;
 
 namespace MediaFileParser.ModeManagers
 {
@@ -119,9 +121,25 @@ namespace MediaFileParser.ModeManagers
             {
                 destination = file.Location;
             }
+            else
+            {
+                var subdir = "";
+                if (typeof(TvFile) == file.GetType())
+                {
+                    subdir = Path.DirectorySeparatorChar + "TV Shows"
+                             + Path.DirectorySeparatorChar + ((TvFile)file).Name
+                             + Path.DirectorySeparatorChar + "Season " + ((TvFile)file).Season;
+                }
+                else if (typeof(MovieFile) == file.GetType())
+                {
+                    subdir = Path.DirectorySeparatorChar + "Movies";
+                }
+                destination = NormalisePath(destination) + subdir;
+            }
+
             var path = Path.Combine(destination, file.ToString());
             var move = true;
-            if (_confirm)
+            if (_confirm || !file.Test())
             {
                 if (file.ToString("O.E") != file.ToString("C.E") ||
                     NormalisePath(destination) != NormalisePath(file.Location))
@@ -155,9 +173,12 @@ namespace MediaFileParser.ModeManagers
         /// <returns>Normalised Path</returns>
         private static string NormalisePath(string path)
         {
-            return Path.GetFullPath(new Uri(path).LocalPath)
-                       .TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar)
-                       .ToUpperInvariant();
+            //var p = new Uri(path, UriKind.RelativeOrAbsolute).LocalPath;
+            var p = Path.GetFullPath(path);
+            p = p.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+            p = p.ToUpperInvariant();
+            return p;
+
         }
 
         /// <summary>
