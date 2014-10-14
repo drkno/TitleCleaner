@@ -10,18 +10,21 @@ namespace TitleCleanerConsole
     {
         private static bool _conf;
         private static int _passed, _failed;
-        private static readonly List<int> FailedCases = new List<int>(); 
+        private static readonly List<int> FailedCases = new List<int>();
+        private static StreamWriter _writer;
         public static void Run(bool confirm, string inputDir, string outputDir, Type type)
         {
-            if (!string.IsNullOrWhiteSpace(outputDir) || outputDir != null && Directory.Exists(outputDir))
+            if (!string.IsNullOrWhiteSpace(outputDir) && Directory.Exists(outputDir))
             {
-                throw new OptionException("The -o and -d options are not supported in test mode.", "-o,-d");
+                throw new OptionException("The -o and -d directory options are not supported in test mode.", "-o,-d");
             }
 
-            if (inputDir == null || string.IsNullOrWhiteSpace(inputDir) || Directory.Exists(inputDir) || !File.Exists(inputDir))
+            if (string.IsNullOrWhiteSpace(inputDir) || Directory.Exists(inputDir) || !File.Exists(inputDir))
             {
                 throw new OptionException("The -f option must be specified and be a valid tests file in test mode.", "-f");
             }
+
+            if (!string.IsNullOrWhiteSpace(outputDir)) _writer = new StreamWriter(outputDir);
 
             _conf = confirm;
 
@@ -60,8 +63,13 @@ namespace TitleCleanerConsole
                     }
                     Console.WriteLine('}');
                 }
+                else
+                {
+                    return;
+                }
             }
 
+            if (_writer != null) _writer.Close();
             if (!confirm) return;
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Press [any key] to quit.");
@@ -80,7 +88,9 @@ namespace TitleCleanerConsole
             Console.Write("] - ");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(testCase.DestinationName);
-            
+
+            if (_writer != null) _writer.WriteLine(testCase.OrigionalName + "," + testCase.MediaFile);
+
             if (_conf)
             {
                 Console.ReadKey(true);
@@ -97,11 +107,13 @@ namespace TitleCleanerConsole
             Console.Write("Fail");
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("] - ");
-            Console.ForegroundColor = ConsoleColor.Yellow;
-            Console.WriteLine(testCase.OrigionalName);
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(testCase.MediaFile);
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(new string(' ', testCase.Index.ToString(CultureInfo.InvariantCulture).Length + 11) + testCase.DestinationName);
-            
+
+            if (_writer != null) _writer.WriteLine(testCase.OrigionalName + "," + testCase.MediaFile);
+
             if (_conf)
             {
                 Console.ReadKey(true);
@@ -119,6 +131,7 @@ namespace TitleCleanerConsole
             Console.Write("] - ");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(testCase.DestinationName);
+            if (_writer != null) _writer.WriteLine(testCase.OrigionalName + "," + testCase.MediaFile);
         }
     }
 }

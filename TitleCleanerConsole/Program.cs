@@ -20,7 +20,9 @@ namespace TitleCleanerConsole
                 { "t|type=",        "The {TYPE} of media files being input (tv/movie/auto).",   v => type = GetType(v.ToLower().Trim()) },
                 { "i|tvdb",         "Retreives new missing tv episode names from the TVDB.",    v => TvFile.TvdbLookup = true },
                 { "c|confirm",      "Asks for confirmation on rename/move/test.",               v => confirm = true },
-                { "o|out=",         "Move media files to {DIRECTORY}.",                         v => outputDir = v },
+                { "o|out=",         "Move media files to {DIRECTORY}. In test mode this " +
+                                    "outputs the outcomes of the test cases to the " +
+                                    "specified file.",                                          v => outputDir = v },
                 { "s|format=",      "{FORMAT} to use for output file naming.",                  v => MediaFile.DefaultFormatString = v },
                 { "v|tformat=",     "{FORMAT} to use for output TV file naming. This option " +
                                     "overrides the -s option.",                                 v => TvFile.DefaultFormatString = v },
