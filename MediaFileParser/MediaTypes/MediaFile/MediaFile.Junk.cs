@@ -8,6 +8,11 @@ namespace MediaFileParser.MediaTypes.MediaFile
     public abstract partial class MediaFile
     {
         /// <summary>
+        /// First year to start accepting as a year value.
+        /// </summary>
+        private const short YearStart = 1900;
+
+        /// <summary>
         /// Common junk strings that are contained in filenames.
         /// </summary>
         private static readonly string[] JunkStrings =
@@ -15,14 +20,14 @@ namespace MediaFileParser.MediaTypes.MediaFile
             "xvid", "hdtv", "uncut", "[vtv]", "dvdscr", "dvdrip", "rerip", "(",
             "repack", "xor", "proper", "notv", "uncut", "xvid", "saints",
             "caph", "aph", "cam", "camrip", "ts", "telesync", "pdvd", "wp",
-            "workprint", "tc", "telecine", "ppv", "ppvrip", "screener",
-            "dvdscreener", "bdscr", "ddc", "r5", "r5.line", "ac3", "hq",
+            "workprint", "tc", "telecine", "ppv", "ppvrip", "screener", "[hq]",
+            "dvdscreener", "bdscr", "ddc", "r5", "r5.line", "ac3", "hq", "real",
             "dvd-rip", "dvdr", "dvd-full", "full-rip", "iso rip", "lossless",
             "rip", "dvd-5", "ws", "720p", "ntsc", "dvd", "dts", "1080p", "dvd-9",
             "dsr", "dsrip", "dthrip", "dvbrip", "pdtv", "tvrip", "hdtvrip",
             "vodrip", "vodr", "bdrip", "brrip", "blu-ray", "bluray", "bdr", "bd5",
-            "bd9", "bd25", "bd50", "web-rip", "webrip", "web rip", "webdl",
-            "web-dl", "web dl", "h.264", "x264", "divx", "r0", "r1", "r2",
+            "bd9", "bd25", "bd50", "web-rip", "webrip", "web rip", "webdl", "720",
+            "web-dl", "web dl", "h.264", "x264", "divx", "r0", "r1", "r2", "1080",
             "r3", "r4", "r6", "r7", "r8", "r9", "french", "truefrench", "unrated",
             "limited", "stv", "rapax-249", "[dvdrip]", "korsub", "hdrip", "readnfo"
         };
@@ -36,7 +41,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
             for (var i = 1; i < SectorList.Count; i++)
             {
                 int temp;
-                if (int.TryParse(SectorList[i], out temp) && temp > 1950 && temp <= DateTime.Now.Year && i > year)
+                if (int.TryParse(SectorList[i], out temp) && temp > YearStart && temp <= DateTime.Now.Year && i > year)
                 {
                     year = i;   // we've found the year (we think)
                 }

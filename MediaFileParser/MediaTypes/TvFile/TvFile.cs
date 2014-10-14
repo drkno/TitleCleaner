@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Linq;
 using System.Text.RegularExpressions;
 using MediaFileParser.MediaTypes.TvFile.Tvdb;
 
@@ -50,7 +51,18 @@ namespace MediaFileParser.MediaTypes.TvFile
                     var season = uint.Parse(matches[0].Value.Substring(1));
                     if (Season != 0 && season != Season)
                     {
-                        throw new Exception("Can't have an episode with multiple seasons.");
+                        if (matches[0].Index > 0)
+                        {
+                            var before = SectorList[i][matches[0].Index - 1];
+                            if (Regex.Match(before.ToString(CultureInfo.InvariantCulture), @"[0-9]|[-]|\s").Success)
+                            {
+                                throw new Exception("Can't have an episode with multiple seasons.");
+                            }
+                        }
+                        else
+                        {
+                            throw new Exception("Can't have an episode with multiple seasons.");
+                        }
                     }
                     Season = season;
                     if (i > blockEnd) blockEnd = i;
@@ -67,6 +79,15 @@ namespace MediaFileParser.MediaTypes.TvFile
                 {
                     foreach (Match match in matches)
                     {
+                        if (match.Index > 0)
+                        {
+                            var before = SectorList[i][match.Index - 1];
+                            if (!Regex.Match(before.ToString(CultureInfo.InvariantCulture), @"[0-9]|[-]|\s").Success)
+                            {
+                                continue;
+                            }
+                        }
+
                         var split = match.Value.Substring(1).Split('-');
                         foreach (var s in split)
                         {
@@ -334,6 +355,23 @@ namespace MediaFileParser.MediaTypes.TvFile
         /// <returns>If a file is a tv file.</returns>
         public override bool Test()
         {
+            if (Episode.Count == 0 || ((Season == 0 || Episode.Contains(0)) && Name == "Unknown" && Title == ""))
+            {
+                return false;
+            }
+
+            var earliest = SectorList.TakeWhile(sector => !Regex.Match(sector, "^[0-9]+$").Success).Count();
+            if (SectorList.Count >= earliest && earliest >= 0 && Name == "Unknown"
+                && !(SectorList[earliest+1] == "-" || SectorList[earliest+1] == ":" || SectorList[earliest+1] == "."))
+            {
+                return false;
+            }
+
+            if (Season == 0 && Title == "" && Name.Split(' ').Length < 2)
+            {
+                return false;
+            }
+
             return
                 Regex.IsMatch(Cleaned,
                     @"[a-zA-Z0-9 ]*[ ]?[a-zA-Z0-9]+ - \[[0-9]{2}x[0-9]{2}(-[0-9]{2})?\]( - [a-zA-Z0-9&' -]*)?( \([0-9]+\))?");

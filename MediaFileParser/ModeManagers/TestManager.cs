@@ -95,6 +95,10 @@ namespace MediaFileParser.ModeManagers
             /// <returns>The test success.</returns>
             public bool RunTest(Type type = null)
             {
+                if (Index == 1223)
+                {
+                    Console.Write("");
+                }
                 MediaFile = FileManager.GetMediaFile(OrigionalName, type);
                 return MediaFile.ToString() == DestinationName;
             }

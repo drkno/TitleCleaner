@@ -87,8 +87,11 @@ namespace MediaFileParser.MediaTypes.MediaFile
                 if (match.Success)
                 {
                     var ind = match.Value.IndexOf('-') + match.Index;
-                    SectorList.Insert(i + 1, SectorList[i].Substring(ind + 1));
-                    SectorList[i] = SectorList[i].Substring(0, ind);
+                    if (!SectorList[i].Substring(ind+1).Contains("-"))     // Cope with strings such as 100-year-old
+                    {
+                        SectorList.Insert(i + 1, SectorList[i].Substring(ind + 1));
+                        SectorList[i] = SectorList[i].Substring(0, ind);
+                    }
                 }
                 if (String.IsNullOrEmpty(SectorList[i])) continue;
 
