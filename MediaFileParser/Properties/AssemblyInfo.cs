@@ -11,11 +11,11 @@ using System.Resources;
 // associated with an assembly.
 
 [assembly: AssemblyTitle("TitleCleanerLib")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Clean media file names.")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Knox Microsystems")]
 [assembly: AssemblyProduct("TitleCleaner")]
-[assembly: AssemblyCopyright("Copyright © Knox Microsystems 2014")]
+[assembly: AssemblyCopyright("Copyright © Matthew Knox 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

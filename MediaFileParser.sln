@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TitleCleanerLib", "MediaFil
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TitleCleanerConsole", "TitleCleanerConsole\TitleCleanerConsole.csproj", "{F214AF78-20E5-4FB4-AE6E-EF05C4E5431C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TitleCleanerGui", "TitleCleanerGui\TitleCleanerGui.csproj", "{8E18DFF7-4918-410F-85DD-7A659DE1DF45}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{F214AF78-20E5-4FB4-AE6E-EF05C4E5431C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F214AF78-20E5-4FB4-AE6E-EF05C4E5431C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F214AF78-20E5-4FB4-AE6E-EF05C4E5431C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8E18DFF7-4918-410F-85DD-7A659DE1DF45}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8E18DFF7-4918-410F-85DD-7A659DE1DF45}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8E18DFF7-4918-410F-85DD-7A659DE1DF45}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8E18DFF7-4918-410F-85DD-7A659DE1DF45}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

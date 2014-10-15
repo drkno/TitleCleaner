@@ -6,12 +6,12 @@ using System.Resources;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle("TitleCleanerConsole")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyTitle("Title Cleaner")]
+[assembly: AssemblyDescription("Clean media file names.")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
-[assembly: AssemblyProduct("TitleCleanerConsole")]
-[assembly: AssemblyCopyright("Copyright ©  2014")]
+[assembly: AssemblyCompany("Knox Enterprises")]
+[assembly: AssemblyProduct("Title Cleaner")]
+[assembly: AssemblyCopyright("Copyright © Matthew Knox 2014")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
