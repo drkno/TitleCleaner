@@ -8,12 +8,57 @@ namespace TitleCleanerGui
 {
     public partial class MainWindow : Form
     {
-        private static FileManager _fileManager;
+        private bool _confirm = false;
+        private string _inputDir;
+        private string _outputDir;
+        private Type _type;
+        private int _mode;
+        private FileManager fileManager;
 
         public MainWindow()
         {
             InitializeComponent();
-            _fileManager = new FileManager(false);
+
+            var settings = new Settings();
+            if (settings.ShowDialog() != DialogResult.OK)
+            {
+                Environment.Exit(-1);
+            }
+
+            _confirm = settings.GetConfirm();
+            _inputDir = settings.GetInput();
+            _outputDir = settings.GetOuput();
+            _type = settings.GetMediaType();
+            _mode = settings.GetMode();
+
+            toolStripMenuItem1.Text = _mode != 2 ? "Move/Rename" : "Test";
+
+            
+
+            if (_mode != 2)
+            {
+                fileManager = new FileManager(_confirm);
+                fileManager.ConfirmAutomaticMove += fileManager_ConfirmAutomaticMove;
+                fileManager.OnFileMove += fileManager_OnFileMove;
+                fileManager.OnFileMoveFailed += fileManager_OnFileMoveFailed;
+
+                
+            }
+        }
+
+        void fileManager_OnFileMoveFailed(MediaFileParser.MediaTypes.MediaFile.MediaFile file, string destination)
+        {
+            throw new NotImplementedException();
+        }
+
+        void fileManager_OnFileMove(MediaFileParser.MediaTypes.MediaFile.MediaFile file, string destination)
+        {
+                throw new NotImplementedException();
+        }
+
+        bool fileManager_ConfirmAutomaticMove(MediaFileParser.MediaTypes.MediaFile.MediaFile file, string destination)
+        {
+            throw new NotImplementedException();
         }
 
         private void ExitMenuItemClick(object sender, EventArgs e)
@@ -21,92 +66,42 @@ namespace TitleCleanerGui
             Environment.Exit(0);
         }
 
-        private void DirectoryMenuItemClick(object sender, EventArgs e)
-        {
-            var directoryDialog = new FolderBrowserDialog
-                                  {
-                                      Description = "Select directory to scan for files.",
-                                      ShowNewFolderButton = false
-                                  };
-            if (directoryDialog.ShowDialog() != DialogResult.OK)
-            {
-                return;
-            }
-
-            AddMediaFiles(directoryDialog.SelectedPath);
-        }
-
-        private void FileToolStripMenuItem1Click(object sender, EventArgs e)
-        {
-            var openFileDialog = new OpenFileDialog
-                                 {
-                                     CheckPathExists = true,
-                                     CheckFileExists = true,
-                                     AutoUpgradeEnabled = true,
-                                     Multiselect = false,
-                                     Title = "Select a media file to clean.",
-                                     Filter =
-                                         "*.mov|*.mov|*.mkv|*.mkv|*.flv|*.flv|*.avi|*.avi|*.mp4|*.mp4|*.mpg|*.mpg|*.vob|*.vob|*.m4v|*.m4v|*.mpeg|*.mpeg|*.ogg|*.ogg|*.swf|*.swf|*.wmv|*.wmv|*.wtv|*.wtv|*.h264|*.h264"
-                                 };
-
-            if (openFileDialog.ShowDialog() != DialogResult.OK)
-            {
-                return;
-            }
-
-            AddMediaFiles(openFileDialog.FileName);
-        }
-
-        private Type GetMediaType()
-        {
-            if (tvMenuItem.Checked) { return typeof (TvFile); }
-            if (movieMenuItem.Checked) { return typeof(MovieFile); }
-            return null;
-        }
-
-        private void AddMediaFiles(string directory)
-        {
-            foreach (var file in _fileManager.GetMediaFileList(directory, GetMediaType()))
-            {
-                var item = new ListViewItem(new[] { "", file.ToString("O.E"), file.ToString("C.E") });
-                listView1.Items.Add(item);
-            }
-            
-        }
-
-        private void TestMenuItemClick(object sender, EventArgs e)
-        {
-            var openFileDialog = new OpenFileDialog
-                                 {
-                                     CheckPathExists = true,
-                                     CheckFileExists = true,
-                                     AutoUpgradeEnabled = true,
-                                     Multiselect = false,
-                                     Title = "Select a test file.",
-                                     Filter = "*.csv|*.csv"
-                                 };
-
-            if (openFileDialog.ShowDialog() != DialogResult.OK)
-            {
-                return;
-            }
-
-
-        }
-
-        private void TypeMenuItemClick(object sender, EventArgs e)
-        {
-            foreach (ToolStripMenuItem ctrl in typeMenuItem.DropDownItems)
-            {
-                ctrl.Checked = false;
-            }
-            ((ToolStripMenuItem)sender).Checked = true;
-        }
-
         private void optionsToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            Settings settings = new Settings();
-            settings.ShowDialog();
+            var settings = new Settings();
+            if (settings.ShowDialog() != DialogResult.OK)
+            {
+                return;
+            }
+
+            _confirm = settings.GetConfirm();
+            _inputDir = settings.GetInput();
+            _outputDir = settings.GetOuput();
+            _type = settings.GetMediaType();
+            _mode = settings.GetMode();
+
+            listView1.Items.Clear();
+        }
+
+        private void checkAllToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in listView1.Items)
+            {
+                item.Checked = true;
+            }
+        }
+
+        private void checkNoneToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            foreach (ListViewItem item in listView1.Items)
+            {
+                item.Checked = false;
+            }
+        }
+
+        private void toolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            
         }
     }
 }

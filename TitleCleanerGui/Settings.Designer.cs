@@ -100,6 +100,7 @@
             this.buttonCancel.TabIndex = 0;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
+            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
             // 
             // buttonOk
             // 
@@ -109,6 +110,7 @@
             this.buttonOk.TabIndex = 1;
             this.buttonOk.Text = "OK";
             this.buttonOk.UseVisualStyleBackColor = true;
+            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
             // 
             // checkBoxTvdb
             // 
@@ -121,6 +123,7 @@
             this.checkBoxTvdb.Text = "Use TVDB";
             this.checkBoxTvdb.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.checkBoxTvdb.UseVisualStyleBackColor = true;
+            this.checkBoxTvdb.CheckedChanged += new System.EventHandler(this.checkBoxTvdb_CheckedChanged);
             // 
             // textBoxOutputDir
             // 
@@ -152,6 +155,7 @@
             this.checkBoxConfirmations.Text = "Confirmations";
             this.checkBoxConfirmations.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.checkBoxConfirmations.UseVisualStyleBackColor = true;
+            this.checkBoxConfirmations.CheckedChanged += new System.EventHandler(this.checkBoxConfirmations_CheckedChanged);
             // 
             // textBoxCommonName
             // 

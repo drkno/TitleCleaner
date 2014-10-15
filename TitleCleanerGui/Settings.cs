@@ -1,12 +1,4 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using MediaFileParser.MediaTypes.MediaFile;
 using MediaFileParser.MediaTypes.MovieFile;
@@ -212,6 +204,66 @@ namespace TitleCleanerGui
                     }
             }
             textBoxInputDir.Text = res;
+        }
+
+        private void buttonOk_Click(object sender, EventArgs e)
+        {
+            confirm = checkBoxConfirmations.Checked;
+            input = textBoxInputDir.Text;
+            output = textBoxOutputDir.Text;
+            fileType = comboBoxFileType.SelectedIndex;
+            mode = comboBoxMode.SelectedIndex;
+            DialogResult = DialogResult.OK;
+        }
+
+        private void checkBoxTvdb_CheckedChanged(object sender, EventArgs e)
+        {
+            TvFile.TvdbLookup = checkBoxTvdb.Checked;
+        }
+
+        private void checkBoxConfirmations_CheckedChanged(object sender, EventArgs e)
+        {
+            TvFile.TvdbLookupConfirm = checkBoxConfirmations.Checked;
+        }
+
+        private void buttonCancel_Click(object sender, EventArgs e)
+        {
+            DialogResult = DialogResult.Cancel;
+        }
+
+        private bool confirm;
+        private string input, output;
+        private int fileType, mode;
+
+        public bool GetConfirm()
+        {
+            return confirm;
+        }
+
+        public string GetInput()
+        {
+            return input;
+        }
+
+        public string GetOuput()
+        {
+            return output;
+        }
+
+        public Type GetMediaType()
+        {
+            switch (fileType)
+            {
+                case 0: return null;
+                case 1: return typeof (TvFile);
+                case 2: return typeof (MovieFile);
+                default: goto case 0;
+            }
+        }
+
+        public int GetMode()
+        {
+            return mode;
         }
     }
 }
