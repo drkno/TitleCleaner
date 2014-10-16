@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using MediaFileParser.MediaTypes;
@@ -137,12 +138,11 @@ namespace MediaFileParser.ModeManagers
                 destination = NormalisePath(destination) + subdir;
             }
 
-            var path = Path.Combine(destination, file.ToString());
+            var clea = PathSanitiseName(file.ToString());
             var move = true;
             if (_confirm || !file.Test())
             {
                 var orig = file.ToString("O.E");    // prevent repetitive ToString()
-                var clea = file.ToString("C.E");
                 if (orig != clea || !String.Equals(orig, clea, StringComparison.CurrentCultureIgnoreCase) ||
                     NormalisePath(destination) != NormalisePath(file.Location))
                 {
@@ -157,8 +157,9 @@ namespace MediaFileParser.ModeManagers
 
             try
             {
+                var path = Path.Combine(destination, clea);
                 Directory.CreateDirectory(destination);
-                File.Move(file.Location + Path.DirectorySeparatorChar + file.ToString("O.E"), path);
+                File.Move(Path.Combine(file.Location, file.ToString("O.E")), path);
                 NotifyOnMove(file, destination, true);
             }
             catch (Exception)
@@ -180,7 +181,17 @@ namespace MediaFileParser.ModeManagers
             p = p.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
             p = p.ToUpperInvariant();
             return p;
+        }
 
+        /// <summary>
+        /// Removes non file system compatible chars from file name.
+        /// </summary>
+        /// <param name="file">File name to clean.</param>
+        /// <returns>Resulting filename.</returns>
+        private static string PathSanitiseName(string file)
+        {
+            return Path.GetInvalidFileNameChars().Aggregate(file,
+                (current, invalid) => current.Replace(invalid.ToString(CultureInfo.InvariantCulture), ""));
         }
 
         /// <summary>
