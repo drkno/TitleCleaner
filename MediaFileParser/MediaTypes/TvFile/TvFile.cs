@@ -333,7 +333,15 @@ namespace MediaFileParser.MediaTypes.TvFile
                 // Avoid looking up unknown titles
                 if (!string.IsNullOrWhiteSpace(TitleVar) || !TvdbLookup || Name == "Unknown" || Episode.Count == 0) return TitleVar;
                 // Get episode
-                var episode = GetTvdbEpisode();
+                TvdbEpisode episode;
+                try
+                {
+                    episode = GetTvdbEpisode();
+                }
+                catch (Exception)
+                {
+                    episode = null;
+                }
                 // Return name
                 return episode == null ? TitleVar : episode.EpisodeName;
             }
