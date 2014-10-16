@@ -64,13 +64,20 @@ namespace MediaFileParser.MediaTypes.TvFile
                             throw new Exception("Can't have an episode with multiple seasons.");
                         }
                     }
-                    Season = season;
-                    if (i > blockEnd) blockEnd = i;
-                    if (i < blockStart) blockStart = i;
+                    else
+                    {
+                        Season = season;
+                        if (i > blockEnd) blockEnd = i;
+                        if (i < blockStart) blockStart = i;
+                    }
                 }
                 else if (matches.Count != 0)
                 {
-                    throw new Exception("Can't have an episode with multiple seasons.");
+                    if (matches.Cast<Match>().Any(match => match.Index == 0 || (SectorList[i].Length > match.Length &&
+                        Regex.Match(SectorList[i][match.Length].ToString(CultureInfo.InvariantCulture), "[0-9^s^S]").Success)))
+                    {
+                        throw new Exception("Can't have an episode with multiple seasons.");
+                    }
                 }
 
                 // Get Episode from an E00 block
