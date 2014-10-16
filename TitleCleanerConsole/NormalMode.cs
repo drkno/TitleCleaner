@@ -36,11 +36,11 @@ namespace TitleCleanerConsole
             Console.ForegroundColor = consoleColor;
         }
 
-        private static uint TvFileTvdbSearchSelectionRequired(TvdbSeries[] seriesSearch)
+        private static uint TvFileTvdbSearchSelectionRequired(TvdbSeries[] seriesSearch, string seriesName)
         {
             Console.WriteLine();
             Console.ForegroundColor = ConsoleColor.White;
-            Console.WriteLine("Which TV Series does the file refer to?");
+            Console.WriteLine("----\nWhich TV Series does the series \"" + seriesName + "\" refer to?");
             int num = 0;
             foreach (var series in seriesSearch)
             {

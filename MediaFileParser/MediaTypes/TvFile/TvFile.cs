@@ -278,8 +278,9 @@ namespace MediaFileParser.MediaTypes.TvFile
         /// TVDB requires a search selection.
         /// </summary>
         /// <param name="seriesSearch">The resultant series returned from the search.</param>
+        /// <param name="seriesName">The series this search is for.</param>
         /// <returns>The ID of the series that is selected by the event.</returns>
-        public delegate uint TvdbSearchSelectionRequiredEvent(TvdbSeries[] seriesSearch);
+        public delegate uint TvdbSearchSelectionRequiredEvent(TvdbSeries[] seriesSearch, string seriesName);
 
         /// <summary>
         /// Fired on a TVDB request requiring selection.
@@ -311,8 +312,8 @@ namespace MediaFileParser.MediaTypes.TvFile
             if (seriesList.Length <= 1 && (!TvdbLookupConfirm || seriesList.Length <= 0)) return null;
             // Selection required...
             if (TvdbSearchSelectionCache == null) TvdbSearchSelectionCache = new Dictionary<string, uint>();
-            var searchCacheName = Name.ToLower().Trim();
-            var id = TvdbSearchSelectionCache.ContainsKey(searchCacheName) ? TvdbSearchSelectionCache[searchCacheName] : TvdbSearchSelectionRequired(seriesList);
+            var searchCacheName = Name.ToLower();
+            var id = TvdbSearchSelectionCache.ContainsKey(searchCacheName) ? TvdbSearchSelectionCache[searchCacheName] : TvdbSearchSelectionRequired(seriesList, Name);
             // Add search selection to cache
             if (!TvdbSearchSelectionCache.ContainsKey(searchCacheName)) TvdbSearchSelectionCache.Add(searchCacheName, id);
             // 0 is a sentinal "none of them" value
