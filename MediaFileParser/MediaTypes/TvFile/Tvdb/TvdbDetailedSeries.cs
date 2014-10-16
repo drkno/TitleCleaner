@@ -63,7 +63,7 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
             public uint RatingCount { get; set; }
 
             [XmlElement("Runtime")]
-            public byte Runtime { get; set; }
+            public uint Runtime { get; set; }
 
             [XmlElement("Status")]
             public string Status { get; set; }
@@ -84,7 +84,7 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
             public string Poster { get; set; }
 
             [XmlElement(ElementName = "tms_wanted_old")]
-            public byte TmsWantedOld { get; set; }
+            public uint TmsWantedOld { get; set; }
         }
     }
 
@@ -100,7 +100,7 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
         public decimal CombinedEpisodeNumber { get; set; }
 
         [XmlElement(ElementName = "Combined_season")]
-        public byte CombinedSeason { get; set; }
+        public uint CombinedSeason { get; set; }
 
         [XmlElement(ElementName = "DVD_chapter")]
         public string DvdChapter { get; set; }
@@ -124,7 +124,7 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
         public string EpisodeName { get; set; }
 
         [XmlElement(ElementName = "EpisodeNumber")]
-        public byte EpisodeNumber { get; set; }
+        public uint EpisodeNumber { get; set; }
 
         [XmlElement(ElementName = "FirstAired")]
         public string FirstAired { get; set; }
@@ -148,10 +148,10 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
         public string Rating { get; set; }
 
         [XmlElement(ElementName = "RatingCount")]
-        public byte RatingCount { get; set; }
+        public uint RatingCount { get; set; }
 
         [XmlElement(ElementName = "SeasonNumber")]
-        public byte SeasonNumber { get; set; }
+        public uint SeasonNumber { get; set; }
 
         [XmlElement(ElementName = "Writer")]
         public string Writer { get; set; }
