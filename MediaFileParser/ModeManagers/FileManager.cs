@@ -141,7 +141,9 @@ namespace MediaFileParser.ModeManagers
             var move = true;
             if (_confirm || !file.Test())
             {
-                if (file.ToString("O.E") != file.ToString("C.E") ||
+                var orig = file.ToString("O.E");    // prevent repetitive ToString()
+                var clea = file.ToString("C.E");
+                if (orig != clea || !String.Equals(orig, clea, StringComparison.CurrentCultureIgnoreCase) ||
                     NormalisePath(destination) != NormalisePath(file.Location))
                 {
                     move = ConfirmMove(file, destination);
