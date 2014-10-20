@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -251,12 +252,17 @@ namespace MediaFileParser.MediaTypes.TvFile
             {
                 if (NameVar != "Unknown") return NameVar;
                 var temp = GetSeasonFromDir();
-                if (temp != 0)  // in this case we are **fairly** certain that the containing dir is the program name
+                if (temp == 0) return NameVar;
+                try   // in this case we are **fairly** certain that the containing dir is the program name
                 {
                     var loc = Location;
                     loc = loc.Substring(0, loc.LastIndexOfAny(PathSeperators));
                     loc = loc.Substring(loc.LastIndexOfAny(PathSeperators) + 1);
                     NameVar = loc;
+                }
+                catch   // probably in drive root
+                {
+                    Debug.WriteLine("Getting name from directory failed.");
                 }
                 return NameVar;
             }
