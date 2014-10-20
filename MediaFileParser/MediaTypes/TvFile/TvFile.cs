@@ -227,11 +227,39 @@ namespace MediaFileParser.MediaTypes.TvFile
         }
 
         /// <summary>
+        /// Gets the season number from the current directory (if possible).
+        /// </summary>
+        /// <returns>Season number or 0 on failure.</returns>
+        private uint GetSeasonFromDir()
+        {
+            var match = Regex.Match(Folder, "((?<=((Season|Series).))[1-9][0-9]*|Specials?)", RegexOptions.IgnoreCase);
+            if (match.Success && !Regex.IsMatch(Folder, "Specials", RegexOptions.IgnoreCase))
+            {
+                uint season;
+                uint.TryParse(match.Value, out season);
+                return season;
+            }
+            return 0;
+        }
+
+        /// <summary>
         /// Gets the series name.
         /// </summary>
         public string Name
         {
-            get { return NameVar; }
+            get
+            {
+                if (NameVar != "Unknown") return NameVar;
+                var temp = GetSeasonFromDir();
+                if (temp != 0)  // in this case we are **fairly** certain that the containing dir is the program name
+                {
+                    var loc = Location;
+                    loc = loc.Substring(0, loc.LastIndexOfAny(PathSeperators));
+                    loc = loc.Substring(loc.LastIndexOfAny(PathSeperators) + 1);
+                    NameVar = loc;
+                }
+                return NameVar;
+            }
             protected set { NameVar = value.Trim(TrimChars); }
         }
 
@@ -243,11 +271,7 @@ namespace MediaFileParser.MediaTypes.TvFile
             get
             {
                 if (_season != 0) return _season;
-                var match = Regex.Match(Folder, "((?<=((Season|Series).))[1-9][0-9]*|Specials?)", RegexOptions.IgnoreCase);
-                if (match.Success && !Regex.IsMatch(Folder, "Specials", RegexOptions.IgnoreCase))
-                {
-                    uint.TryParse(match.Value, out _season);
-                }
+                _season = GetSeasonFromDir();
                 return _season;
             }
             protected set { _season = value; }
