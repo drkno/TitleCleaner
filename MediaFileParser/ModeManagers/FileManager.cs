@@ -169,18 +169,25 @@ namespace MediaFileParser.ModeManagers
         }
 
         /// <summary>
-        /// Converts the path to one that can be compared.
+        /// Converts the path to one that can be compared if possible.
         /// Based on http://stackoverflow.com/questions/2281531/how-can-i-compare-directory-paths-in-c
         /// </summary>
         /// <param name="path">Directory path</param>
-        /// <returns>Normalised Path</returns>
+        /// <returns>Normalised Path or origional path if not possible.</returns>
         private static string NormalisePath(string path)
         {
-            //var p = new Uri(path, UriKind.RelativeOrAbsolute).LocalPath;
-            var p = Path.GetFullPath(path);
-            p = p.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-            p = p.ToUpperInvariant();
-            return p;
+            try
+            {
+                //var p = new Uri(path, UriKind.RelativeOrAbsolute).LocalPath;
+                var p = Path.GetFullPath(path);
+                p = p.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                p = p.ToUpperInvariant();
+                return p;
+            }
+            catch (Exception)
+            {
+                return path;
+            }
         }
 
         /// <summary>
