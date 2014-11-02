@@ -58,6 +58,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MediaTypes\TvFile\TvFile.Construct.cs" />
     <Compile Include="ModeManagers\FileManager.cs" />
     <Compile Include="MediaTypes\MediaFile\MediaFile.cs" />
     <Compile Include="MediaTypes\MediaFile\MediaFile.Junk.cs" />

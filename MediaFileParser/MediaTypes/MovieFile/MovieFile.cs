@@ -5,6 +5,10 @@
     /// </summary>
     public class MovieFile : MediaFile.MediaFile
     {
+        /// <summary>
+        /// Default constructor for movie file.
+        /// </summary>
+        /// <param name="file">File to base this instance on.</param>
         public MovieFile(string file) : base(file)
         {
             // No further parsing required.
@@ -54,6 +58,21 @@
                     : _defaultFormatToString;
             }
             set { _defaultFormatToString = value; }
+        }
+
+        /// <summary>
+        /// Storage of the output directory for this media type.
+        /// </summary>
+        protected new static string TypeOutDirectory = "Movies";
+
+        /// <summary>
+        /// Gets the directory name that this media file type
+        /// should be stored in if it moves directory.
+        /// See static member TypeDirectory for manipulation.
+        /// </summary>
+        public override string OutputDirectory
+        {
+            get { return TypeOutDirectory; }
         }
     }
 }

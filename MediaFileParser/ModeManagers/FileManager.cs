@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using MediaFileParser.MediaTypes;
 using MediaFileParser.MediaTypes.MediaFile;
-using MediaFileParser.MediaTypes.MovieFile;
-using MediaFileParser.MediaTypes.TvFile;
 
 namespace MediaFileParser.ModeManagers
 {
@@ -124,17 +124,7 @@ namespace MediaFileParser.ModeManagers
             }
             else
             {
-                var subdir = "";
-                if (typeof(TvFile) == file.GetType())
-                {
-                    subdir = Path.DirectorySeparatorChar + "TV Shows"
-                             + Path.DirectorySeparatorChar + ((TvFile)file).Name
-                             + Path.DirectorySeparatorChar + "Season " + ((TvFile)file).Season;
-                }
-                else if (typeof(MovieFile) == file.GetType())
-                {
-                    subdir = Path.DirectorySeparatorChar + "Movies";
-                }
+                var subdir = GetMediaTypeDirectory(ref file);
                 destination = NormalisePath(destination) + subdir;
             }
 
@@ -251,6 +241,31 @@ namespace MediaFileParser.ModeManagers
         private IEnumerable<string> GetFileList(string fileFolder)
         {
             return File.Exists(fileFolder) ? new[] { Path.GetFullPath(fileFolder) } : Directory.GetFiles(fileFolder, "*.*", SearchOption.AllDirectories).Where(file => FileExts.Any(file.EndsWith));
+        }
+
+        private static string GetMediaTypeDirectory(ref MediaFile file)
+        {
+            var result = "";
+            var sp = file.OutputDirectory.Split('|');
+            foreach (var s in sp)
+            {
+                var sub = s;
+                while (Regex.IsMatch(sub, @".*\[ts\(.*\)\].*"))
+                {
+                    try
+                    {
+                        var ind1 = s.IndexOf("[ts(", StringComparison.Ordinal);
+                        var sub2 = s.Substring(ind1);
+                        var ind2 = sub2.IndexOf(")]", StringComparison.Ordinal);
+                        var ts = sub2.Substring(4, ind2 - 4);
+                        sub2 = file.ToString(ts) + sub2.Substring(ind2 + 2);
+                        sub = sub.Substring(0, ind1) + sub2;
+                    }
+                    catch (Exception) { Debug.WriteLine("Parsing media directory tostring failed."); }
+                }
+                result += Path.DirectorySeparatorChar + sub;
+            }
+            return result;
         }
     }
 }

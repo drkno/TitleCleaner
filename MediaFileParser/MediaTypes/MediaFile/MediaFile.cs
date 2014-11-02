@@ -40,15 +40,33 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// </summary>
         public static string DefaultFormatString
         {
-            get
-            {
-                return DefaultFormatToString;
+            get { return DefaultFormatToString; }
+            set { DefaultFormatToString = value; }
+        }
 
-            }
-            set
-            {
-                DefaultFormatToString = value;
-            }
+        /// <summary>
+        /// Storage of the output directory for this media type.
+        /// </summary>
+        protected static string TypeOutDirectory = "Media";
+
+        /// <summary>
+        /// Gets or sets the default directory name that this
+        /// media file type should be stored in if it moves directory.
+        /// </summary>
+        public static string TypeDirectory
+        {
+            get { return TypeOutDirectory; }
+            set { TypeOutDirectory = value; }
+        }
+
+        /// <summary>
+        /// Gets the directory name that this media file type
+        /// should be stored in if it moves directory.
+        /// See static member TypeDirectory for manipulation.
+        /// </summary>
+        public virtual string OutputDirectory
+        {
+            get { return TypeDirectory; }
         }
 
         /// <summary>
@@ -177,7 +195,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// E:  File Extension
         /// </param>
         /// <returns>The string representation of this object.</returns>
-        public string ToString(string str)
+        public virtual string ToString(string str)
         {
             var result = "";
             foreach (var t in str)
