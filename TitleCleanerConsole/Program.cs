@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Reflection;
 using MediaFileParser.MediaTypes;
 using MediaFileParser.MediaTypes.MediaFile;
 using MediaFileParser.MediaTypes.MovieFile;
@@ -139,11 +141,18 @@ namespace TitleCleanerConsole
 
         private static void ShowHelp(OptionSet p, bool conf)
         {
+            var assembly = Assembly.GetExecutingAssembly();
+            var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
+
             p.ShowHelp("Tidy up and relocate media files.","{appName} [OPTION]...",
                        "If no options are specified defaults will be used.",
                        null,
                        "Written by Matthew Knox.",
-                       "Report {appName} bugs to the bug tracker at\n <https://github.com/mrkno/TitleCleaner>",
+                       "Version:\t" + fvi.ProductVersion + " " + ((Environment.Is64BitProcess) ? "x64" : "x32") +
+                       "\nCLR Version:\t" + Environment.Version +
+                       "\nOS Version:\t" + Environment.OSVersion.VersionString +
+                       "\nReport {appName} bugs and above information to the bug tracker at\n" +
+                       "<https://github.com/mrkno/TitleCleaner>",
                        "Copyright © " + DateTime.Now.Year + " Knox Enterprises.\n"
                        + "The MIT License (MIT) <http://opensource.org/licenses/MIT>\n"
                        + "This is free software: you are free to change and redistribute it.\n"
