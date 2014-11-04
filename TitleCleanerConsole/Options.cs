@@ -284,9 +284,10 @@ namespace TitleCleanerConsole
                     {
                         var word = w;
                         
-                        if (lenP + word.Length > len)
+                        if (lenP != 0 && (lenP + word.Length + 1) > len)
                         {
-                            Console.Write("\n\t\t");
+                            if (lenP != len) Console.Write("\n");
+                            Console.Write("\t\t");
                             lenP = 0;
                         }
                         else if (lenP != 0)
@@ -296,7 +297,8 @@ namespace TitleCleanerConsole
                         Console.Write(word);
                         lenP += word.Length;
                     }
-                    Console.Write("\n\t\t");
+                    if (lenP != len) Console.Write("\n");
+                    Console.Write("\t\t");
                 }
                 Console.WriteLine();
             }
