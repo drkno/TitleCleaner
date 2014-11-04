@@ -16,20 +16,22 @@ namespace TitleCleanerConsole
 
             var p = new OptionSet
             {
-                { "m|mode=",        "The {MODE} to run this application in (normal/test).",     v => mode = v.ToLower().Trim() },
-                { "t|type=",        "The {TYPE} of media files being input (tv/movie/auto).",   v => type = GetType(v.ToLower().Trim()) },
+                { "m|mode",        "The {MODE} to run this application in (normal/test).",     v => mode = v.ToLower().Trim() },
+                { "t|type",        "The {TYPE} of media files being input (tv/movie/auto).",   v => type = GetType(v.ToLower().Trim()) },
                 { "i|tvdb",         "Retreives new missing tv episode names from the TVDB.",    v => TvFile.TvdbLookup = true },
                 { "c|confirm",      "Asks for confirmation on rename/move/test.",               v => confirm = true },
-                { "o|out=",         "Move media files to {DIRECTORY}. In test mode this " +
+                { "o|out",         "Move media files to {DIRECTORY}. In test mode this " +
                                     "outputs the outcomes of the test cases to the " +
                                     "specified file.",                                          v => outputDir = v },
-                { "s|format=",      "{FORMAT} to use for output file naming.",                  v => MediaFile.DefaultFormatString = v },
-                { "v|tformat=",     "{FORMAT} to use for output TV file naming. This option " +
+                { "s|format",      "{FORMAT} to use for output file naming.",                  v => MediaFile.DefaultFormatString = v },
+                { "v|tformat",     "{FORMAT} to use for output TV file naming. This option " +
                                     "overrides the -s option.",                                 v => TvFile.DefaultFormatString = v },
-                { "e|mformat=",     "{FORMAT} to use for output movie file naming. This option " +
+                { "e|mformat",     "{FORMAT} to use for output movie file naming. This option " +
                                     "overrides the -s option.",                                 v => MovieFile.DefaultFormatString = v },
                 { "h|help",         "Display this help.",                                       v => help = true },
-                { "d|directory=",   "The {DIRECTORY} to search for files. When used the " +
+                { "w|tvdir",          "Sets the output directory subdirectory for tv files.",     v => TvFile.TypeDirectory = v},
+                { "r|movdir",         "Sets the output directory subdirectory for movie files.",  v => MovieFile.TypeDirectory = v},
+                { "d|directory",   "The {DIRECTORY} to search for files. When used the " +
                                     "directory provided will be searched instead of the current" +
                                     " directory for media files. This option is mutually " +
                                     "exclusive with -f.",
@@ -137,21 +139,15 @@ namespace TitleCleanerConsole
 
         private static void ShowHelp(OptionSet p, bool conf)
         {
-            p.WriteProgramName("Tidy up and relocate media files.");
-            p.WriteProgramSynopsis("{appName} [OPTION]...");
-            p.WriteOptionDescriptions("If no options are specified defaults will be used.", null);
-            p.WriteProgramAuthor("Written by Matthew Knox.");
-            p.WriteProgramReportingBugs("Report {appName} bugs to the bug tracker at\n" +
-                                        "<https://github.com/mrkno/TitleCleaner>");
-            p.WriteProgramCopyrightLicense("Copyright © " + DateTime.Now.Year + " Knox Enterprises.\n"
-                + "The MIT License (MIT) <http://opensource.org/licenses/MIT>\n"
-                + "This is free software: you are free to change and redistribute it.\n"
-                + "There is NO WARRANTY, to the extent permitted by law.");
-
-            if (conf)
-            {
-                Console.ReadKey(true);
-            }
+            p.ShowHelp("Tidy up and relocate media files.","{appName} [OPTION]...",
+                       "If no options are specified defaults will be used.",
+                       null,
+                       "Written by Matthew Knox.",
+                       "Report {appName} bugs to the bug tracker at\n <https://github.com/mrkno/TitleCleaner>",
+                       "Copyright © " + DateTime.Now.Year + " Knox Enterprises.\n"
+                       + "The MIT License (MIT) <http://opensource.org/licenses/MIT>\n"
+                       + "This is free software: you are free to change and redistribute it.\n"
+                       + "There is NO WARRANTY, to the extent permitted by law.", conf);
         }
     }
 }

@@ -306,6 +306,16 @@ namespace MediaFileParser.MediaTypes.TvFile
         protected new static string TypeOutDirectory = "TV Shows|Season [ts(S)]";
 
         /// <summary>
+        /// Gets or sets the default directory name that this
+        /// media file type should be stored in if it moves directory.
+        /// </summary>
+        public new static string TypeDirectory
+        {
+            get { return TypeOutDirectory; }
+            set { TypeOutDirectory = value; }
+        }
+
+        /// <summary>
         /// Gets the directory name that this media file type
         /// should be stored in if it moves directory.
         /// See static member TypeDirectory for manipulation.
