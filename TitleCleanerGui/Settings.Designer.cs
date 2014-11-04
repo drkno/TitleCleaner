@@ -42,6 +42,10 @@
             this.label3 = new System.Windows.Forms.Label();
             this.buttonDirectory = new System.Windows.Forms.Button();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.labelInputDirDesc = new System.Windows.Forms.Label();
+            this.buttonInputDir = new System.Windows.Forms.Button();
+            this.labelInputDir = new System.Windows.Forms.Label();
+            this.textBoxInputDir = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
             this.labelDirFiles = new System.Windows.Forms.Label();
             this.label9 = new System.Windows.Forms.Label();
@@ -51,29 +55,31 @@
             this.comboBoxFileType = new System.Windows.Forms.ComboBox();
             this.label6 = new System.Windows.Forms.Label();
             this.comboBoxMode = new System.Windows.Forms.ComboBox();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.groupBoxTv = new System.Windows.Forms.GroupBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.textBoxTvFolder = new System.Windows.Forms.TextBox();
+            this.label10 = new System.Windows.Forms.Label();
             this.label13 = new System.Windows.Forms.Label();
             this.label12 = new System.Windows.Forms.Label();
-            this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.groupBoxMovie = new System.Windows.Forms.GroupBox();
+            this.label15 = new System.Windows.Forms.Label();
+            this.textBoxMovieFolder = new System.Windows.Forms.TextBox();
+            this.label16 = new System.Windows.Forms.Label();
             this.label14 = new System.Windows.Forms.Label();
             this.textBoxMovieName = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
-            this.labelInputDirDesc = new System.Windows.Forms.Label();
-            this.buttonInputDir = new System.Windows.Forms.Button();
-            this.labelInputDir = new System.Windows.Forms.Label();
-            this.textBoxInputDir = new System.Windows.Forms.TextBox();
             this.panelButtons.SuspendLayout();
             this.flowLayoutButtonsPanel.SuspendLayout();
             this.groupBox2.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox4.SuspendLayout();
+            this.groupBoxTv.SuspendLayout();
+            this.groupBoxMovie.SuspendLayout();
             this.SuspendLayout();
             // 
             // panelButtons
             // 
             this.panelButtons.Controls.Add(this.flowLayoutButtonsPanel);
             this.panelButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelButtons.Location = new System.Drawing.Point(0, 323);
+            this.panelButtons.Location = new System.Drawing.Point(0, 397);
             this.panelButtons.MaximumSize = new System.Drawing.Size(0, 30);
             this.panelButtons.Name = "panelButtons";
             this.panelButtons.Size = new System.Drawing.Size(573, 30);
@@ -100,7 +106,7 @@
             this.buttonCancel.TabIndex = 0;
             this.buttonCancel.Text = "Cancel";
             this.buttonCancel.UseVisualStyleBackColor = true;
-            this.buttonCancel.Click += new System.EventHandler(this.buttonCancel_Click);
+            this.buttonCancel.Click += new System.EventHandler(this.ButtonCancelClick);
             // 
             // buttonOk
             // 
@@ -110,20 +116,20 @@
             this.buttonOk.TabIndex = 1;
             this.buttonOk.Text = "OK";
             this.buttonOk.UseVisualStyleBackColor = true;
-            this.buttonOk.Click += new System.EventHandler(this.buttonOk_Click);
+            this.buttonOk.Click += new System.EventHandler(this.ButtonOkClick);
             // 
             // checkBoxTvdb
             // 
             this.checkBoxTvdb.AutoSize = true;
             this.checkBoxTvdb.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBoxTvdb.Location = new System.Drawing.Point(36, 42);
+            this.checkBoxTvdb.Location = new System.Drawing.Point(35, 70);
             this.checkBoxTvdb.Name = "checkBoxTvdb";
             this.checkBoxTvdb.Size = new System.Drawing.Size(76, 18);
             this.checkBoxTvdb.TabIndex = 2;
             this.checkBoxTvdb.Text = "Use TVDB";
             this.checkBoxTvdb.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.checkBoxTvdb.UseVisualStyleBackColor = true;
-            this.checkBoxTvdb.CheckedChanged += new System.EventHandler(this.checkBoxTvdb_CheckedChanged);
+            this.checkBoxTvdb.CheckedChanged += new System.EventHandler(this.CheckBoxTvdbCheckedChanged);
             // 
             // textBoxOutputDir
             // 
@@ -155,7 +161,7 @@
             this.checkBoxConfirmations.Text = "Confirmations";
             this.checkBoxConfirmations.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.checkBoxConfirmations.UseVisualStyleBackColor = true;
-            this.checkBoxConfirmations.CheckedChanged += new System.EventHandler(this.checkBoxConfirmations_CheckedChanged);
+            this.checkBoxConfirmations.CheckedChanged += new System.EventHandler(this.CheckBoxConfirmationsCheckedChanged);
             // 
             // textBoxCommonName
             // 
@@ -163,7 +169,7 @@
             this.textBoxCommonName.Name = "textBoxCommonName";
             this.textBoxCommonName.Size = new System.Drawing.Size(127, 20);
             this.textBoxCommonName.TabIndex = 14;
-            this.textBoxCommonName.TextChanged += new System.EventHandler(this.textBoxCommonName_TextChanged);
+            this.textBoxCommonName.TextChanged += new System.EventHandler(this.TextBoxCommonNameTextChanged);
             // 
             // label5
             // 
@@ -181,7 +187,7 @@
             this.textBoxTvName.Name = "textBoxTvName";
             this.textBoxTvName.Size = new System.Drawing.Size(124, 20);
             this.textBoxTvName.TabIndex = 10;
-            this.textBoxTvName.TextChanged += new System.EventHandler(this.textBoxTvName_TextChanged);
+            this.textBoxTvName.TextChanged += new System.EventHandler(this.TextBoxTvNameTextChanged);
             // 
             // label3
             // 
@@ -231,6 +237,45 @@
             this.groupBox2.TabIndex = 10;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "General";
+            // 
+            // labelInputDirDesc
+            // 
+            this.labelInputDirDesc.Font = new System.Drawing.Font("Arial Narrow", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelInputDirDesc.Location = new System.Drawing.Point(231, 94);
+            this.labelInputDirDesc.Name = "labelInputDirDesc";
+            this.labelInputDirDesc.Size = new System.Drawing.Size(312, 30);
+            this.labelInputDirDesc.TabIndex = 27;
+            this.labelInputDirDesc.Text = "Directory to read files from.";
+            this.labelInputDirDesc.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // buttonInputDir
+            // 
+            this.buttonInputDir.Location = new System.Drawing.Point(200, 98);
+            this.buttonInputDir.Margin = new System.Windows.Forms.Padding(0);
+            this.buttonInputDir.Name = "buttonInputDir";
+            this.buttonInputDir.Size = new System.Drawing.Size(25, 22);
+            this.buttonInputDir.TabIndex = 26;
+            this.buttonInputDir.Text = "...";
+            this.buttonInputDir.UseVisualStyleBackColor = true;
+            this.buttonInputDir.Click += new System.EventHandler(this.ButtonInputDirClick);
+            // 
+            // labelInputDir
+            // 
+            this.labelInputDir.Location = new System.Drawing.Point(6, 102);
+            this.labelInputDir.Name = "labelInputDir";
+            this.labelInputDir.Size = new System.Drawing.Size(87, 14);
+            this.labelInputDir.TabIndex = 25;
+            this.labelInputDir.Text = "Input Directory";
+            this.labelInputDir.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // textBoxInputDir
+            // 
+            this.textBoxInputDir.Location = new System.Drawing.Point(98, 99);
+            this.textBoxInputDir.Name = "textBoxInputDir";
+            this.textBoxInputDir.ReadOnly = true;
+            this.textBoxInputDir.Size = new System.Drawing.Size(102, 20);
+            this.textBoxInputDir.TabIndex = 24;
+            this.textBoxInputDir.Text = "Current Directory";
             // 
             // label11
             // 
@@ -308,6 +353,7 @@
             this.comboBoxFileType.Name = "comboBoxFileType";
             this.comboBoxFileType.Size = new System.Drawing.Size(127, 22);
             this.comboBoxFileType.TabIndex = 17;
+            this.comboBoxFileType.SelectedIndexChanged += new System.EventHandler(this.comboBoxFileType_SelectedIndexChanged);
             // 
             // label6
             // 
@@ -331,26 +377,57 @@
             this.comboBoxMode.Name = "comboBoxMode";
             this.comboBoxMode.Size = new System.Drawing.Size(127, 22);
             this.comboBoxMode.TabIndex = 15;
-            this.comboBoxMode.SelectedIndexChanged += new System.EventHandler(this.comboBoxMode_SelectedIndexChanged);
+            this.comboBoxMode.SelectedIndexChanged += new System.EventHandler(this.ComboBoxModeSelectedIndexChanged);
             // 
-            // groupBox3
+            // groupBoxTv
             // 
-            this.groupBox3.Controls.Add(this.label13);
-            this.groupBox3.Controls.Add(this.label12);
-            this.groupBox3.Controls.Add(this.textBoxTvName);
-            this.groupBox3.Controls.Add(this.label3);
-            this.groupBox3.Controls.Add(this.checkBoxTvdb);
-            this.groupBox3.Location = new System.Drawing.Point(12, 193);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(549, 69);
-            this.groupBox3.TabIndex = 11;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "TV";
+            this.groupBoxTv.Controls.Add(this.label2);
+            this.groupBoxTv.Controls.Add(this.textBoxTvFolder);
+            this.groupBoxTv.Controls.Add(this.label10);
+            this.groupBoxTv.Controls.Add(this.label13);
+            this.groupBoxTv.Controls.Add(this.label12);
+            this.groupBoxTv.Controls.Add(this.textBoxTvName);
+            this.groupBoxTv.Controls.Add(this.label3);
+            this.groupBoxTv.Controls.Add(this.checkBoxTvdb);
+            this.groupBoxTv.Location = new System.Drawing.Point(12, 193);
+            this.groupBoxTv.Name = "groupBoxTv";
+            this.groupBoxTv.Size = new System.Drawing.Size(549, 99);
+            this.groupBoxTv.TabIndex = 11;
+            this.groupBoxTv.TabStop = false;
+            this.groupBoxTv.Text = "TV";
+            // 
+            // label2
+            // 
+            this.label2.Font = new System.Drawing.Font("Arial Narrow", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Location = new System.Drawing.Point(231, 39);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(312, 30);
+            this.label2.TabIndex = 27;
+            this.label2.Text = "Directory to store moved TV files in.";
+            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // textBoxTvFolder
+            // 
+            this.textBoxTvFolder.Location = new System.Drawing.Point(98, 44);
+            this.textBoxTvFolder.Name = "textBoxTvFolder";
+            this.textBoxTvFolder.Size = new System.Drawing.Size(124, 20);
+            this.textBoxTvFolder.TabIndex = 26;
+            this.textBoxTvFolder.TextChanged += new System.EventHandler(this.TextBoxTvFolderTextChanged);
+            // 
+            // label10
+            // 
+            this.label10.AutoSize = true;
+            this.label10.Location = new System.Drawing.Point(39, 47);
+            this.label10.Name = "label10";
+            this.label10.Size = new System.Drawing.Size(54, 14);
+            this.label10.TabIndex = 25;
+            this.label10.Text = "TV Folder";
+            this.label10.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label13
             // 
             this.label13.Font = new System.Drawing.Font("Arial Narrow", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label13.Location = new System.Drawing.Point(231, 35);
+            this.label13.Location = new System.Drawing.Point(231, 63);
             this.label13.Name = "label13";
             this.label13.Size = new System.Drawing.Size(312, 30);
             this.label13.TabIndex = 24;
@@ -368,17 +445,48 @@
     "ms";
             this.label12.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
-            // groupBox4
+            // groupBoxMovie
             // 
-            this.groupBox4.Controls.Add(this.label14);
-            this.groupBox4.Controls.Add(this.textBoxMovieName);
-            this.groupBox4.Controls.Add(this.label8);
-            this.groupBox4.Location = new System.Drawing.Point(12, 268);
-            this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(549, 49);
-            this.groupBox4.TabIndex = 12;
-            this.groupBox4.TabStop = false;
-            this.groupBox4.Text = "Movie";
+            this.groupBoxMovie.Controls.Add(this.label15);
+            this.groupBoxMovie.Controls.Add(this.textBoxMovieFolder);
+            this.groupBoxMovie.Controls.Add(this.label16);
+            this.groupBoxMovie.Controls.Add(this.label14);
+            this.groupBoxMovie.Controls.Add(this.textBoxMovieName);
+            this.groupBoxMovie.Controls.Add(this.label8);
+            this.groupBoxMovie.Location = new System.Drawing.Point(12, 295);
+            this.groupBoxMovie.Name = "groupBoxMovie";
+            this.groupBoxMovie.Size = new System.Drawing.Size(549, 73);
+            this.groupBoxMovie.TabIndex = 12;
+            this.groupBoxMovie.TabStop = false;
+            this.groupBoxMovie.Text = "Movie";
+            // 
+            // label15
+            // 
+            this.label15.Font = new System.Drawing.Font("Arial Narrow", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label15.Location = new System.Drawing.Point(231, 38);
+            this.label15.Name = "label15";
+            this.label15.Size = new System.Drawing.Size(312, 30);
+            this.label15.TabIndex = 28;
+            this.label15.Text = "Directory to store moved Movie files in.";
+            this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // textBoxMovieFolder
+            // 
+            this.textBoxMovieFolder.Location = new System.Drawing.Point(98, 43);
+            this.textBoxMovieFolder.Name = "textBoxMovieFolder";
+            this.textBoxMovieFolder.Size = new System.Drawing.Size(124, 20);
+            this.textBoxMovieFolder.TabIndex = 27;
+            this.textBoxMovieFolder.TextChanged += new System.EventHandler(this.TextBoxMovieFolderTextChanged);
+            // 
+            // label16
+            // 
+            this.label16.AutoSize = true;
+            this.label16.Location = new System.Drawing.Point(25, 46);
+            this.label16.Name = "label16";
+            this.label16.Size = new System.Drawing.Size(68, 14);
+            this.label16.TabIndex = 26;
+            this.label16.Text = "Movie Folder";
+            this.label16.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label14
             // 
@@ -396,7 +504,7 @@
             this.textBoxMovieName.Name = "textBoxMovieName";
             this.textBoxMovieName.Size = new System.Drawing.Size(124, 20);
             this.textBoxMovieName.TabIndex = 10;
-            this.textBoxMovieName.TextChanged += new System.EventHandler(this.textBoxMovieName_TextChanged);
+            this.textBoxMovieName.TextChanged += new System.EventHandler(this.TextBoxMovieNameTextChanged);
             // 
             // label8
             // 
@@ -408,53 +516,14 @@
             this.label8.Text = "Movie Name";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // labelInputDirDesc
-            // 
-            this.labelInputDirDesc.Font = new System.Drawing.Font("Arial Narrow", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelInputDirDesc.Location = new System.Drawing.Point(231, 94);
-            this.labelInputDirDesc.Name = "labelInputDirDesc";
-            this.labelInputDirDesc.Size = new System.Drawing.Size(312, 30);
-            this.labelInputDirDesc.TabIndex = 27;
-            this.labelInputDirDesc.Text = "Directory to read files from.";
-            this.labelInputDirDesc.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // buttonInputDir
-            // 
-            this.buttonInputDir.Location = new System.Drawing.Point(200, 98);
-            this.buttonInputDir.Margin = new System.Windows.Forms.Padding(0);
-            this.buttonInputDir.Name = "buttonInputDir";
-            this.buttonInputDir.Size = new System.Drawing.Size(25, 22);
-            this.buttonInputDir.TabIndex = 26;
-            this.buttonInputDir.Text = "...";
-            this.buttonInputDir.UseVisualStyleBackColor = true;
-            this.buttonInputDir.Click += new System.EventHandler(this.buttonInputDir_Click);
-            // 
-            // labelInputDir
-            // 
-            this.labelInputDir.Location = new System.Drawing.Point(6, 102);
-            this.labelInputDir.Name = "labelInputDir";
-            this.labelInputDir.Size = new System.Drawing.Size(87, 14);
-            this.labelInputDir.TabIndex = 25;
-            this.labelInputDir.Text = "Input Directory";
-            this.labelInputDir.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // textBoxInputDir
-            // 
-            this.textBoxInputDir.Location = new System.Drawing.Point(98, 99);
-            this.textBoxInputDir.Name = "textBoxInputDir";
-            this.textBoxInputDir.ReadOnly = true;
-            this.textBoxInputDir.Size = new System.Drawing.Size(102, 20);
-            this.textBoxInputDir.TabIndex = 24;
-            this.textBoxInputDir.Text = "Current Directory";
-            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(573, 353);
-            this.Controls.Add(this.groupBox4);
-            this.Controls.Add(this.groupBox3);
+            this.ClientSize = new System.Drawing.Size(573, 427);
+            this.Controls.Add(this.groupBoxMovie);
+            this.Controls.Add(this.groupBoxTv);
             this.Controls.Add(this.groupBox2);
             this.Controls.Add(this.panelButtons);
             this.Font = new System.Drawing.Font("Arial", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -470,10 +539,10 @@
             this.flowLayoutButtonsPanel.ResumeLayout(false);
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            this.groupBox4.ResumeLayout(false);
-            this.groupBox4.PerformLayout();
+            this.groupBoxTv.ResumeLayout(false);
+            this.groupBoxTv.PerformLayout();
+            this.groupBoxMovie.ResumeLayout(false);
+            this.groupBoxMovie.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -498,8 +567,8 @@
         private System.Windows.Forms.ComboBox comboBoxFileType;
         private System.Windows.Forms.Label label6;
         private System.Windows.Forms.ComboBox comboBoxMode;
-        private System.Windows.Forms.GroupBox groupBox3;
-        private System.Windows.Forms.GroupBox groupBox4;
+        private System.Windows.Forms.GroupBox groupBoxTv;
+        private System.Windows.Forms.GroupBox groupBoxMovie;
         private System.Windows.Forms.TextBox textBoxMovieName;
         private System.Windows.Forms.Label label8;
         private System.Windows.Forms.Label label9;
@@ -514,5 +583,11 @@
         private System.Windows.Forms.Button buttonInputDir;
         private System.Windows.Forms.Label labelInputDir;
         private System.Windows.Forms.TextBox textBoxInputDir;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox textBoxTvFolder;
+        private System.Windows.Forms.Label label10;
+        private System.Windows.Forms.Label label15;
+        private System.Windows.Forms.TextBox textBoxMovieFolder;
+        private System.Windows.Forms.Label label16;
     }
 }

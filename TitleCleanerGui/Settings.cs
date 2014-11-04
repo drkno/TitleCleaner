@@ -16,6 +16,8 @@ namespace TitleCleanerGui
             textBoxCommonName.Text = MediaFile.DefaultFormatString;
             textBoxTvName.Text = TvFile.DefaultFormatString;
             textBoxMovieName.Text = MovieFile.DefaultFormatString;
+            textBoxTvFolder.Text = TvFile.TypeDirectory;
+            textBoxMovieFolder.Text = MovieFile.TypeDirectory;
         }
 
         private void ButtonDirectoryClick(object sender, EventArgs e)
@@ -82,16 +84,18 @@ namespace TitleCleanerGui
                 }
             }
             textBoxOutputDir.Text = res;
+            textBoxTvFolder.Enabled = true;
+            textBoxMovieFolder.Enabled = true;
         }
 
-        private void textBoxCommonName_TextChanged(object sender, EventArgs e)
+        private void TextBoxCommonNameTextChanged(object sender, EventArgs e)
         {
             MediaFile.DefaultFormatString = textBoxCommonName.Text;
             textBoxTvName.Text = TvFile.DefaultFormatString;
             textBoxMovieName.Text = MovieFile.DefaultFormatString;
         }
 
-        private void textBoxTvName_TextChanged(object sender, EventArgs e)
+        private void TextBoxTvNameTextChanged(object sender, EventArgs e)
         {
             if (MediaFile.DefaultFormatString != textBoxTvName.Text)
             {
@@ -99,7 +103,7 @@ namespace TitleCleanerGui
             }
         }
 
-        private void textBoxMovieName_TextChanged(object sender, EventArgs e)
+        private void TextBoxMovieNameTextChanged(object sender, EventArgs e)
         {
             if (MediaFile.DefaultFormatString != textBoxTvName.Text)
             {
@@ -107,7 +111,7 @@ namespace TitleCleanerGui
             }
         }
 
-        private void comboBoxMode_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBoxModeSelectedIndexChanged(object sender, EventArgs e)
         {
             switch (comboBoxMode.SelectedIndex)
             {
@@ -138,9 +142,11 @@ namespace TitleCleanerGui
             }
             textBoxInputDir.Text = "Current Directory";
             textBoxOutputDir.Text = "None";
+            textBoxTvFolder.Enabled = false;
+            textBoxMovieFolder.Enabled = false;
         }
 
-        private void buttonInputDir_Click(object sender, EventArgs e)
+        private void ButtonInputDirClick(object sender, EventArgs e)
         {
             var res = "Current Directory";
             switch (comboBoxMode.SelectedIndex)
@@ -206,53 +212,53 @@ namespace TitleCleanerGui
             textBoxInputDir.Text = res;
         }
 
-        private void buttonOk_Click(object sender, EventArgs e)
+        private void ButtonOkClick(object sender, EventArgs e)
         {
-            confirm = checkBoxConfirmations.Checked;
-            input = textBoxInputDir.Text;
-            output = textBoxOutputDir.Text;
-            fileType = comboBoxFileType.SelectedIndex;
-            mode = comboBoxMode.SelectedIndex;
+            _confirm = checkBoxConfirmations.Checked;
+            _input = textBoxInputDir.Text;
+            _output = textBoxOutputDir.Text;
+            _fileType = comboBoxFileType.SelectedIndex;
+            _mode = comboBoxMode.SelectedIndex;
             DialogResult = DialogResult.OK;
         }
 
-        private void checkBoxTvdb_CheckedChanged(object sender, EventArgs e)
+        private void CheckBoxTvdbCheckedChanged(object sender, EventArgs e)
         {
             TvFile.TvdbLookup = checkBoxTvdb.Checked;
         }
 
-        private void checkBoxConfirmations_CheckedChanged(object sender, EventArgs e)
+        private void CheckBoxConfirmationsCheckedChanged(object sender, EventArgs e)
         {
             TvFile.TvdbLookupConfirm = checkBoxConfirmations.Checked;
         }
 
-        private void buttonCancel_Click(object sender, EventArgs e)
+        private void ButtonCancelClick(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
         }
 
-        private bool confirm;
-        private string input, output;
-        private int fileType, mode;
+        private bool _confirm;
+        private string _input, _output;
+        private int _fileType, _mode;
 
         public bool GetConfirm()
         {
-            return confirm;
+            return _confirm;
         }
 
         public string GetInput()
         {
-            return input;
+            return _input;
         }
 
         public string GetOuput()
         {
-            return output;
+            return _output;
         }
 
         public Type GetMediaType()
         {
-            switch (fileType)
+            switch (_fileType)
             {
                 case 0: return null;
                 case 1: return typeof (TvFile);
@@ -263,7 +269,32 @@ namespace TitleCleanerGui
 
         public int GetMode()
         {
-            return mode;
+            return _mode;
+        }
+
+        private void TextBoxTvFolderTextChanged(object sender, EventArgs e)
+        {
+            TvFile.TypeDirectory = textBoxTvFolder.Text;
+        }
+
+        private void TextBoxMovieFolderTextChanged(object sender, EventArgs e)
+        {
+            MovieFile.TypeDirectory = textBoxMovieFolder.Text;
+        }
+
+        private void comboBoxFileType_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            groupBoxTv.Enabled = true;
+            groupBoxMovie.Enabled = true;
+            switch (comboBoxFileType.SelectedIndex)
+            {
+                case 1:
+                    groupBoxMovie.Enabled = false;
+                    break;
+                case 2:
+                    groupBoxTv.Enabled = false;
+                    break;
+            }
         }
     }
 }
