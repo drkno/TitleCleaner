@@ -353,7 +353,7 @@
             this.comboBoxFileType.Name = "comboBoxFileType";
             this.comboBoxFileType.Size = new System.Drawing.Size(127, 22);
             this.comboBoxFileType.TabIndex = 17;
-            this.comboBoxFileType.SelectedIndexChanged += new System.EventHandler(this.comboBoxFileType_SelectedIndexChanged);
+            this.comboBoxFileType.SelectedIndexChanged += new System.EventHandler(this.ComboBoxFileTypeSelectedIndexChanged);
             // 
             // label6
             // 

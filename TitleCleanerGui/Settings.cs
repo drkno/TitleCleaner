@@ -282,7 +282,7 @@ namespace TitleCleanerGui
             MovieFile.TypeDirectory = textBoxMovieFolder.Text;
         }
 
-        private void comboBoxFileType_SelectedIndexChanged(object sender, EventArgs e)
+        private void ComboBoxFileTypeSelectedIndexChanged(object sender, EventArgs e)
         {
             groupBoxTv.Enabled = true;
             groupBoxMovie.Enabled = true;
