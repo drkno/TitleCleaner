@@ -283,14 +283,15 @@ namespace TitleCleanerConsole
                     foreach (var w in l.Split(' '))
                     {
                         var word = w;
-                        if (lenP != 0)
-                        {
-                            word = ' ' + word;
-                        }
+                        
                         if (lenP + word.Length > len)
                         {
                             Console.Write("\n\t\t");
                             lenP = 0;
+                        }
+                        else if (lenP != 0)
+                        {
+                            word = ' ' + word;
                         }
                         Console.Write(word);
                         lenP += word.Length;
