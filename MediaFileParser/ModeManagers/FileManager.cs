@@ -152,8 +152,9 @@ namespace MediaFileParser.ModeManagers
                 File.Move(Path.Combine(file.Location, file.ToString("O.E")), path);
                 NotifyOnMove(file, destination, true);
             }
-            catch (Exception)
+            catch (Exception e)
             {
+                Debug.WriteLine("File cannot be moved because of error: " + e);
                 NotifyOnMove(file, destination, false);
             }
         }
@@ -168,6 +169,11 @@ namespace MediaFileParser.ModeManagers
         {
             try
             {
+                if (path.EndsWith("\""))
+                {
+                    path = path.Remove(path.Length - 1);
+                }
+
                 //var p = new Uri(path, UriKind.RelativeOrAbsolute).LocalPath;
                 var p = Path.GetFullPath(path);
                 p = p.TrimEnd(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
