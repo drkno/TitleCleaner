@@ -40,6 +40,12 @@ Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/do
 	-h, --help
 		Display this help.
 		
+	-w, --tvdir
+		Sets the output directory subdirectory for tv files.
+		
+	-r, --movdir
+		Sets the output directory subdirectory for movie files.
+			
 	-d, --directory
 		The {DIRECTORY} to search for files. When used the directory provided will be
 		searched instead of the current directory for media files.
