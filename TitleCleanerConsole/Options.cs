@@ -1,62 +1,90 @@
-﻿using System;
+﻿/*
+ * Knox.Options
+ * This is a Mono.Options semi-compatible library for managing CLI
+ * arguments and displaying help text for a program. Created as
+ * Mono.Options has an issue and was requiring significant
+ * modification to meet my needs. It was quicker to write a new
+ * version that supported a similar API than to fix the origional.
+ * 
+ * Copyright © Matthew Knox, Knox Enterprises 2014-Present.
+ * This code is avalible under the MIT license in the state
+ * that it was avalible on 05/11/2014 from
+ * http://opensource.org/licenses/MIT .
+*/
+ 
+#region
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+#endregion
+
 namespace TitleCleanerConsole
 {
+    /// <summary>
+    /// Set of CLI interface
+    /// </summary>
     public class OptionSet : IEnumerable
     {
+        /// <summary>
+        /// Index of individual options in option set.
+        /// </summary>
+        private readonly Dictionary<string, int> _lookupDictionary = new Dictionary<string, int>();
+        /// <summary>
+        /// List of options contained in this option set.
+        /// </summary>
         private readonly List<Option> _options = new List<Option>();
-        private readonly Dictionary<string, int> _lookupDictionary = new Dictionary<string, int>(); 
-        private struct Option
+
+        private static readonly char[] ArgumentSeparators = { '=', ':' };
+
+        private static bool _optionStyleCanChange = true;
+        private static OptionStyle _optionsStyle = OptionStyle.Nix;
+        public static OptionStyle OptionsStyle
         {
-            public string[] OptionStrings { get; private set; }
-            public string Description { get; private set; }
-            public Action<string> SetupFunction { get; private set; }
-
-            public Option(string options, string description, Action<string> func)
-                : this()
+            get { return _optionsStyle; }
+            set
             {
-                Description = description;
-                SetupFunction = func;
-
-                const string shortOptionsPrefix = "-";
-                const string longOptionsPrefix = "--";
-
-                var spl = options.Split(new[]{'|'}, StringSplitOptions.RemoveEmptyEntries);
-                var opt = new List<string>();
-
-                foreach (var s in spl)
+                if (!_optionStyleCanChange)
                 {
-                    if (s.Length == 1)
-                    {
-                        opt.Add(shortOptionsPrefix + s);
-                    }
-                    else
-                    {
-                        opt.Add(longOptionsPrefix + s);
-                    }
+                    throw new Exception("After an option has been added the options style cannot be changed.");
                 }
-                OptionStrings = opt.ToArray();
+                _optionsStyle = value;
             }
         }
+        /// <summary>
+        /// Option prefixes for use with various option styles.
+        /// </summary>
+        private static readonly string[] OptionsPrefixes = { "-", "--", "/", "/" };
 
+        /// <summary>
+        /// Enumerator of this OptionSet
+        /// </summary>
+        /// <returns>The enumerator</returns>
         public IEnumerator GetEnumerator()
         {
             return _options.GetEnumerator();
         }
 
+        /// <summary>
+        /// Add a cli option to the set.
+        /// </summary>
+        /// <param name="cliOptions">The options to associate this option with.</param>
+        /// <param name="description">Description of this option.</param>
+        /// <param name="func">Action to run when this option is specified.</param>
+        /// <param name="conflictSilent">If a cli option has already been specified by a previous option
+        /// handle the error silently rather than throwing an exception.</param>
         public void Add(string cliOptions, string description, Action<string> func, bool conflictSilent = true)
         {
-            var option = new Option(cliOptions, description, func);
+            var option = new Option(cliOptions, description, func, OptionsStyle);
             _options.Add(option);
             var ind = _options.Count - 1;
-            foreach (var opt in option.OptionStrings)
+            foreach (var opt in option.Arguments)
             {
                 try
                 {
-                    _lookupDictionary.Add(opt, ind);
+                    _lookupDictionary.Add(opt, ind);    // add reference for quick lookup
                 }
                 catch (Exception e)
                 {
@@ -64,8 +92,8 @@ namespace TitleCleanerConsole
                     {
                         continue;
                     }
-                    var opt1 = opt;
-                    foreach (var op in option.OptionStrings.TakeWhile(op => op != opt1))
+                    var opt1 = opt;     // remove all instances of this option, as we want to have a good options state
+                    foreach (var op in option.Arguments.TakeWhile(op => op != opt1))
                     {
                         _lookupDictionary.Remove(op);
                     }
@@ -73,40 +101,62 @@ namespace TitleCleanerConsole
                     throw new OptionException("Option " + opt + " already specified for another option.", e, opt);
                 }
             }
+            _optionStyleCanChange = false;
         }
 
+        /// <summary>
+        /// Parses a set of arguments into the option equivilents and calls
+        /// the actions of those options.
+        /// </summary>
+        /// <param name="arguments">Arguments to parse.</param>
+        /// <returns>List of arguments that parsing failed for.</returns>
         public List<string> Parse(IEnumerable<string> arguments)
         {
             var optionsInError = new List<string>();
             var temp = new List<string>();
-            bool readForOption = false;
-            int optionRead = -1;
+            var readForOption = false;
+            var optionRead = -1;
 
-            var enumerable = arguments.ToArray();
+            var enumerable = arguments.ToList();
 
-            for (var i = 0; i < enumerable.Count(); i++)
+            for (var i = 0; i <= enumerable.Count; i++)
             {
-                if (enumerable[i].StartsWith("-") || !readForOption)
+                if (i == enumerable.Count || enumerable[i].StartsWith(OptionsPrefixes[(int)OptionsStyle]) || !readForOption)
                 {
                     if (readForOption)
                     {
-                        var arg = temp.Aggregate("", (current, t) => current + (t + " "));
-                        arg = arg.Trim();
-
                         try
                         {
-                            _options[optionRead].SetupFunction(arg);
+                            var arg = temp.Aggregate("", (current, t) => current + (t + " "));
+                            arg = arg.Trim();
+                            _options[optionRead].Action(arg);
                         }
-                        catch (Exception)
+                        catch (OptionException)
                         {
                             optionsInError.Add(enumerable[i - 1 - temp.Count]);
                             optionsInError.AddRange(temp);
                         }
-                        temp.Clear();
+                        finally
+                        {
+                            temp.Clear();
+                        }
+                    }
+
+                    if (i == enumerable.Count)
+                    {
+                        continue;
                     }
 
                     try
                     {
+                        var i1 = i;
+                        foreach (var separator in ArgumentSeparators.Where(separator => enumerable[i1].Contains(separator)))
+                        {
+                            enumerable.RemoveAt(i);
+                            enumerable.InsertRange(i, enumerable[i].Split(separator));
+                            break;
+                        }
+
                         var ind = _lookupDictionary[enumerable[i]];
                         optionRead = ind;
                         readForOption = true;
@@ -122,24 +172,15 @@ namespace TitleCleanerConsole
                     temp.Add(enumerable[i]);
                 }
             }
-            if (readForOption)
-            {
-                var arg = temp.Aggregate("", (current, t) => current + (t + " "));
-                arg = arg.Trim();
-
-                try
-                {
-                    _options[optionRead].SetupFunction(arg);
-                }
-                catch (Exception)
-                {
-                    optionsInError.Add(enumerable[enumerable.Length - 1 - temp.Count]);
-                    optionsInError.AddRange(temp);
-                }
-            }
             return optionsInError;
         }
 
+        /// <summary>
+        /// Parses a set of arguments into the option equivilents and calls
+        /// the actions of those options.
+        /// </summary>
+        /// <param name="arguments">Arguments to parse.</param>
+        /// <exception cref="OptionException">On invalid options.</exception>
         public void ParseExceptionally(IEnumerable<string> arguments)
         {
             var result = Parse(arguments);
@@ -149,18 +190,76 @@ namespace TitleCleanerConsole
             throw new OptionException("Unknown option" + (result.Count > 1 ? "s" : "") + " " + options, result.ToArray());
         }
 
+        /// <summary>
+        /// Style of options to use.
+        /// </summary>
+        public enum OptionStyle
+        {
+            Nix = 0,
+            Linux = Nix,
+            Unix = Nix,
+            Osx = Nix,
+            Windows = 2
+        }
+
+        /// <summary>
+        /// Represents an individual option of an OptionSet
+        /// </summary>
+        private class Option
+        {
+            /// <summary>
+            /// Creates a new option.
+            /// </summary>
+            /// <param name="options">Cli arguments that use this option.</param>
+            /// <param name="description">Description of this option.</param>
+            /// <param name="func">Action to perform when this option is specified.</param>
+            /// <param name="style">Style of option to use.</param>
+            public Option(string options, string description, Action<string> func, OptionStyle style)
+            {
+                Description = description;
+                Action = func;
+                var spl = options.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
+                Arguments = spl.Select(s => OptionsPrefixes[(int) style + ((s.Length == 1) ? 0 : 1)] + s).ToArray();
+            }
+
+            /// <summary>
+            /// Arguments that this option provides.
+            /// </summary>
+            public string[] Arguments { get; private set; }
+            /// <summary>
+            /// Description of this option.
+            /// </summary>
+            public string Description { get; private set; }
+            /// <summary>
+            /// Action to perform when this option is specified.
+            /// </summary>
+            public Action<string> Action { get; private set; }
+        }
+
+        #region Help Text
+        /// <summary>
+        /// Print help.
+        /// </summary>
+        /// <param name="programNameDescription">Decription to accompany the program name.</param>
+        /// <param name="programSynopsis">Synopsis section of the help.</param>
+        /// <param name="optionDescriptionPrefix">Text before options.</param>
+        /// <param name="optionDescriptionPostfix">Text after options.</param>
+        /// <param name="programAuthor">Author section of the help.</param>
+        /// <param name="programReportBugs">Bugs section of the help.</param>
+        /// <param name="programCopyright">Copyright section of the help.</param>
+        /// <param name="confirm">Halt before continuing execution after printing.</param>
         public void ShowHelp(string programNameDescription,
-                              string programSynopsis,
-                              string optionDescriptionPrefix,
-                              string optionDescriptionPostfix,
-                              string programAuthor,
-                              string programReportBugs,
-                              string programCopyright,
-                              bool confirm)
+            string programSynopsis,
+            string optionDescriptionPrefix,
+            string optionDescriptionPostfix,
+            string programAuthor,
+            string programReportBugs,
+            string programCopyright,
+            bool confirm)
         {
             WriteProgramName(programNameDescription);
             WriteProgramSynopsis(programSynopsis);
-            WriteOptionDescriptions(optionDescriptionPrefix, optionDescriptionPostfix);
+            WriteOptionDescriptions(this, optionDescriptionPrefix, optionDescriptionPostfix);
             WriteProgramAuthor(programAuthor);
             WriteProgramReportingBugs(programReportBugs);
             WriteProgramCopyrightLicense(programCopyright);
@@ -171,7 +270,11 @@ namespace TitleCleanerConsole
             }
         }
 
-        private void WriteProgramName(string description)
+        /// <summary>
+        /// Print program name and description.
+        /// </summary>
+        /// <param name="description">Description to print.</param>
+        private static void WriteProgramName(string description)
         {
             var origColour = Console.ForegroundColor;
             var appName = AppDomain.CurrentDomain.FriendlyName;
@@ -182,7 +285,11 @@ namespace TitleCleanerConsole
             Console.ForegroundColor = origColour;
         }
 
-        private void WriteProgramSynopsis(string synopsis)
+        /// <summary>
+        /// Print the program synopsis.
+        /// </summary>
+        /// <param name="synopsis">Synopsis to print.</param>
+        private static void WriteProgramSynopsis(string synopsis)
         {
             var origColour = Console.ForegroundColor;
             var appName = AppDomain.CurrentDomain.FriendlyName;
@@ -194,7 +301,11 @@ namespace TitleCleanerConsole
             Console.ForegroundColor = origColour;
         }
 
-        private void WriteProgramAuthor(string authorByString)
+        /// <summary>
+        /// Print the program author.
+        /// </summary>
+        /// <param name="authorByString">Author string to print.</param>
+        private static void WriteProgramAuthor(string authorByString)
         {
             var origColour = Console.ForegroundColor;
             var appName = AppDomain.CurrentDomain.FriendlyName;
@@ -206,7 +317,11 @@ namespace TitleCleanerConsole
             Console.ForegroundColor = origColour;
         }
 
-        private void WriteProgramReportingBugs(string reportString)
+        /// <summary>
+        /// Print the program reporting bugs section.
+        /// </summary>
+        /// <param name="reportString">Report bugs string.</param>
+        private static void WriteProgramReportingBugs(string reportString)
         {
             var origColour = Console.ForegroundColor;
             var appName = AppDomain.CurrentDomain.FriendlyName;
@@ -223,7 +338,11 @@ namespace TitleCleanerConsole
             Console.ForegroundColor = origColour;
         }
 
-        private void WriteProgramCopyrightLicense(string copyrightLicense)
+        /// <summary>
+        /// Print the program copyright license.
+        /// </summary>
+        /// <param name="copyrightLicense">Copyright license text.</param>
+        private static void WriteProgramCopyrightLicense(string copyrightLicense)
         {
             var origColour = Console.ForegroundColor;
             var appName = AppDomain.CurrentDomain.FriendlyName;
@@ -240,7 +359,13 @@ namespace TitleCleanerConsole
             Console.ForegroundColor = origColour;
         }
 
-        private void WriteOptionDescriptions(string prefixText, string postText)
+        /// <summary>
+        /// Prints all the options in an OptionsSet and prefix/postfix text for the description.
+        /// </summary>
+        /// <param name="os">OptionsSet to use options from.</param>
+        /// <param name="prefixText">Text to print before options.</param>
+        /// <param name="postText">Text to print after options.</param>
+        private static void WriteOptionDescriptions(OptionSet os, string prefixText, string postText)
         {
             var origColour = Console.ForegroundColor;
             var appName = AppDomain.CurrentDomain.FriendlyName;
@@ -258,13 +383,13 @@ namespace TitleCleanerConsole
             }
 
             var buffWid = Console.BufferWidth;
-            foreach (var p in _options)
+            foreach (var p in os._options)
             {
                 Console.Write('\t');
-                for (var j = 0; j < p.OptionStrings.Length; j++)
+                for (var j = 0; j < p.Arguments.Length; j++)
                 {
-                    Console.Write(p.OptionStrings[j]);
-                    if (j + 1 != p.OptionStrings.Length)
+                    Console.Write(p.Arguments[j]);
+                    if (j + 1 != p.Arguments.Length)
                     {
                         Console.Write(", ");
                     }
@@ -277,13 +402,14 @@ namespace TitleCleanerConsole
                 Console.Write("\t\t");
                 var len = buffWid - Console.CursorLeft;
 
-                foreach (var l in p.Description.Split(new[] { "\n", "\r\n", "\r" }, StringSplitOptions.RemoveEmptyEntries))
+                foreach (var l in p.Description.Split(new[] { "\n", "\r\n", "\r" }, StringSplitOptions.RemoveEmptyEntries)
+                    )
                 {
                     var lenP = 0;
                     foreach (var w in l.Split(' '))
                     {
                         var word = w;
-                        
+
                         if (lenP != 0 && (lenP + word.Length + 1) > len)
                         {
                             if (lenP != len) Console.Write("\n");
@@ -315,20 +441,39 @@ namespace TitleCleanerConsole
             Console.WriteLine();
             Console.ForegroundColor = origColour;
         }
+        #endregion
     }
 
+    /// <summary>
+    /// Exception that is thrown when there is an error with the options specified.
+    /// </summary>
     public class OptionException : Exception
     {
-        public string[] ErrorOptions { get; private set; }
-
-        public OptionException(string errorText, params string[] errorOptions) : base(errorText)
+        /// <summary>
+        /// Create a new OptionException.
+        /// </summary>
+        /// <param name="errorText">The description of this exception.</param>
+        /// <param name="errorArguments">Arguments that were in error.</param>
+        public OptionException(string errorText, params string[] errorArguments) : base(errorText)
         {
-            ErrorOptions = errorOptions;
+            ErrorArguments = errorArguments;
         }
 
-        public OptionException(string errorText, Exception innerException, params string[] errorOptions) : base(errorText, innerException)
+        /// <summary>
+        /// Create a new OptionException.
+        /// </summary>
+        /// <param name="errorText">The description of this exception.</param>
+        /// <param name="innerException">The inner exception that caused this one to occur.</param>
+        /// <param name="errorArguments">Arguments that were in error.</param>
+        public OptionException(string errorText, Exception innerException, params string[] errorArguments)
+            : base(errorText, innerException)
         {
-            ErrorOptions = errorOptions;
+            ErrorArguments = errorArguments;
         }
+
+        /// <summary>
+        /// Arguments that were in error.
+        /// </summary>
+        public string[] ErrorArguments { get; private set; }
     }
 }
