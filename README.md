@@ -56,8 +56,6 @@ Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/do
 		is otherwise unchanged. This option is mutually exclusive with -d. In test mode
 		this specifies a test .csv file to run.
 
-Test Cases:<br />
----
 A full list of the test cases that TitleCleaner is run against (with default options) can be found  [here](https://github.com/mrkno/TitleCleaner/blob/master/MediaFileParser/Tests/tests.csv).
 This list always requires expansion so feel free to contribute them in a similar csv format.
 
