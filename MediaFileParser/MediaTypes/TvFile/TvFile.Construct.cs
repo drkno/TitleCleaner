@@ -114,7 +114,7 @@ namespace MediaFileParser.MediaTypes.TvFile
 
                 // Get Episode from explicit mention
                 if (Regex.IsMatch(SectorList[i], "episode", RegexOptions.IgnoreCase) &&
-                    Regex.IsMatch(SectorList[i + 1], @"[0-9]{1,2}"))
+                    (Regex.IsMatch(SectorList[i + 1], @"[0-9]{1,2}") || FromNumberWord(ref SectorList, i + 1)))
                 {
                     i += 1;
                     Episode.Clear(); // would be hard to do this with joint episodes...
