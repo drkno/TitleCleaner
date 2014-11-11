@@ -231,9 +231,9 @@ namespace MediaFileParser.MediaTypes.TvFile
         }
 
         /// <summary>
-        /// Returns the string representation of this object.
+        /// Returns the string representation of this object based on character in format string.
         /// </summary>
-        /// <param name="format">
+        /// <param name="str">
         /// Format string to base this representation on.
         /// L:  Location
         /// O:  Origional Filename
@@ -244,52 +244,45 @@ namespace MediaFileParser.MediaTypes.TvFile
         /// S:  Season Number of the Episode (Padded to 2sf)
         /// s:  Season Number of the Episode
         /// e:  Episode Number of the Episode
+        /// and all those in MediaFile.
         /// </param>
-        /// <returns>The string representation of this object.</returns>
-        public override string ToString(string format)
+        /// <param name="ind">The index of the character to base the string representation on.</param>
+        /// <returns>The string representation of this object based on character at the specified index.</returns>
+        public override string ToString(ref string str, ref int ind)
         {
-            var result = "";
-            foreach (var c in format)
+            switch (str[ind])
             {
-                switch (c)
+                case 'T':
                 {
-                    case 'T':
+                    return Title;
+                }
+                case 'N':
+                {
+                    return Name;
+                }
+                case 'S':
+                {
+                    return Season.ToString("00");
+                }
+                case 's':
+                {
+                    return Season.ToString(CultureInfo.InvariantCulture);
+                }
+                case 'e':
+                {
+                    var result = "";
+                    for (var i = 0; i < Episode.Count; i++)
                     {
-                        result += Title;
-                        break;
+                        result += Episode[i].ToString("00");
+                        result += (i + 1 != Episode.Count) ? "-" : "";
                     }
-                    case 'N':
-                    {
-                        result += Name;
-                        break;
-                    }
-                    case 'S':
-                    {
-                        result += Season.ToString("00");
-                        break;
-                    }
-                    case 's':
-                    {
-                        result += Season;
-                        break;
-                    }
-                    case 'e':
-                    {
-                        for (var i = 0; i < Episode.Count; i++)
-                        {
-                            result += Episode[i].ToString("00");
-                            result += (i + 1 != Episode.Count) ? "-" : "";
-                        }
-                        break;
-                    }
-                    default:
-                    {
-                        result += base.ToString(c.ToString(CultureInfo.InvariantCulture));
-                        break;
-                    }
+                    return result;
+                }
+                default:
+                {
+                    return base.ToString(ref str, ref ind);
                 }
             }
-            return result;
         }
 
         /// <summary>

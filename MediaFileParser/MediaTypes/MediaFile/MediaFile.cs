@@ -185,7 +185,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
         }
 
         /// <summary>
-        /// Returns the string representation of this object.
+        /// Returns the string representation of this object based on character in format string.
         /// </summary>
         /// <param name="str">
         /// Format string to base this representation on.
@@ -195,33 +195,52 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// E:  File Extension
         /// \:  Return Next Character
         /// </param>
+        /// <param name="ind">The index of the character to base the string representation on.</param>
+        /// <returns>The string representation of this object based on character at the specified index.</returns>
+        public virtual string ToString(ref string str, ref int ind)
+        {
+            switch (str[ind])
+            {
+                case 'L':
+                {
+                    return Location;
+                }
+                case 'O':
+                {
+                    return Origional;
+                }
+                case 'C':
+                {
+                    return Cleaned;
+                }
+                case 'E':
+                {
+                    return Extension;
+                }
+                case '\\':
+                {
+                    ind++;
+                    goto default;
+                }
+                default:
+                {
+                    return ind >= str.Length ? "" : str[ind].ToString(CultureInfo.InvariantCulture);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Returns the string representation of this object.
+        /// </summary>
+        /// <param name="str">
+        /// Format string to base this representation on.</param>
         /// <returns>The string representation of this object.</returns>
-        public virtual string ToString(string str)
+        public string ToString(string str)
         {
             var result = "";
             for (var i = 0; i < str.Length; i++)
             {
-                switch (str[i])
-                {
-                    case 'L':
-                        result += Location;
-                        break;
-                    case 'O':
-                        result += Origional;
-                        break;
-                    case 'C':
-                        result += Cleaned;
-                        break;
-                    case 'E':
-                        result += Extension;
-                        break;
-                    case '\\':
-                        i++;
-                        goto default;
-                    default:
-                        result += str[i];
-                        break;
-                }
+                result += ToString(ref str, ref i);
             }
             return result;
         }
