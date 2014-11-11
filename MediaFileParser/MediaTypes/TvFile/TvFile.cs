@@ -241,7 +241,8 @@ namespace MediaFileParser.MediaTypes.TvFile
         /// E:  File Extension
         /// T:  Title of the Episode
         /// N:  Name of the Episode
-        /// S:  Season Number of the Episode
+        /// S:  Season Number of the Episode (Padded to 2sf)
+        /// s:  Season Number of the Episode
         /// e:  Episode Number of the Episode
         /// </param>
         /// <returns>The string representation of this object.</returns>
@@ -253,29 +254,39 @@ namespace MediaFileParser.MediaTypes.TvFile
                 switch (c)
                 {
                     case 'T':
+                    {
                         result += Title;
                         break;
-
+                    }
                     case 'N':
+                    {
                         result += Name;
                         break;
-
+                    }
                     case 'S':
+                    {
                         result += Season.ToString("00");
                         break;
-
+                    }
+                    case 's':
+                    {
+                        result += Season;
+                        break;
+                    }
                     case 'e':
+                    {
+                        for (var i = 0; i < Episode.Count; i++)
                         {
-                            for (var i = 0; i < Episode.Count; i++)
-                            {
-                                result += Episode[i].ToString("00");
-                                result += (i + 1 != Episode.Count) ? "-" : "";
-                            }
-                            break;
+                            result += Episode[i].ToString("00");
+                            result += (i + 1 != Episode.Count) ? "-" : "";
                         }
+                        break;
+                    }
                     default:
+                    {
                         result += base.ToString(c.ToString(CultureInfo.InvariantCulture));
                         break;
+                    }
                 }
             }
             return result;
@@ -303,7 +314,7 @@ namespace MediaFileParser.MediaTypes.TvFile
         /// <summary>
         /// Storage of the output directory for this media type.
         /// </summary>
-        protected new static string TypeOutDirectory = "TV Shows|[ts(N)]|Season [ts(S)]";
+        protected new static string TypeOutDirectory = "TV Shows|[ts(N)]|Season [ts(s)]";
 
         /// <summary>
         /// Gets or sets the default directory name that this

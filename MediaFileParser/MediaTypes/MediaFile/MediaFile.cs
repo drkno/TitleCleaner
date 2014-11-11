@@ -193,14 +193,15 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// O:  Origional Filename
         /// C:  Cleaned Filename
         /// E:  File Extension
+        /// \:  Return Next Character
         /// </param>
         /// <returns>The string representation of this object.</returns>
         public virtual string ToString(string str)
         {
             var result = "";
-            foreach (var t in str)
+            for (var i = 0; i < str.Length; i++)
             {
-                switch (t)
+                switch (str[i])
                 {
                     case 'L':
                         result += Location;
@@ -214,8 +215,11 @@ namespace MediaFileParser.MediaTypes.MediaFile
                     case 'E':
                         result += Extension;
                         break;
+                    case '\\':
+                        i++;
+                        goto default;
                     default:
-                        result += t;
+                        result += str[i];
                         break;
                 }
             }
