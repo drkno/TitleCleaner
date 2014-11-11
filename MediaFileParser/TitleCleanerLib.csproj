@@ -46,6 +46,7 @@
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <DocumentationFile>bin\Release\TitleCleanerLib.xml</DocumentationFile>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject />
