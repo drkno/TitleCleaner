@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace MediaFileParser.MediaTypes.MediaFile
 {
@@ -13,23 +15,28 @@ namespace MediaFileParser.MediaTypes.MediaFile
         private const short YearStart = 1900;
 
         /// <summary>
-        /// Common junk strings that are contained in filenames.
+        /// Common long (len > 3) junk strings that are contained in filenames.
         /// </summary>
-        private static readonly string[] JunkStrings =
+        private static readonly string[] LongJunkStrings =
         {
-            "xvid", "hdtv", "uncut", "[vtv]", "dvdscr", "dvdrip", "rerip", "(",
-            "repack", "xor", "proper", "notv", "uncut", "xvid", "saints",
-            "caph", "aph", "cam", "camrip", "ts", "telesync", "pdvd", "wp",
-            "workprint", "tc", "telecine", "ppv", "ppvrip", "screener", "[hq]",
-            "dvdscreener", "bdscr", "ddc", "r5", "r5.line", "ac3", "hq", "real",
-            "dvd-rip", "dvdr", "dvd-full", "full-rip", "iso rip", "lossless",
-            "rip", "dvd-5", "ws", "720p", "ntsc", "dvd", "dts", "1080p", "dvd-9",
-            "dsr", "dsrip", "dthrip", "dvbrip", "pdtv", "tvrip", "hdtvrip",
-            "vodrip", "vodr", "bdrip", "brrip", "blu-ray", "bluray", "bdr", "bd5",
-            "bd9", "bd25", "bd50", "web-rip", "webrip", "web rip", "webdl", "720",
-            "web-dl", "web dl", "h.264", "x264", "divx", "r0", "r1", "r2", "1080",
-            "r3", "r4", "r6", "r7", "r8", "r9", "french", "truefrench", "unrated",
-            "limited", "stv", "rapax-249", "[dvdrip]", "korsub", "hdrip", "readnfo"
+            "xvid", "hdtv", "uncut", "[vtv]", "dvdscr", "dvdrip", "rerip", "repack", "proper",
+            "notv", "uncut", "xvid", "saints", "caph", "camrip", "telesync", "pdvd", "workprint",
+            "telecine", "ppvrip", "screener", "[hq]", "dvdscreener", "bdscr", "r5.line", "real",
+            "dvd-rip", "dvdr", "dvd-full", "full-rip", "lossless", "dvd-5", "720p", "ntsc",
+            "1080p", "dvd-9", "dsrip", "dthrip", "dvbrip", "pdtv", "tvrip", "hdtvrip", "vodrip",
+            "vodr", "bdrip", "brrip", "blu-ray", "bluray", "bd25", "bd50", "web-rip", "webrip",
+            "webdl", "web-dl", "h.264", "x264", "divx", "1080", "french", "truefrench", "unrated",
+            "limited", "rapax-249", "[dvdrip]", "korsub", "hdrip", "readnfo"
+        };
+
+        /// <summary>
+        /// Common short (len less than or equal to 3) junk strings that are contained in filenames.
+        /// </summary>
+        private static readonly HashSet<string> ShortJunkStrings = new HashSet<string>
+        {
+            "(", "xor","aph", "cam", "ts", "wp", "tc",  "ppv", "ddc", "r5",  "ac3", "hq", "rip", 
+            "ws", "dvd", "dts", "dsr", "bdr", "bd5", "bd9","720", "r0", "r1", "r2", "r3", "r4",
+            "r6", "r7", "r8", "r9", "stv"
         };
 
         /// <summary>
@@ -40,25 +47,19 @@ namespace MediaFileParser.MediaTypes.MediaFile
             var year = -1;
             for (var i = 1; i < SectorList.Count; i++)
             {
+                var sec = SectorList[i].ToLower().Trim();
+
                 int temp;
-                if (int.TryParse(SectorList[i], out temp) && temp > YearStart && temp <= DateTime.Now.Year && i > year)
+                if (int.TryParse(sec, out temp) && temp > YearStart && temp <= DateTime.Now.Year && i > year)
                 {
                     year = i;   // we've found the year (we think)
                 }
 
-                var sec = SectorList[i].ToLower().Trim();
-                foreach (var junkString in JunkStrings)
-                {
-                    if (SectorList[i].Length <= 3)
-                    {
-                        if (sec != junkString) continue;
-                        SectorRangeRemove(i, year);
-                        return;
-                    }
-                    if (!sec.StartsWith(junkString)) continue;
-                    SectorRangeRemove(i, year);
-                    return;
-                }
+                if ((sec.Length > 3 || !ShortJunkStrings.Contains(sec)) &&
+                    (sec.Length <= 3 || (!LongJunkStrings.Any(sec.StartsWith) && !ShortJunkStrings.Any(sec.StartsWith))))
+                    continue;
+                SectorRangeRemove(i, year);
+                return;
             }
             SectorRangeRemove(SectorList.Count, year);
         }
