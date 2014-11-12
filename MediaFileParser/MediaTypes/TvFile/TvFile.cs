@@ -41,13 +41,10 @@ namespace MediaFileParser.MediaTypes.TvFile
         private uint GetSeasonFromDir()
         {
             var match = Regex.Match(Folder, "((?<=((Season|Series).))[1-9][0-9]*|Specials?)", RegexOptions.IgnoreCase);
-            if (match.Success && !Regex.IsMatch(Folder, "Specials", RegexOptions.IgnoreCase))
-            {
-                uint season;
-                uint.TryParse(match.Value, out season);
-                return season;
-            }
-            return 0;
+            if (!match.Success || Regex.IsMatch(Folder, "Specials", RegexOptions.IgnoreCase)) return 0;
+            uint season;
+            uint.TryParse(match.Value, out season);
+            return season;
         }
 
         /// <summary>
