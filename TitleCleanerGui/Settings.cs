@@ -221,6 +221,14 @@ namespace TitleCleanerGui
             _output = textBoxOutputDir.Text;
             _fileType = comboBoxFileType.SelectedIndex;
             _mode = comboBoxMode.SelectedIndex;
+
+            if ((_mode == 1 || _mode == 2) && _input == "None")
+            {
+                MessageBox.Show("An input file must be specified in this mode.", "Title Cleaner", MessageBoxButtons.OK,
+                    MessageBoxIcon.Warning);
+                return;
+            }
+
             DialogResult = DialogResult.OK;
         }
 

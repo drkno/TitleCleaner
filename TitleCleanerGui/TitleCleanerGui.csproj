@@ -64,6 +64,12 @@
     <Compile Include="TvdbSelector.Designer.cs">
       <DependentUpon>TvdbSelector.cs</DependentUpon>
     </Compile>
+    <Compile Include="TvdbSeries.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="TvdbSeries.Designer.cs">
+      <DependentUpon>TvdbSeries.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="MainWindow.resx">
       <DependentUpon>MainWindow.cs</DependentUpon>
     </EmbeddedResource>
@@ -81,6 +87,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="TvdbSelector.resx">
       <DependentUpon>TvdbSelector.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TvdbSeries.resx">
+      <DependentUpon>TvdbSeries.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

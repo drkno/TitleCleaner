@@ -1,22 +1,34 @@
 ﻿using System;
 using System.Windows.Forms;
-using MediaFileParser.MediaTypes.TvFile.Tvdb;
+using TvdbSeriesB = MediaFileParser.MediaTypes.TvFile.Tvdb.TvdbSeries;
 
 namespace TitleCleanerGui
 {
     public partial class TvdbSelector : Form
     {
-        private TvdbSeries[] _seriesSearch;
-
-        public TvdbSelector()
+        private uint _selection;
+        public TvdbSelector(ref TvdbSeriesB[] seriesSearch, ref string seriesName)
         {
             InitializeComponent();
+            Text = "Which does " + seriesName + " refer to?";
+
+            for (var i = 0; i < seriesSearch.Length; i++)
+            {
+                var seriesControl = new TvdbSeries(seriesSearch[i]);
+                seriesControl.SeriesSelected += SeriesSelected;
+                tableLayoutPanelSeriesSelection.Controls.Add(seriesControl, 0, i);
+                seriesControl.Show();
+            }
         }
 
-        public TvdbSelector(ref TvdbSeries[] seriesSearch, ref string seriesName)
+        private void SeriesSelected(object sender, EventArgs eventArgs)
         {
-            _seriesSearch = seriesSearch;
-            Text = "Which does " + seriesName + " refer to?";
+            var series = sender as TvdbSeriesB;
+            if (series != null)
+            {
+                _selection = series.Id;
+            }
+            Close();
         }
 
         public override sealed string Text
@@ -27,7 +39,12 @@ namespace TitleCleanerGui
 
         public uint GetResult()
         {
-            throw new NotImplementedException();
+            return _selection;
+        }
+
+        private void ButtonNoneClick(object sender, EventArgs e)
+        {
+            SeriesSelected(null, null);
         }
     }
 }

@@ -4,8 +4,8 @@ using System.Threading;
 using System.Windows.Forms;
 using MediaFileParser.MediaTypes.MediaFile;
 using MediaFileParser.MediaTypes.TvFile;
-using MediaFileParser.MediaTypes.TvFile.Tvdb;
 using MediaFileParser.ModeManagers;
+using TvdbSeriesB = MediaFileParser.MediaTypes.TvFile.Tvdb.TvdbSeries;
 
 namespace TitleCleanerGui
 {
@@ -27,7 +27,7 @@ namespace TitleCleanerGui
             TvFile.TvdbSearchSelectionRequired += TvFileTvdbSearchSelectionRequired;
         }
 
-        private static uint TvFileTvdbSearchSelectionRequired(TvdbSeries[] seriesSearch, string seriesName)
+        private static uint TvFileTvdbSearchSelectionRequired(TvdbSeriesB[] seriesSearch, string seriesName)
         {
             var dialog = new TvdbSelector(ref seriesSearch, ref seriesName);
             dialog.ShowDialog();
@@ -39,7 +39,11 @@ namespace TitleCleanerGui
             var settings = new Settings();
             if (settings.ShowDialog() != DialogResult.OK)
             {
-                Environment.Exit(-1);
+                if (string.IsNullOrWhiteSpace(_inputDir))
+                {
+                    Environment.Exit(-1);
+                }
+                return;
             }
 
             _confirm = settings.GetConfirm();
@@ -53,7 +57,7 @@ namespace TitleCleanerGui
                 statusLabel.Text = "";
                 toolStripMenuItemPerform.Enabled = true;
                 _fileManager = new FileManager(_confirm);
-                _fileManager.ConfirmAutomaticMove += fileManager_ConfirmAutomaticMove;
+                _fileManager.ConfirmAutomaticMove += FileManagerConfirmAutomaticMove;
                 _fileManager.OnFileMove += fileManager_OnFileMove;
                 _fileManager.OnFileMoveFailed += fileManager_OnFileMoveFailed;
 
@@ -70,15 +74,15 @@ namespace TitleCleanerGui
             {
                 toolStripMenuItemPerform.Enabled = false;
                 _testManager = new TestManager(_inputDir, _type);
-                _testManager.TestCaseDidFail += _testManager_TestCaseDidFail;
-                _testManager.TestCaseDidPass += _testManager_TestCaseDidPass;
-                _testManager.TestCaseEncounteredError += _testManager_TestCaseEncounteredError;
+                _testManager.TestCaseDidFail += TestManagerTestCaseDidFail;
+                _testManager.TestCaseDidPass += TestManagerTestCaseDidPass;
+                _testManager.TestCaseEncounteredError += TestManagerTestCaseEncounteredError;
                 var thread = new Thread(_testManager.RunTests);
                 thread.Start();
             }
         }
 
-        void _testManager_TestCaseEncounteredError(TestManager.TestCase testCase)
+        void TestManagerTestCaseEncounteredError(TestManager.TestCase testCase)
         {
             var listViewItem = new ListViewItem { Checked = false, BackColor = Color.Yellow, Text = "Erro" };
             listViewItem.SubItems.Add(testCase.OrigionalName);
@@ -89,7 +93,7 @@ namespace TitleCleanerGui
             statusLabel.Text = _pass + " Passed, " + _fail + " Failed.";
         }
 
-        void _testManager_TestCaseDidPass(TestManager.TestCase testCase)
+        void TestManagerTestCaseDidPass(TestManager.TestCase testCase)
         {
             var listViewItem = new ListViewItem { Checked = true, BackColor = Color.LawnGreen, Text = "Pass" };
             listViewItem.SubItems.Add(testCase.OrigionalName);
@@ -100,7 +104,7 @@ namespace TitleCleanerGui
             statusLabel.Text = _pass + " Passed, " + _fail + " Failed.";
         }
 
-        void _testManager_TestCaseDidFail(TestManager.TestCase testCase)
+        void TestManagerTestCaseDidFail(TestManager.TestCase testCase)
         {
             var listViewItem = new ListViewItem { Checked = false, BackColor = Color.Red, Text = "Fail" };
             listViewItem.SubItems.Add(testCase.OrigionalName);
@@ -111,19 +115,28 @@ namespace TitleCleanerGui
             statusLabel.Text = _pass + " Passed, " + _fail + " Failed.";
         }
 
-        void fileManager_OnFileMoveFailed(MediaFileParser.MediaTypes.MediaFile.MediaFile file, string destination)
+        private void fileManager_OnFileMoveFailed(MediaFile file, string destination)
         {
-            throw new NotImplementedException();
+            listViewMediaFiles.CheckedItems[(int)(_fail + _pass)].BackColor = Color.Red;
+            _fail++;
+            if ((_fail + _pass) % 500 != 0 && (_fail + _pass) != _mediaFiles.Length) return;
+            statusLabel.Text = _pass + " Moved/Renamed, " + _fail + " Failed.";
         }
 
-        void fileManager_OnFileMove(MediaFileParser.MediaTypes.MediaFile.MediaFile file, string destination)
+        private void fileManager_OnFileMove(MediaFile file, string destination)
         {
-                throw new NotImplementedException();
+            listViewMediaFiles.CheckedItems[(int) (_fail + _pass)].BackColor = Color.LawnGreen;
+            _pass++;
+            if ((_fail + _pass) % 500 != 0 && (_fail + _pass) != _mediaFiles.Length) return;
+            statusLabel.Text = _pass + " Moved/Renamed, " + _fail + " Failed.";
         }
 
-        bool fileManager_ConfirmAutomaticMove(MediaFileParser.MediaTypes.MediaFile.MediaFile file, string destination)
+        private static bool FileManagerConfirmAutomaticMove(MediaFile file, string destination)
         {
-            throw new NotImplementedException();
+            var result = MessageBox.Show(
+                "Do you want to move\n" + file.ToString("O.E") + "\nTo\n" + file + "\nIn location " + destination + "?",
+                "Title Cleaner", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            return result == DialogResult.Yes;
         }
 
         private void ExitMenuItemClick(object sender, EventArgs e)
@@ -133,6 +146,8 @@ namespace TitleCleanerGui
 
         private void OptionsToolStripMenuItemClick(object sender, EventArgs e)
         {
+            _pass = 0;
+            _fail = 0;
             listViewMediaFiles.Items.Clear();
             RefreshView();
         }
@@ -155,19 +170,9 @@ namespace TitleCleanerGui
 
         private void ToolStripMenuItemPerformClick(object sender, EventArgs e)
         {
-            if (_mode != 2)
+            foreach (int i in listViewMediaFiles.CheckedIndices)
             {
-                foreach (int i in listViewMediaFiles.CheckedIndices)
-                {
-                    _fileManager.MoveFile(_mediaFiles[i], _outputDir);
-                }
-            }
-            else
-            {
-                for (int i = 0; i < _testManager.Count; i++)
-                {
-                    
-                }
+                _fileManager.MoveFile(_mediaFiles[i], _outputDir);
             }
         }
 
