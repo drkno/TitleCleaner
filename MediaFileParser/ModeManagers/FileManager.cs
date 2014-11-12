@@ -244,7 +244,7 @@ namespace MediaFileParser.ModeManagers
         /// </summary>
         /// <param name="fileFolder">File or directory.</param>
         /// <returns>List of paths.</returns>
-        private IEnumerable<string> GetFileList(string fileFolder)
+        private static IEnumerable<string> GetFileList(string fileFolder)
         {
             return File.Exists(fileFolder) ? new[] { Path.GetFullPath(fileFolder) } : Directory.GetFiles(fileFolder, "*.*", SearchOption.AllDirectories).Where(file => FileExts.Any(file.EndsWith));
         }
