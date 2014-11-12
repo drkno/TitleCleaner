@@ -6,9 +6,18 @@ Also incorporates functionality to retrieve missing TV Show titles from the TVDB
 
 If there is insufficient information the program will make a best effort approach when trying to find names.
 
+Library:<br />
+---
+Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0/TitleCleanerLib.zip).
+Examples of how to use are the tc-cli and tc-gui projects. Also included is XML documentation and a pdb debugging file.
+
+GUI:<br />
+---
+Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0/tc-gui.zip)
+
 CLI:<br />
 ---
-Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0-beta.1/TitleCleaner.zip)
+Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0/tc-cli.zip)
 <br /><code>tc-cli.exe [OPTION]...</code>
 
 	If no options are specified defaults will be used.
