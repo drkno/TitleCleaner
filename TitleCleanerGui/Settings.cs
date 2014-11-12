@@ -121,6 +121,7 @@ namespace TitleCleanerGui
                     labelInputDirDesc.Text = "Directory to read files from.";
                     labelOutput.Text = "Output Directory";
                     labelDirFiles.Text = "Directory to move files to.";
+                    textBoxInputDir.Text = "Current Directory";
                     break;
                 }
                 case 1:
@@ -129,6 +130,7 @@ namespace TitleCleanerGui
                     labelInputDirDesc.Text = "File to clean the name of.";
                     labelOutput.Text = "Output Directory";
                     labelDirFiles.Text = "Directory to move files to.";
+                    textBoxInputDir.Text = "None";
                     break;
                 }
                 case 2:
@@ -137,10 +139,10 @@ namespace TitleCleanerGui
                     labelInputDirDesc.Text = "File containing the tests to be run.";
                     labelOutput.Text = "Test CSV Output";
                     labelDirFiles.Text = "Location to output a CSV file summarising the tests.";
+                    textBoxInputDir.Text = "None";
                     break;
                 }
             }
-            textBoxInputDir.Text = "Current Directory";
             textBoxOutputDir.Text = "None";
             textBoxTvFolder.Enabled = false;
             textBoxMovieFolder.Enabled = false;
@@ -248,12 +250,12 @@ namespace TitleCleanerGui
 
         public string GetInput()
         {
-            return _input;
+            return _input == "Current Directory" || _input == "None" ? Environment.CurrentDirectory : _input;
         }
 
         public string GetOuput()
         {
-            return _output;
+            return _output == "None" ? "" : _output;
         }
 
         public Type GetMediaType()
