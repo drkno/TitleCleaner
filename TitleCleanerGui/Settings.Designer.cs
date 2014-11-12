@@ -305,7 +305,7 @@
             this.label9.Size = new System.Drawing.Size(312, 30);
             this.label9.TabIndex = 21;
             this.label9.Text = "Name to rename files to. Options: L=Location, O=OrigionalName, C=CleanedName, E=F" +
-    "ileExtension";
+    "ileExtension, \\=EscapeNext";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label4
@@ -403,7 +403,8 @@
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(312, 30);
             this.label2.TabIndex = 27;
-            this.label2.Text = "Directory to store moved TV files in.";
+            this.label2.Text = "Directory to store moved TV files in. Special functions: |=Path Separator, ts(x)=" +
+    "Name where x is options from TV Name";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // textBoxTvFolder
@@ -467,7 +468,8 @@
             this.label15.Name = "label15";
             this.label15.Size = new System.Drawing.Size(312, 30);
             this.label15.TabIndex = 28;
-            this.label15.Text = "Directory to store moved Movie files in.";
+            this.label15.Text = "Directory to store moved Movie files in.  Special functions: |=Path Separator, ts" +
+    "(x)=Name where x is options from Movie Name\r\n";
             this.label15.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // textBoxMovieFolder
