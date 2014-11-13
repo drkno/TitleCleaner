@@ -41,7 +41,7 @@
             this.uncheckSelectionToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
             this.optionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.listViewMediaFiles = new System.Windows.Forms.ListView();
+            this.listViewMediaFiles = new TitleCleanerGui.ListViewNoFlicker();
             this.columnEnabled = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnOrigional = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnRenamed = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -59,7 +59,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.Professional;
-            this.menuStrip1.Size = new System.Drawing.Size(853, 24);
+            this.menuStrip1.Size = new System.Drawing.Size(921, 24);
             this.menuStrip1.TabIndex = 0;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -162,17 +162,21 @@
             // 
             // listViewMediaFiles
             // 
+            this.listViewMediaFiles.AllowColumnReorder = true;
+            this.listViewMediaFiles.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.listViewMediaFiles.CheckBoxes = true;
             this.listViewMediaFiles.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnEnabled,
             this.columnOrigional,
             this.columnRenamed});
-            this.listViewMediaFiles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.listViewMediaFiles.FullRowSelect = true;
             this.listViewMediaFiles.GridLines = true;
-            this.listViewMediaFiles.Location = new System.Drawing.Point(0, 24);
+            this.listViewMediaFiles.Location = new System.Drawing.Point(0, 27);
             this.listViewMediaFiles.Name = "listViewMediaFiles";
-            this.listViewMediaFiles.Size = new System.Drawing.Size(853, 290);
+            this.listViewMediaFiles.Size = new System.Drawing.Size(921, 267);
+            this.listViewMediaFiles.Sorting = System.Windows.Forms.SortOrder.Ascending;
             this.listViewMediaFiles.TabIndex = 1;
             this.listViewMediaFiles.UseCompatibleStateImageBehavior = false;
             this.listViewMediaFiles.View = System.Windows.Forms.View.Details;
@@ -180,7 +184,7 @@
             // columnEnabled
             // 
             this.columnEnabled.Text = "";
-            this.columnEnabled.Width = 21;
+            this.columnEnabled.Width = 73;
             // 
             // columnOrigional
             // 
@@ -198,7 +202,7 @@
             this.statusLabel});
             this.statusStrip1.Location = new System.Drawing.Point(0, 292);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(853, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(921, 22);
             this.statusStrip1.TabIndex = 2;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -211,7 +215,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(853, 314);
+            this.ClientSize = new System.Drawing.Size(921, 314);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.listViewMediaFiles);
             this.Controls.Add(this.menuStrip1);
@@ -232,7 +236,7 @@
         #endregion
 
         private System.Windows.Forms.MenuStrip menuStrip1;
-        private System.Windows.Forms.ListView listViewMediaFiles;
+        private ListViewNoFlicker listViewMediaFiles;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ColumnHeader columnEnabled;
         private System.Windows.Forms.ColumnHeader columnOrigional;

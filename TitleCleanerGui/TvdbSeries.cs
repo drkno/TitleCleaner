@@ -1,12 +1,16 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Windows.Forms;
+
+#endregion
 
 namespace TitleCleanerGui
 {
     public partial class TvdbSeries : UserControl
     {
-        public EventHandler SeriesSelected { get; set; }
         private readonly MediaFileParser.MediaTypes.TvFile.Tvdb.TvdbSeries _series;
+
         public TvdbSeries(MediaFileParser.MediaTypes.TvFile.Tvdb.TvdbSeries series)
         {
             _series = series;
@@ -14,6 +18,8 @@ namespace TitleCleanerGui
             labelTitle.Text = _series.SeriesName;
             richTextBoxDescription.Text = _series.Overview;
         }
+
+        public EventHandler SeriesSelected { get; set; }
 
         private void ButtonSelectClick(object sender, EventArgs e)
         {

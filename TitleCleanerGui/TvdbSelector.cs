@@ -1,12 +1,17 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Windows.Forms;
 using TvdbSeriesB = MediaFileParser.MediaTypes.TvFile.Tvdb.TvdbSeries;
+
+#endregion
 
 namespace TitleCleanerGui
 {
     public partial class TvdbSelector : Form
     {
         private uint _selection;
+
         public TvdbSelector(ref TvdbSeriesB[] seriesSearch, ref string seriesName)
         {
             InitializeComponent();
@@ -21,6 +26,12 @@ namespace TitleCleanerGui
             }
         }
 
+        public override sealed string Text
+        {
+            get { return base.Text; }
+            set { base.Text = value; }
+        }
+
         private void SeriesSelected(object sender, EventArgs eventArgs)
         {
             var series = sender as TvdbSeriesB;
@@ -29,12 +40,6 @@ namespace TitleCleanerGui
                 _selection = series.Id;
             }
             Close();
-        }
-
-        public override sealed string Text
-        {
-            get { return base.Text; }
-            set { base.Text = value; }
         }
 
         public uint GetResult()

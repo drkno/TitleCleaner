@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
@@ -7,19 +9,23 @@ using MediaFileParser.MediaTypes.TvFile;
 using MediaFileParser.ModeManagers;
 using TvdbSeriesB = MediaFileParser.MediaTypes.TvFile.Tvdb.TvdbSeries;
 
+#endregion
+
 namespace TitleCleanerGui
 {
     public partial class MainWindow : Form
     {
         private bool _confirm;
-        private string _inputDir;
-        private string _outputDir;
-        private Type _type;
-        private int _mode;
+        private uint _fail;
         private FileManager _fileManager;
-        private TestManager _testManager;
+        private bool _initialRun = true;
+        private string _inputDir;
         private MediaFile[] _mediaFiles;
-        private uint _pass, _fail;
+        private int _mode;
+        private string _outputDir;
+        private uint _pass;
+        private TestManager _testManager;
+        private Type _type;
 
         public MainWindow()
         {
@@ -82,53 +88,53 @@ namespace TitleCleanerGui
             }
         }
 
-        void TestManagerTestCaseEncounteredError(TestManager.TestCase testCase)
+        private void TestManagerTestCaseEncounteredError(TestManager.TestCase testCase)
         {
-            var listViewItem = new ListViewItem { Checked = false, BackColor = Color.Yellow, Text = "Erro" };
+            var listViewItem = new ListViewItem {Checked = false, BackColor = Color.Yellow, Text = "Error"};
             listViewItem.SubItems.Add(testCase.OrigionalName);
             listViewItem.SubItems.Add(testCase.MediaFile.ToString());
             Invoke(new MethodInvoker(() => listViewMediaFiles.Items.Add(listViewItem)));
             _fail++;
-            if ((_fail + _pass) % 500 != 0 && (_fail + _pass) != _testManager.Count) return;
-            statusLabel.Text = _pass + " Passed, " + _fail + " Failed.";
+            statusLabel.Text = _pass + " Passed, " + _fail + " Failed." +
+                               ((_pass + _fail == _testManager.Count) ? " Done." : "");
         }
 
-        void TestManagerTestCaseDidPass(TestManager.TestCase testCase)
+        private void TestManagerTestCaseDidPass(TestManager.TestCase testCase)
         {
-            var listViewItem = new ListViewItem { Checked = true, BackColor = Color.LawnGreen, Text = "Pass" };
+            var listViewItem = new ListViewItem {Checked = true, BackColor = Color.LawnGreen, Text = "Pass"};
             listViewItem.SubItems.Add(testCase.OrigionalName);
             listViewItem.SubItems.Add(testCase.MediaFile.ToString());
             Invoke(new MethodInvoker(() => listViewMediaFiles.Items.Add(listViewItem)));
             _pass++;
-            if ((_fail + _pass)%500 != 0 && (_fail + _pass) != _testManager.Count) return;
-            statusLabel.Text = _pass + " Passed, " + _fail + " Failed.";
+            statusLabel.Text = _pass + " Passed, " + _fail + " Failed." +
+                               ((_pass + _fail == _testManager.Count) ? " Done." : "");
         }
 
-        void TestManagerTestCaseDidFail(TestManager.TestCase testCase)
+        private void TestManagerTestCaseDidFail(TestManager.TestCase testCase)
         {
-            var listViewItem = new ListViewItem { Checked = false, BackColor = Color.Red, Text = "Fail" };
+            var listViewItem = new ListViewItem {Checked = false, BackColor = Color.Red, Text = "Fail"};
             listViewItem.SubItems.Add(testCase.OrigionalName);
             listViewItem.SubItems.Add(testCase.MediaFile.ToString());
             Invoke(new MethodInvoker(() => listViewMediaFiles.Items.Add(listViewItem)));
             _fail++;
-            if ((_fail + _pass)%500 != 0 && (_fail + _pass) != _testManager.Count) return;
-            statusLabel.Text = _pass + " Passed, " + _fail + " Failed.";
+            statusLabel.Text = _pass + " Passed, " + _fail + " Failed." +
+                               ((_pass + _fail == _testManager.Count) ? " Done." : "");
         }
 
         private void fileManager_OnFileMoveFailed(MediaFile file, string destination)
         {
-            listViewMediaFiles.CheckedItems[(int)(_fail + _pass)].BackColor = Color.Red;
+            listViewMediaFiles.CheckedItems[(int) (_fail + _pass)].BackColor = Color.Red;
             _fail++;
-            if ((_fail + _pass) % 500 != 0 && (_fail + _pass) != _mediaFiles.Length) return;
-            statusLabel.Text = _pass + " Moved/Renamed, " + _fail + " Failed.";
+            statusLabel.Text = _pass + " Moved/Renamed, " + _fail + " Failed." +
+                               ((_pass + _fail == _testManager.Count) ? " Done." : "");
         }
 
         private void fileManager_OnFileMove(MediaFile file, string destination)
         {
             listViewMediaFiles.CheckedItems[(int) (_fail + _pass)].BackColor = Color.LawnGreen;
             _pass++;
-            if ((_fail + _pass) % 500 != 0 && (_fail + _pass) != _mediaFiles.Length) return;
-            statusLabel.Text = _pass + " Moved/Renamed, " + _fail + " Failed.";
+            statusLabel.Text = _pass + " Moved/Renamed, " + _fail + " Failed." +
+                               ((_pass + _fail == _testManager.Count) ? " Done." : "");
         }
 
         private static bool FileManagerConfirmAutomaticMove(MediaFile file, string destination)
@@ -176,7 +182,6 @@ namespace TitleCleanerGui
             }
         }
 
-        private bool _initialRun = true;
         private void MainWindowPaint(object sender, PaintEventArgs e)
         {
             if (!_initialRun) return;
@@ -196,7 +201,7 @@ namespace TitleCleanerGui
         {
             foreach (var selectedItem in listViewMediaFiles.SelectedItems)
             {
-                ((ListViewItem)selectedItem).Checked = false;
+                ((ListViewItem) selectedItem).Checked = false;
             }
         }
     }

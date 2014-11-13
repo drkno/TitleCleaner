@@ -1,13 +1,23 @@
-﻿using System;
+﻿#region
+
+using System;
 using System.Windows.Forms;
 using MediaFileParser.MediaTypes.MediaFile;
 using MediaFileParser.MediaTypes.MovieFile;
 using MediaFileParser.MediaTypes.TvFile;
 
+#endregion
+
 namespace TitleCleanerGui
 {
     public partial class Settings : Form
     {
+        private bool _confirm;
+        private int _fileType;
+        private string _input;
+        private int _mode;
+        private string _output;
+
         public Settings()
         {
             InitializeComponent();
@@ -29,10 +39,10 @@ namespace TitleCleanerGui
                 case 1:
                 {
                     var directoryDialog = new FolderBrowserDialog
-                    {
-                        Description = "Select directory to output files to.",
-                        ShowNewFolderButton = false
-                    };
+                                          {
+                                              Description = "Select directory to output files to.",
+                                              ShowNewFolderButton = false
+                                          };
 
                     if (directoryDialog.ShowDialog() != DialogResult.OK)
                     {
@@ -42,7 +52,7 @@ namespace TitleCleanerGui
                     res = directoryDialog.SelectedPath;
                     break;
                 }
-                /*case 1:
+                    /*case 1:
                 {
                     var openFileDialog = new OpenFileDialog
                     {
@@ -66,13 +76,13 @@ namespace TitleCleanerGui
                 case 2:
                 {
                     var openFileDialog = new SaveFileDialog
-                    {
-                        CheckPathExists = true,
-                        CheckFileExists = true,
-                        AutoUpgradeEnabled = true,
-                        Title = "Select output test file.",
-                        Filter = "*.csv|*.csv"
-                    };
+                                         {
+                                             CheckPathExists = true,
+                                             CheckFileExists = true,
+                                             AutoUpgradeEnabled = true,
+                                             Title = "Select output test file.",
+                                             Filter = "*.csv|*.csv"
+                                         };
 
                     if (openFileDialog.ShowDialog() != DialogResult.OK)
                     {
@@ -154,33 +164,33 @@ namespace TitleCleanerGui
             switch (comboBoxMode.SelectedIndex)
             {
                 case 0:
+                {
+                    var directoryDialog = new FolderBrowserDialog
+                                          {
+                                              Description = "Select directory to clean files in.",
+                                              ShowNewFolderButton = false
+                                          };
+
+                    if (directoryDialog.ShowDialog() != DialogResult.OK)
                     {
-                        var directoryDialog = new FolderBrowserDialog
-                        {
-                            Description = "Select directory to clean files in.",
-                            ShowNewFolderButton = false
-                        };
-
-                        if (directoryDialog.ShowDialog() != DialogResult.OK)
-                        {
-                            return;
-                        }
-
-                        res = directoryDialog.SelectedPath;
-                        break;
+                        return;
                     }
+
+                    res = directoryDialog.SelectedPath;
+                    break;
+                }
                 case 1:
                 {
                     var openFileDialog = new OpenFileDialog
-                    {
-                        CheckPathExists = true,
-                        CheckFileExists = true,
-                        AutoUpgradeEnabled = true,
-                        Multiselect = false,
-                        Title = "Select a media file to clean.",
-                        Filter =
-                            "*.mov|*.mov|*.mkv|*.mkv|*.flv|*.flv|*.avi|*.avi|*.mp4|*.mp4|*.mpg|*.mpg|*.vob|*.vob|*.m4v|*.m4v|*.mpeg|*.mpeg|*.ogg|*.ogg|*.swf|*.swf|*.wmv|*.wmv|*.wtv|*.wtv|*.h264|*.h264"
-                    };
+                                         {
+                                             CheckPathExists = true,
+                                             CheckFileExists = true,
+                                             AutoUpgradeEnabled = true,
+                                             Multiselect = false,
+                                             Title = "Select a media file to clean.",
+                                             Filter =
+                                                 "*.mov|*.mov|*.mkv|*.mkv|*.flv|*.flv|*.avi|*.avi|*.mp4|*.mp4|*.mpg|*.mpg|*.vob|*.vob|*.m4v|*.m4v|*.mpeg|*.mpeg|*.ogg|*.ogg|*.swf|*.swf|*.wmv|*.wmv|*.wtv|*.wtv|*.h264|*.h264"
+                                         };
 
                     if (openFileDialog.ShowDialog() != DialogResult.OK)
                     {
@@ -191,25 +201,25 @@ namespace TitleCleanerGui
                     break;
                 }
                 case 2:
+                {
+                    var openFileDialog = new OpenFileDialog
+                                         {
+                                             CheckPathExists = true,
+                                             CheckFileExists = true,
+                                             AutoUpgradeEnabled = true,
+                                             Multiselect = false,
+                                             Title = "Select test file.",
+                                             Filter = "*.csv|*.csv"
+                                         };
+
+                    if (openFileDialog.ShowDialog() != DialogResult.OK)
                     {
-                        var openFileDialog = new OpenFileDialog
-                        {
-                            CheckPathExists = true,
-                            CheckFileExists = true,
-                            AutoUpgradeEnabled = true,
-                            Multiselect = false,
-                            Title = "Select test file.",
-                            Filter = "*.csv|*.csv"
-                        };
-
-                        if (openFileDialog.ShowDialog() != DialogResult.OK)
-                        {
-                            return;
-                        }
-
-                        res = openFileDialog.FileName;
-                        break;
+                        return;
                     }
+
+                    res = openFileDialog.FileName;
+                    break;
+                }
             }
             textBoxInputDir.Text = res;
         }
@@ -247,10 +257,6 @@ namespace TitleCleanerGui
             DialogResult = DialogResult.Cancel;
         }
 
-        private bool _confirm;
-        private string _input, _output;
-        private int _fileType, _mode;
-
         public bool GetConfirm()
         {
             return _confirm;
@@ -270,10 +276,14 @@ namespace TitleCleanerGui
         {
             switch (_fileType)
             {
-                case 0: return null;
-                case 1: return typeof (TvFile);
-                case 2: return typeof (MovieFile);
-                default: goto case 0;
+                case 0:
+                    return null;
+                case 1:
+                    return typeof (TvFile);
+                case 2:
+                    return typeof (MovieFile);
+                default:
+                    goto case 0;
             }
         }
 
