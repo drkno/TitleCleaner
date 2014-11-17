@@ -193,6 +193,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// O:  Origional Filename
         /// C:  Cleaned Filename
         /// E:  File Extension
+        /// Y:  Year (or if year is unknown, current year)
         /// \:  Return Next Character
         /// </param>
         /// <param name="ind">The index of the character to base the string representation on.</param>
@@ -216,6 +217,10 @@ namespace MediaFileParser.MediaTypes.MediaFile
                 case 'E':
                 {
                     return Extension;
+                }
+                case 'Y':
+                {
+                    return Year <= 0 ? DateTime.Now.Year.ToString(CultureInfo.InvariantCulture) : Year.ToString(CultureInfo.InvariantCulture);
                 }
                 case '\\':
                 {
