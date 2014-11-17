@@ -305,7 +305,7 @@
             this.label9.Size = new System.Drawing.Size(312, 30);
             this.label9.TabIndex = 21;
             this.label9.Text = "Name to rename files to. Options: L=Location, O=OrigionalName, C=CleanedName, E=F" +
-    "ileExtension, \\=EscapeNext";
+    "ileExtension, Y=FileYear (current if unknown), \\=EscapeNext";
             this.label9.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // label4
