@@ -194,6 +194,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// C:  Cleaned Filename
         /// E:  File Extension
         /// Y:  Year (or if year is unknown, current year)
+        /// ?:  Only return next character group if it is not null/empty/whitespace
         /// \:  Return Next Character
         /// </param>
         /// <param name="ind">The index of the character to base the string representation on.</param>
@@ -222,6 +223,32 @@ namespace MediaFileParser.MediaTypes.MediaFile
                 {
                     return Year <= 0 ? DateTime.Now.Year.ToString(CultureInfo.InvariantCulture) : Year.ToString(CultureInfo.InvariantCulture);
                 }
+                case '?':
+                {
+                    var inc = 0;
+                    var sub = "";
+                    if (ind + 1 != str.Length)
+                    {
+                        if (str[ind + 1] == '(')
+                        {
+                            inc = GetBracketedString(ref str, ind + 1, out sub);
+                        }
+                        else
+                        {
+                            inc = 1;
+                            var ind1 = ind + 1;
+                            sub = ToString(ref str, ref ind1);
+                        }
+                    }
+
+                    if (string.IsNullOrWhiteSpace(sub))
+                    {
+                        sub = "";
+                    }
+
+                    ind += inc;
+                    return sub;
+                }
                 case '\\':
                 {
                     ind++;
@@ -248,6 +275,53 @@ namespace MediaFileParser.MediaTypes.MediaFile
                 result += ToString(ref str, ref i);
             }
             return result;
+        }
+
+        /// <summary>
+        /// Gets a string between two matching brackets.
+        /// </summary>
+        /// <param name="input">Input string to get substring from.</param>
+        /// <param name="openBracket">Index of opening bracket.</param>
+        /// <param name="output">String to store result in. If no matching bracket is found 
+        /// the output value will be null.</param>
+        /// <returns>Length of the bracketed string (including brackets).</returns>
+        private int GetBracketedString(ref string input, int openBracket, out string output)
+        {
+            var ind1 = openBracket + 1;
+            var stack = new Stack<char>();
+            stack.Push(input[openBracket]);
+            for (; ind1 < input.Length; ind1++)
+            {
+                if (stack.Count == 0)
+                {
+                    break;
+                }
+                switch (input[ind1])
+                {
+                    case '(':
+                    {
+                        stack.Push(input[ind1]);
+                        break; 
+                    }
+                    case ')':
+                    {
+                        stack.Pop();
+                        break;
+                    }
+                }
+            }
+
+            if (stack.Count == 0)
+            {
+                output = input.Substring(openBracket+1, ind1 - 2);
+                output = ToString(output);
+            }
+            else
+            {
+                output = null;
+            }
+
+            return ind1 - openBracket;
         }
     }
 }
