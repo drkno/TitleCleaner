@@ -58,11 +58,19 @@ namespace TitleCleanerConsole
                     default: goto case "normal";
                 }
             }
-            catch (OptionException e)
+            catch (Exception e)
             {
                 var name = AppDomain.CurrentDomain.FriendlyName;
-                Console.Write(name + ": ");
-                Console.WriteLine(e.Message);
+                if (e is OptionException)
+                {
+                    Console.WriteLine(name + ": " + e.Message);
+                }
+                else
+                {
+                    Console.Error.WriteLine("A fatal error occured while running " + name +
+                        ". One of your options was probably malformed. ");
+                }
+
                 Console.WriteLine("Try '" + name + " --help' for more information.");
 
                 if (_confirm)
