@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace MediaFileParser.MediaTypes.MediaFile
 {
@@ -49,12 +50,21 @@ namespace MediaFileParser.MediaTypes.MediaFile
             {
                 var sec = SectorList[i].ToLower().Trim();
 
-                int temp;
-                if (int.TryParse(sec, out temp) && temp > YearStart && temp <= DateTime.Now.Year && i > year)
+                if (Regex.IsMatch(SectorList[i], "^(([(][12][0-9]{3}[)])|([12][0-9]{3}))$"))
                 {
-                    year = i;   // we've found the year (we think)
-                }
+                    var tempS = SectorList[i];
+                    if (tempS.StartsWith("("))
+                    {
+                        tempS = tempS.Substring(1, 4);
+                    }
 
+                    int temp;
+                    if (int.TryParse(tempS, out temp) && temp > YearStart && temp <= DateTime.Now.Year && i > year)
+                    {
+                        year = i;   // we've found the year (we think)
+                        SectorList[i] = tempS;
+                    }
+                }
                 if ((sec.Length > 3 || !ShortJunkStrings.Contains(sec)) &&
                     (sec.Length <= 3 || (!LongJunkStrings.Any(sec.StartsWith) && !ShortJunkStrings.Any(sec.StartsWith))))
                     continue;
