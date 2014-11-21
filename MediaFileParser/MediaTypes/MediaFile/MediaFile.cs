@@ -221,7 +221,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
                 }
                 case 'Y':
                 {
-                    return Year <= 0 ? DateTime.Now.Year.ToString(CultureInfo.InvariantCulture) : Year.ToString(CultureInfo.InvariantCulture);
+                    return Year <= 0 ? "" : Year.ToString(CultureInfo.InvariantCulture);
                 }
                 case '?':
                 {
@@ -231,7 +231,11 @@ namespace MediaFileParser.MediaTypes.MediaFile
                     {
                         if (str[ind + 1] == '(')
                         {
-                            inc = GetBracketedString(ref str, ind + 1, out sub);
+                            inc = GetBracketedString(ref str, ind + 1, out sub) + 1;
+                            if (string.IsNullOrWhiteSpace(sub) || sub == str.Substring(ind+1, inc-2) || sub.Length < inc-2)
+                            {
+                                sub = "";   // bracket only contains escaped characters
+                            }
                         }
                         else
                         {
@@ -294,6 +298,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
             {
                 if (stack.Count == 0)
                 {
+                    ind1--;
                     break;
                 }
                 switch (input[ind1])
@@ -313,7 +318,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
 
             if (stack.Count == 0)
             {
-                output = input.Substring(openBracket+1, ind1 - 2);
+                output = input.Substring(openBracket + 1, ind1 - openBracket - 1);
                 output = ToString(output);
             }
             else

@@ -59,6 +59,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MediaTypes\MediaFile\MediaFileQuality.cs" />
     <Compile Include="MediaTypes\TvFile\TvFile.Construct.cs" />
     <Compile Include="ModeManagers\FileManager.cs" />
     <Compile Include="MediaTypes\MediaFile\MediaFile.cs" />
