@@ -150,6 +150,11 @@ namespace MediaFileParser.MediaTypes.MediaFile
         public int Year { get; protected set; }
 
         /// <summary>
+        /// Quality of the media file.
+        /// </summary>
+        public MediaFileQuality? Quality { get; protected set; }
+        
+        /// <summary>
         /// Folder this file is stored in.
         /// </summary>
         public string Folder

@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace MediaFileParser.MediaTypes.MediaFile
@@ -16,28 +14,39 @@ namespace MediaFileParser.MediaTypes.MediaFile
         private const short YearStart = 1900;
 
         /// <summary>
-        /// Common long (len > 3) junk strings that are contained in filenames.
+        /// Junk strings that are contained in filenames.
         /// </summary>
-        private static readonly string[] LongJunkStrings =
+        private static readonly JunkContainer JunkStrings = new JunkContainer
         {
-            "xvid", "hdtv", "uncut", "[vtv]", "dvdscr", "dvdrip", "rerip", "repack", "proper",
-            "notv", "uncut", "xvid", "saints", "caph", "camrip", "telesync", "pdvd", "workprint",
-            "telecine", "ppvrip", "screener", "[hq]", "dvdscreener", "bdscr", "r5.line", "real",
-            "dvd-rip", "dvdr", "dvd-full", "full-rip", "lossless", "dvd-5", "720p", "ntsc",
-            "1080p", "dvd-9", "dsrip", "dthrip", "dvbrip", "pdtv", "tvrip", "hdtvrip", "vodrip",
-            "vodr", "bdrip", "brrip", "blu-ray", "bluray", "bd25", "bd50", "web-rip", "webrip",
-            "webdl", "web-dl", "h.264", "x264", "divx", "1080", "french", "truefrench", "unrated",
-            "limited", "rapax-249", "[dvdrip]", "korsub", "hdrip", "readnfo"
-        };
-
-        /// <summary>
-        /// Common short (len less than or equal to 3) junk strings that are contained in filenames.
-        /// </summary>
-        private static readonly HashSet<string> ShortJunkStrings = new HashSet<string>
-        {
-            "(", "xor","aph", "cam", "ts", "wp", "tc",  "ppv", "ddc", "r5",  "ac3", "hq", "rip", 
-            "ws", "dvd", "dts", "dsr", "bdr", "bd5", "bd9","720", "r0", "r1", "r2", "r3", "r4",
-            "r6", "r7", "r8", "r9", "stv"
+            "(", "xor", "aph", "ac3", "rerip", "repack", "proper", "notv", "uncut", "xvid", "saints", "caph", "rip", "xvid", "uncut",
+            "[vtv]", "ppvrip", "real", "full-rip", "ntsc", "web-rip", "webrip", "webdl", "web-dl", "h.264", "x264", "divx", "french",
+            "truefrench", "unrated", "limited", "rapax-249", "readnfo", "korsub",
+            {"cam", MediaFileQuality.LowQuality}, {"ts", MediaFileQuality.LowQuality}, {"wp", MediaFileQuality.LowQuality},
+            {"tc", MediaFileQuality.LowQuality}, {"ppv", MediaFileQuality.MediumQuality}, {"ddc", MediaFileQuality.MediumQuality},
+            {"r5", MediaFileQuality.MediumToHighQuality}, {"hq", MediaFileQuality.HighQuality}, {"ws", MediaFileQuality.LowToMediumQuality},
+            {"dvd", MediaFileQuality.MediumToHighQuality}, {"dts", MediaFileQuality.MediumToHighQuality},
+            {"dsr", MediaFileQuality.MediumToHighQuality}, {"bdr", MediaFileQuality.HighQuality}, {"bd5", MediaFileQuality.HighQuality},
+            {"bd9", MediaFileQuality.HighQuality}, {"720", MediaFileQuality.MediumToHighQuality}, {"r0", MediaFileQuality.MediumQuality},
+            {"r1", MediaFileQuality.MediumQuality}, {"r2", MediaFileQuality.MediumQuality}, {"r3", MediaFileQuality.MediumQuality},
+            {"r4", MediaFileQuality.MediumQuality}, {"r6", MediaFileQuality.MediumQuality}, {"r7", MediaFileQuality.MediumQuality},
+            {"r8", MediaFileQuality.MediumQuality}, {"r9", MediaFileQuality.MediumQuality}, {"stv", MediaFileQuality.MediumQuality},
+            {"hdtv", MediaFileQuality.HighQuality}, {"dvdscr", MediaFileQuality.MediumQuality},
+            {"dvdrip", MediaFileQuality.MediumToHighQuality},  {"camrip", MediaFileQuality.LowQuality},
+            {"telesync", MediaFileQuality.LowQuality}, {"pdvd", MediaFileQuality.LowQuality}, {"workprint", MediaFileQuality.LowQuality},
+            {"telecine", MediaFileQuality.LowQuality}, {"screener", MediaFileQuality.MediumQuality}, {"[hq]", MediaFileQuality.HighQuality},
+            {"dvdscreener", MediaFileQuality.MediumQuality}, {"bdscr", MediaFileQuality.HighQuality},
+            {"dvd-rip", MediaFileQuality.MediumToHighQuality}, {"dvdr", MediaFileQuality.MediumToHighQuality},
+            {"dvd-full", MediaFileQuality.MediumToHighQuality}, {"lossless", MediaFileQuality.HighQuality},
+            {"dvd-5", MediaFileQuality.MediumToHighQuality}, {"720p", MediaFileQuality.MediumToHighQuality},
+            {"1080p", MediaFileQuality.HighQuality}, {"dvd-9", MediaFileQuality.MediumToHighQuality},
+            {"dsrip", MediaFileQuality.MediumToHighQuality}, {"dthrip", MediaFileQuality.MediumToHighQuality},
+            {"dvbrip", MediaFileQuality.MediumToHighQuality}, {"pdtv", MediaFileQuality.MediumToHighQuality},
+            {"tvrip", MediaFileQuality.MediumToHighQuality}, {"hdtvrip", MediaFileQuality.HighQuality},
+            {"vodrip", MediaFileQuality.LowToMediumQuality}, {"vodr", MediaFileQuality.LowToMediumQuality},
+            {"bdrip", MediaFileQuality.HighQuality}, {"brrip", MediaFileQuality.HighQuality}, {"blu-ray", MediaFileQuality.HighQuality},
+            {"bluray", MediaFileQuality.HighQuality}, {"bd25", MediaFileQuality.HighQuality}, {"bd50", MediaFileQuality.HighQuality},
+            {"1080", MediaFileQuality.HighQuality},  {"[dvdrip]", MediaFileQuality.MediumToHighQuality},
+            {"hdrip", MediaFileQuality.HighQuality}
         };
 
         /// <summary>
@@ -65,9 +74,13 @@ namespace MediaFileParser.MediaTypes.MediaFile
                         SectorList[i] = tempS;
                     }
                 }
-                if ((sec.Length > 3 || !ShortJunkStrings.Contains(sec)) &&
-                    (sec.Length <= 3 || (!LongJunkStrings.Any(sec.StartsWith) && !ShortJunkStrings.Any(sec.StartsWith))))
+
+                var j = JunkStrings.Find(sec);
+                if (j == null)
+                {
                     continue;
+                }
+                Quality = j.Quality;
                 SectorRangeRemove(i, year);
                 return;
             }
@@ -93,6 +106,20 @@ namespace MediaFileParser.MediaTypes.MediaFile
             }
 
             if (SectorList.Count - i == 0) return;
+            /*while (i != SectorList.Count)
+            {
+                if (Quality != null)
+                {
+                    break;
+                }
+
+                if (LongJunkStrings.Any(longJunkString => SectorList[i].StartsWith(longJunkString)))
+                {
+                    Quality = longJunkString.MediaFileQuality;
+                }
+
+                SectorList.RemoveAt(i);
+            }*/
             SectorList.RemoveRange(i, SectorList.Count - i);
         }
     }
