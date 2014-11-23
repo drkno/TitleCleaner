@@ -315,6 +315,11 @@ namespace MediaFileParser.MediaTypes.MediaFile
         }
 
         /// <summary>
+        /// Dictionary to store bracketed strings so that they can be looked up quickly in repetitive cases.
+        /// </summary>
+        private static readonly Dictionary<string, string> BracketedStringLookupDictionary = new Dictionary<string, string>();
+
+        /// <summary>
         /// Gets a string between two matching brackets.
         /// </summary>
         /// <param name="input">Input string to get substring from.</param>
@@ -324,6 +329,15 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// <returns>Length of the bracketed string (including brackets).</returns>
         private int GetBracketedString(ref string input, int openBracket, out string output)
         {
+            var lookup = input.Substring(openBracket);
+            if (BracketedStringLookupDictionary.ContainsKey(lookup))
+            {
+                output = BracketedStringLookupDictionary[lookup];
+                var len = output.Length + 1;
+                output = ToString(output);
+                return len;
+            }
+
             var ind1 = openBracket + 1;
             var stack = new Stack<char>();
             stack.Push(input[openBracket]);
@@ -352,6 +366,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
             if (stack.Count == 0)
             {
                 output = input.Substring(openBracket + 1, ind1 - openBracket - 1);
+                BracketedStringLookupDictionary[lookup] = output;
                 output = ToString(output);
             }
             else
