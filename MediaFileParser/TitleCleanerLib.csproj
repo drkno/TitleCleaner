@@ -77,6 +77,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="Tests\mixed.csv" />
     <None Include="Tests\movie.csv" />
     <None Include="Tests\tests.csv" />
     <None Include="Tests\tv.csv" />
