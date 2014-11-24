@@ -96,9 +96,9 @@ namespace MediaFileParser.MediaTypes.MediaFile
 
         public JunkString Find(string item)
         {
-            if (item.Length <= 3 && _shortJunk.Contains(item))
+            if (item.Length <= 3)
             {
-                return _shortJunk.Find(item.Equals);
+                return _shortJunk.Find(item.EqualsJunk);
             }
             var obj = _shortJunk.Find(item.StartsWith) ?? _longJunk.Find(item.StartsWith);
             return obj;
@@ -191,6 +191,11 @@ namespace MediaFileParser.MediaTypes.MediaFile
         public static bool StartsWith(this string str, JunkString startsWith)
         {
             return str.StartsWith(startsWith.ToString());
+        }
+
+        public static bool EqualsJunk(this string str, JunkString obj)
+        {
+            return str.Equals(obj.String);
         }
     }
 }
