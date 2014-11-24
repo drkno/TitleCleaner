@@ -76,11 +76,6 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// <param name="file">Name to clean.</param>
         protected MediaFile(string file)
         {
-            if (file.StartsWith("Star Wars"))
-            {
-                Console.WriteLine();
-            }
-
             Origional = file;
             Year = -1;
 
@@ -129,8 +124,8 @@ namespace MediaFileParser.MediaTypes.MediaFile
                     SectorList.RemoveAt(i + 1);
                 }
 
-                if (Regex.IsMatch(SectorList[i], "^(part|cd|dvd)", RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace))
-                {
+                if (Regex.IsMatch(SectorList[i], "^(part|cd)([0-9]+)?$", RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace))
+                {                                // note: no dvd as this conflicts with junk names
                     var regex = Regex.Match(SectorList[i], "[0-9]+$", RegexOptions.IgnorePatternWhitespace);
                     if (!regex.Success && i + 1 < SectorList.Count)
                     {
