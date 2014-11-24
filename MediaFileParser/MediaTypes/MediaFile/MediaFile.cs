@@ -33,7 +33,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// <summary>
         /// Storage of the default ToString() output format.
         /// </summary>
-        protected static string DefaultFormatToString = "C.E";
+        protected static string DefaultFormatToString = "C?( (P)).E";
 
         /// <summary>
         /// Gets or sets the default ToString() output format.
@@ -123,6 +123,23 @@ namespace MediaFileParser.MediaTypes.MediaFile
                     SectorList[i] += SectorList[i + 1];
                     SectorList.RemoveAt(i + 1);
                 }
+
+                if (Regex.IsMatch(SectorList[i], "^(part|cd)([0-9]+)?$", RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace))
+                {                                // note: no dvd as this conflicts with junk names
+                    var regex = Regex.Match(SectorList[i], "[0-9]+$", RegexOptions.IgnorePatternWhitespace);
+                    if (!regex.Success && i + 1 < SectorList.Count)
+                    {
+                        FromNumberWord(ref SectorList, i + 1, true);
+                        regex = Regex.Match(SectorList[i + 1], "^[0-9]+$", RegexOptions.IgnorePatternWhitespace);
+                        SectorList.RemoveAt(i + 1);
+            }
+
+                    if (regex.Success)
+                    {
+                        Part = uint.Parse(regex.Value);
+                        SectorList.RemoveAt(i);
+                    }
+                }
             }
 
             // Remove junk names
@@ -148,6 +165,12 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// Year that the media in this media file was made.
         /// </summary>
         public int Year { get; protected set; }
+
+        /// <summary>
+        /// Part of the file if it is split into segments.
+        /// 0 if is not segmented or segment number is unknown.
+        /// </summary>
+        public uint Part { get; protected set; }
 
         /// <summary>
         /// Quality of the media file.
@@ -199,6 +222,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// C:  Cleaned Filename
         /// E:  File Extension
         /// Y:  Year (or if year is unknown, current year)
+        /// P:  Part of File
         /// ?:  Only return next character group if it is not null/empty/whitespace
         /// \:  Return Next Character
         /// </param>
@@ -227,6 +251,10 @@ namespace MediaFileParser.MediaTypes.MediaFile
                 case 'Y':
                 {
                     return Year <= 0 ? "" : Year.ToString(CultureInfo.InvariantCulture);
+                }
+                case 'P':
+                {
+                    return Part == 0 ? "" : Part.ToString(CultureInfo.InvariantCulture);
                 }
                 case '?':
                 {
@@ -287,6 +315,11 @@ namespace MediaFileParser.MediaTypes.MediaFile
         }
 
         /// <summary>
+        /// Dictionary to store bracketed strings so that they can be looked up quickly in repetitive cases.
+        /// </summary>
+        private static readonly Dictionary<string, string> BracketedStringLookupDictionary = new Dictionary<string, string>();
+
+        /// <summary>
         /// Gets a string between two matching brackets.
         /// </summary>
         /// <param name="input">Input string to get substring from.</param>
@@ -296,6 +329,15 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// <returns>Length of the bracketed string (including brackets).</returns>
         private int GetBracketedString(ref string input, int openBracket, out string output)
         {
+            var lookup = input.Substring(openBracket);
+            if (BracketedStringLookupDictionary.ContainsKey(lookup))
+            {
+                output = BracketedStringLookupDictionary[lookup];
+                var len = output.Length + 1;
+                output = ToString(output);
+                return len;
+            }
+
             var ind1 = openBracket + 1;
             var stack = new Stack<char>();
             stack.Push(input[openBracket]);
@@ -324,6 +366,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
             if (stack.Count == 0)
             {
                 output = input.Substring(openBracket + 1, ind1 - openBracket - 1);
+                BracketedStringLookupDictionary[lookup] = output;
                 output = ToString(output);
             }
             else
@@ -332,6 +375,57 @@ namespace MediaFileParser.MediaTypes.MediaFile
             }
 
             return ind1 - openBracket;
+        }
+
+        // ReSharper disable UnusedMember.Local
+        // ReSharper disable InconsistentNaming
+        /// <summary>
+        /// Words for numbers
+        /// </summary>
+        private enum NumberWord
+        {
+            Zero = 0, One = 1, Two = 2, Three = 3, Four = 4, Five = 5,
+            Six = 6, Seven = 7, Eight = 8, Nine = 9, Ten = 10,
+        }   
+
+        /// <summary>
+        /// Roman numerals for numbers
+        /// </summary>
+        private enum NumberRoman
+        {
+            I = 1, II = 2, III = 3, IV = 4, V = 5,
+            VI = 6, VII = 7, VIII = 8, XI = 9, X = 10
+        }
+        // ReSharper restore InconsistentNaming
+        // ReSharper restore UnusedMember.Local InconsistentNaming
+
+        /// <summary>
+        /// Converts a word to a number and replaces it in an array with the numerical
+        /// representation.
+        /// </summary>
+        /// <param name="arr">Array to use</param>
+        /// <param name="index">Index of the array to read and replace.</param>
+        /// <param name="roman">Also convert roman numerals.</param>
+        /// <returns>Success.</returns>
+        protected static bool FromNumberWord(ref List<string> arr, int index, bool roman = false)
+        {
+            NumberWord word;
+            if (!Enum.TryParse(arr[index], true, out word))
+            {
+                if (roman)
+                {
+                    NumberRoman numeral;
+                    if (!Enum.TryParse(arr[index], true, out numeral)) return false;
+                    word = (NumberWord)(int) numeral;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            var num = ((int)word).ToString(CultureInfo.InvariantCulture);
+            arr[index] = num;
+            return true;
         }
     }
 }

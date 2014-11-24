@@ -325,29 +325,5 @@ namespace MediaFileParser.MediaTypes.TvFile
         {
             get { return TypeOutDirectory; }
         }
-
-        /// <summary>
-        /// Words for numbers
-        /// </summary>
-        private enum NumberWord
-        {   // ReSharper disable UnusedMember.Local
-            Zero = 0, One = 1, Two = 2, Three = 3, Four = 4,
-            Five = 5, Six = 6, Seven = 7, Eight = 8, Nine = 9
-        }   // ReSharper restore UnusedMember.Local
-
-        /// <summary>
-        /// Converts a word to a number and replaces it in an array with the numerical
-        /// representation.
-        /// </summary>
-        /// <param name="arr">Array to use</param>
-        /// <param name="index">Index of the array to read and replace.</param>
-        /// <returns>Success.</returns>
-        private static bool FromNumberWord(ref List<string> arr, int index)
-        {
-            NumberWord word;
-            if (!Enum.TryParse(arr[index], true, out word)) return false;
-            arr[index] = ((int) word).ToString(CultureInfo.InvariantCulture);
-            return true;
-        }
     }
 }
