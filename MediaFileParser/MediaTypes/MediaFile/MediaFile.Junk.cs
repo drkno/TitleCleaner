@@ -100,7 +100,8 @@ namespace MediaFileParser.MediaTypes.MediaFile
                 Year = int.Parse(SectorList[year]); // extract year before removing sectors
                 if (year < i)
                 {
-                    SectorList.Remove(SectorList[year]);
+                    SectorList[year] = "";
+                    //SectorList.Remove(SectorList[year]);
                     i--;
                 }
             }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 
 #endregion
@@ -121,7 +122,8 @@ namespace MediaFileParser.MediaTypes.MediaFile
                 {
                     i--;
                     SectorList[i] += SectorList[i + 1];
-                    SectorList.RemoveAt(i + 1);
+                    SectorList[i + 1] = "";
+                    //-->SectorList.RemoveAt(i + 1);
                 }
 
                 if (Regex.IsMatch(SectorList[i], "^(part|cd)([0-9]+)?$", RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace))
@@ -131,13 +133,15 @@ namespace MediaFileParser.MediaTypes.MediaFile
                     {
                         FromNumberWord(ref SectorList, i + 1, true);
                         regex = Regex.Match(SectorList[i + 1], "^[0-9]+$", RegexOptions.IgnorePatternWhitespace);
-                        SectorList.RemoveAt(i + 1);
-            }
+                        SectorList[i + 1] = "";
+                        //-->SectorList.RemoveAt(i + 1);
+                    }
 
                     if (regex.Success)
                     {
                         Part = uint.Parse(regex.Value);
-                        SectorList.RemoveAt(i);
+                        SectorList[i] = "";
+                        //-->SectorList.RemoveAt(i);
                     }
                 }
             }
@@ -306,12 +310,12 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// <returns>The string representation of this object.</returns>
         public string ToString(string str)
         {
-            var result = "";
+            var result = new StringBuilder();
             for (var i = 0; i < str.Length; i++)
             {
-                result += ToString(ref str, ref i);
+                result.Append(ToString(ref str, ref i));
             }
-            return result;
+            return result.ToString();
         }
 
         /// <summary>

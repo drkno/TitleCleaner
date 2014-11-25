@@ -41,12 +41,12 @@ namespace MediaFileParser.MediaTypes.MediaFile
 
         public bool StartsWith(JunkString str)
         {
-            return String.StartsWith(str.String);
+            return String.StartsWith(str.String, StringComparison.InvariantCultureIgnoreCase);
         }
 
         public bool StartsWith(string str)
         {
-            return String.StartsWith(str);
+            return String.StartsWith(str, StringComparison.InvariantCultureIgnoreCase);
         }
     }
 

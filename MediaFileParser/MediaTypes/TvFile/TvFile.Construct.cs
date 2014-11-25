@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 
 namespace MediaFileParser.MediaTypes.TvFile
@@ -170,7 +171,7 @@ namespace MediaFileParser.MediaTypes.TvFile
                 blockStart = SectorList.Count;
                 begin = blockEnd + 1;
             }
-            var name = "";
+            var name = "";//String.Join(" ", SectorList, begin, blockStart - begin);
             for (var i = begin; i < blockStart; i++)
             {
                 name += SectorList[i] + ((i + 1 != blockStart) ? " " : "");
@@ -180,12 +181,12 @@ namespace MediaFileParser.MediaTypes.TvFile
             // Get show title (or swap if wrong way around)
             if (begin == 0)
             {
-                var title = "";
+                var builder = new StringBuilder(SectorList.Count - blockEnd - 1);
                 for (var i = blockEnd + 1; i < SectorList.Count; i++)
                 {
-                    title += SectorList[i] + ((i + 1 != SectorList.Count) ? " " : "");
+                    builder.Append(SectorList[i] + ((i + 1 != SectorList.Count) ? " " : ""));
                 }
-                Title = title;
+                Title = builder.ToString();
             }
             else
             {
