@@ -14,7 +14,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
         private const short YearStart = 1900;
 
         /// <summary>
-        /// Junk strings that are contained in filenames.
+        /// Junk strings that are contained in filenames and their associated attributes.
         /// </summary>
         private static readonly JunkContainer JunkStrings = new JunkContainer
         {
@@ -101,26 +101,12 @@ namespace MediaFileParser.MediaTypes.MediaFile
                 if (year < i)
                 {
                     SectorList[year] = "";
-                    //SectorList.Remove(SectorList[year]);
+                    SectorList.RemoveAt(year);
                     i--;
                 }
             }
 
             if (SectorList.Count - i == 0) return;
-            /*while (i != SectorList.Count)
-            {
-                if (Quality != null)
-                {
-                    break;
-                }
-
-                if (LongJunkStrings.Any(longJunkString => SectorList[i].StartsWith(longJunkString)))
-                {
-                    Quality = longJunkString.MediaFileQuality;
-                }
-
-                SectorList.RemoveAt(i);
-            }*/
             SectorList.RemoveRange(i, SectorList.Count - i);
         }
     }

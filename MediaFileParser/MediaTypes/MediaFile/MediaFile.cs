@@ -122,8 +122,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
                 {
                     i--;
                     SectorList[i] += SectorList[i + 1];
-                    SectorList[i + 1] = "";
-                    //-->SectorList.RemoveAt(i + 1);
+                    SectorList.RemoveAt(i + 1);
                 }
 
                 if (Regex.IsMatch(SectorList[i], "^(part|cd)([0-9]+)?$", RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace))
@@ -133,15 +132,13 @@ namespace MediaFileParser.MediaTypes.MediaFile
                     {
                         FromNumberWord(ref SectorList, i + 1, true);
                         regex = Regex.Match(SectorList[i + 1], "^[0-9]+$", RegexOptions.IgnorePatternWhitespace);
-                        SectorList[i + 1] = "";
-                        //-->SectorList.RemoveAt(i + 1);
+                        SectorList.RemoveAt(i + 1);
                     }
 
                     if (regex.Success)
                     {
                         Part = uint.Parse(regex.Value);
-                        SectorList[i] = "";
-                        //-->SectorList.RemoveAt(i);
+                        SectorList.RemoveAt(i);
                     }
                 }
             }

@@ -186,6 +186,9 @@ namespace MediaFileParser.MediaTypes.MediaFile
         }
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
     public static class StringExtender
     {
         public static bool StartsWith(this string str, JunkString startsWith)
