@@ -96,6 +96,8 @@ namespace MediaFileParser.MediaTypes.MediaFile
             file = Origional;
             SectorList.AddRange(file.Split(DelimChars, StringSplitOptions.RemoveEmptyEntries));
 
+            DefaultCount = SectorList.Count;
+
             // Autocapitalise first letter in each word
             // And merge alone letters. eg "A M" -> "AM"
             // And add splits along num-letter boundries
@@ -145,6 +147,8 @@ namespace MediaFileParser.MediaTypes.MediaFile
             // Remove junk names
             RemoveJunk();
         }
+
+        public int DefaultCount { get; set; }
 
         /// <summary>
         /// Origional file name for this file (excluding file extension).
