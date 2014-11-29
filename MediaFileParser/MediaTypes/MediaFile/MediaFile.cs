@@ -29,7 +29,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// <summary>
         /// List of sectors of the media file name.
         /// </summary>
-        protected List<string> SectorList; //SectorList SectorList;
+        protected List<string> SectorList;
 
         /// <summary>
         /// Storage of the default ToString() output format.
@@ -96,7 +96,6 @@ namespace MediaFileParser.MediaTypes.MediaFile
             // Raw
             file = Origional;
             SectorList = new List<string>(file.Split(DelimChars, StringSplitOptions.RemoveEmptyEntries));
-            //SectorList = new SectorList(file.Split(DelimChars, StringSplitOptions.RemoveEmptyEntries));
             
             int year = -1, removeStart = int.MaxValue;
             for (var i = 0; i < SectorList.Count; i++)
