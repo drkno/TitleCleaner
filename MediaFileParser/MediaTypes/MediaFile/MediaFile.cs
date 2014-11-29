@@ -29,7 +29,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// <summary>
         /// List of sectors of the media file name.
         /// </summary>
-        protected SectorList SectorList;
+        protected List<string> SectorList; //SectorList SectorList;
 
         /// <summary>
         /// Storage of the default ToString() output format.
@@ -85,7 +85,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
             if ((pathSep = file.LastIndexOfAny(PathSeperators)) != -1)
             {
                 Location = file.Substring(0, pathSep);
-                Origional = Origional.Substring(Location.Length + 1);
+                Origional = Origional.Substring(pathSep + 1);
             }
 
             // Extension
@@ -95,15 +95,13 @@ namespace MediaFileParser.MediaTypes.MediaFile
 
             // Raw
             file = Origional;
-            SectorList = new SectorList(file.Split(DelimChars, StringSplitOptions.RemoveEmptyEntries));
-
-            DefaultCount = SectorList.Count;
-
-            // Autocapitalise first letter in each word
-            // And merge alone letters. eg "A M" -> "AM"
-            // And add splits along num-letter boundries
+            SectorList = new List<string>(file.Split(DelimChars, StringSplitOptions.RemoveEmptyEntries));
+            //SectorList = new SectorList(file.Split(DelimChars, StringSplitOptions.RemoveEmptyEntries));
+            
+            int year = -1, removeStart = int.MaxValue;
             for (var i = 0; i < SectorList.Count; i++)
             {
+                // And add splits along num-letter boundries
                 var match = Regex.Match(SectorList[i], @"([0-9])+-([a-zA-Z])+");
                 if (match.Success)
                 {
@@ -116,9 +114,12 @@ namespace MediaFileParser.MediaTypes.MediaFile
                 }
                 if (String.IsNullOrEmpty(SectorList[i])) continue;
 
+                // Autocapitalise first letter in each word
                 var a = SectorList[i].ToCharArray();
                 a[0] = Char.ToUpper(a[0], CultureInfo.InvariantCulture);
                 SectorList[i] = new string(a);
+
+                // Merge alone letters. eg "A M" -> "AM"
                 if (i > 0 && SectorList[i].Length == 1 && SectorList[i - 1].Length == 1 &&
                     Regex.IsMatch(SectorList[i], @"[A-Z]") && Regex.IsMatch(SectorList[i - 1], @"[A-Z]"))
                 {
@@ -127,6 +128,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
                     SectorList.RemoveAt(i + 1);
                 }
 
+                // Detect part/disk numbers
                 if (Regex.IsMatch(SectorList[i], "^(part|cd)([0-9]+)?$", RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace))
                 {                                // note: no dvd as this conflicts with junk names
                     var regex = Regex.Match(SectorList[i], "[0-9]+$", RegexOptions.IgnorePatternWhitespace);
@@ -141,15 +143,23 @@ namespace MediaFileParser.MediaTypes.MediaFile
                     {
                         Part = uint.Parse(regex.Value);
                         SectorList.RemoveAt(i);
+                        i--;
+                        continue;
                     }
                 }
+
+                // Detect junk strings
+                DetectJunkAtIndex(ref i, ref year, ref removeStart);
+            }
+
+            if (removeStart == int.MaxValue)
+            {
+                removeStart = SectorList.Count;
             }
 
             // Remove junk names
-            RemoveJunk();
+            SectorRangeRemove(removeStart, year);
         }
-
-        public int DefaultCount { get; set; }
 
         /// <summary>
         /// Origional file name for this file (excluding file extension).
@@ -412,7 +422,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// <param name="index">Index of the array to read and replace.</param>
         /// <param name="roman">Also convert roman numerals.</param>
         /// <returns>Success.</returns>
-        protected static bool FromNumberWord(ref SectorList arr, int index, bool roman = false)
+        protected static bool FromNumberWord(ref List<string> arr, int index, bool roman = false)
         {
             NumberWord word;
             if (!Enum.TryParse(arr[index], true, out word))

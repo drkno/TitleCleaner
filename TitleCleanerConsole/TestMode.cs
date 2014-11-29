@@ -40,10 +40,11 @@ namespace TitleCleanerConsole
             double time = 0;
             for (var i = 0; i < rep; i++)
             {
-                var now = DateTime.Now;
+                var timer = new Stopwatch();
+                timer.Start();
                 manager.RunTests();
-                var end = DateTime.Now;
-                time += end.Subtract(now).Milliseconds;
+                timer.Stop();
+                time += timer.ElapsedMilliseconds;
             }
             time /= rep;
             Console.WriteLine("Avg time: " + time + "\n");
@@ -94,7 +95,7 @@ namespace TitleCleanerConsole
         private static void ManagerTestCaseEncounteredError(TestManager.TestCase testCase)
         {
             _failed++;
-            /*FailedCases.Add(testCase.Index);
+            FailedCases.Add(testCase.Index);
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write(testCase.Index + ": [");
             Console.ForegroundColor = ConsoleColor.Yellow;
@@ -104,13 +105,13 @@ namespace TitleCleanerConsole
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(testCase.DestinationName);
 
-            if (_writer != null) _writer.WriteLine(testCase.OrigionalName + "," + testCase.MediaFile);*/
+            if (_writer != null) _writer.WriteLine(testCase.OrigionalName + "," + testCase.MediaFile);
         }
 
         private static void ManagerTestCaseDidFail(TestManager.TestCase testCase)
         {
             _failed++;
-            /*FailedCases.Add(testCase.Index);
+            FailedCases.Add(testCase.Index);
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write(testCase.Index + ": [");
             Console.ForegroundColor = ConsoleColor.Red;
@@ -122,13 +123,13 @@ namespace TitleCleanerConsole
             Console.ForegroundColor = ConsoleColor.Cyan;
             Console.WriteLine(new string(' ', testCase.Index.ToString(CultureInfo.InvariantCulture).Length + 11) + testCase.DestinationName);
 
-            if (_writer != null) _writer.WriteLine(testCase.OrigionalName + "," + testCase.MediaFile);*/
+            if (_writer != null) _writer.WriteLine(testCase.OrigionalName + "," + testCase.MediaFile);
         }
 
         private static void ManagerTestCaseDidPass(TestManager.TestCase testCase)
         {
             _passed++;
-            /*Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.White;
             Console.Write(testCase.Index + ": [");
             Console.ForegroundColor = ConsoleColor.Green;
             Console.Write("Pass");
@@ -136,7 +137,7 @@ namespace TitleCleanerConsole
             Console.Write("] - ");
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine(testCase.DestinationName);
-            if (_writer != null) _writer.WriteLine(testCase.OrigionalName + "," + testCase.MediaFile);*/
+            if (_writer != null) _writer.WriteLine(testCase.OrigionalName + "," + testCase.MediaFile);
         }
     }
 }

@@ -51,41 +51,35 @@ namespace MediaFileParser.MediaTypes.MediaFile
         };
 
         /// <summary>
-        /// Removes junk strings from the sectorlist.
+        /// Detect junk strings int the sectorlist.
         /// </summary>
-        private void RemoveJunk()
+        private void DetectJunkAtIndex(ref int i, ref int year, ref int removeStart)
         {
-            var year = -1;
-            for (var i = 1; i < SectorList.Count; i++)
+            if (i == 0) return;
+
+            var sec = SectorList[i].ToLower();
+
+            if (Regex.IsMatch(SectorList[i], "^(([(][12][0-9]{3}[)])|([12][0-9]{3}))$"))
             {
-                var sec = SectorList[i].ToLower();
-
-                if (Regex.IsMatch(SectorList[i], "^(([(][12][0-9]{3}[)])|([12][0-9]{3}))$"))
+                var tempS = SectorList[i];
+                if (tempS[0] == '(')
                 {
-                    var tempS = SectorList[i];
-                    if (tempS.StartsWith("("))
-                    {
-                        tempS = tempS.Substring(1, 4);
-                    }
-
-                    int temp;
-                    if (int.TryParse(tempS, out temp) && temp > YearStart && temp <= DateTime.Now.Year && i > year)
-                    {
-                        year = i;   // we've found the year (we think)
-                        SectorList[i] = tempS;
-                    }
+                    tempS = tempS.Substring(1, 4);
                 }
 
-                var j = JunkStrings.Find(sec);
-                if (j == null)
+                int temp;
+                if (int.TryParse(tempS, out temp) && temp > YearStart && temp <= DateTime.Now.Year && i > year)
                 {
-                    continue;
+                    Year = temp;
+                    year = i;   // we've found the year (we think)
+                    SectorList[i] = tempS;
                 }
-                Quality = j.Quality;
-                SectorRangeRemove(i, year);
-                return;
             }
-            SectorRangeRemove(SectorList.Count, year);
+
+            var j = JunkStrings.Find(sec);
+            if (j == null) return;
+            Quality = j.Quality;
+            if (removeStart > i) removeStart = i;
         }
 
         /// <summary>
@@ -96,15 +90,13 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// <param name="year">The year found or -1 if the year is still unknown.</param>
         private void SectorRangeRemove(int i, int year)
         {
-            if (year != -1)
+            if (year != -1 && year < i)
             {
-                Year = int.Parse(SectorList[year]); // extract year before removing sectors
-                if (year < i)
+                if (year != i - 1)
                 {
-                    SectorList[year] = "";
                     SectorList.RemoveAt(year);
-                    i--;
                 }
+                i--;
             }
 
             if (SectorList.Count - i == 0) return;
