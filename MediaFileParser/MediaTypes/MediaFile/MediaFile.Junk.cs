@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Text.RegularExpressions;
 using MediaFileParser.MediaTypes.MediaFile.Junk;
 
@@ -58,7 +59,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
             var year = -1;
             for (var i = 1; i < SectorList.Count; i++)
             {
-                var sec = SectorList[i].ToLower().Trim();
+                var sec = SectorList[i].ToLower();
 
                 if (Regex.IsMatch(SectorList[i], "^(([(][12][0-9]{3}[)])|([12][0-9]{3}))$"))
                 {
