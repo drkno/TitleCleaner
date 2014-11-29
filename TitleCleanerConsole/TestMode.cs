@@ -49,7 +49,7 @@ namespace TitleCleanerConsole
             {
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("Press [f] to show list of failed tests or [any key] to quit.");
-                if (false || Console.ReadKey(true).Key == ConsoleKey.F)
+                if (Console.ReadKey(true).Key == ConsoleKey.F)
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.Write('{');
