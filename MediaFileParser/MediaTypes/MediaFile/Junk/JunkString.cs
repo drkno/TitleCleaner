@@ -31,7 +31,7 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         /// </summary>
         /// <param name="junk">String to represent.</param>
         /// <param name="quality">Quality of the media file to associate with this string.</param>
-        public JunkString(string junk, MediaFileQuality? quality = null)
+        public JunkString(string junk, MediaFileQuality? quality = null)// : this()
         {
             String = junk;
             Quality = quality;
@@ -54,8 +54,13 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         /// <returns>true if the object represents the same string, false otherwise</returns>
         public override bool Equals(object obj)
         {
+            var junkString = obj as JunkString;
+            if (junkString != null)
+            {
+                return junkString.Quality == Quality && junkString.String == String;
+            }
             var s = obj as string;
-            return s != null ? string.Equals(s, String) : ReferenceEquals(this, obj);
+            return s != null && string.Equals(s, String);
         }
 
         /// <summary>
@@ -86,7 +91,7 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         /// <returns>true if this JunkString starts with other JunkString, otherwise false</returns>
         public bool StartsWith(JunkString str)
         {
-            return String.StartsWith(str.String, StringComparison.InvariantCultureIgnoreCase);
+            return String.StartsWith(str.String, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -96,7 +101,7 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         /// <returns>true if this JunkString starts with the string, otherwise false</returns>
         public bool StartsWith(string str)
         {
-            return String.StartsWith(str, StringComparison.InvariantCultureIgnoreCase);
+            return String.StartsWith(str, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
