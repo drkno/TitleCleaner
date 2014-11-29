@@ -27,13 +27,31 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         public MediaFileQuality? Quality { get; private set; }
 
         /// <summary>
+        /// Suffixes of this JunkString that are vetoed from being matched in a comparison.
+        /// </summary>
+        public string[] VetoedSuffixes { get; private set; }
+
+        /// <summary>
         /// Creates a new JunkString.
         /// </summary>
         /// <param name="junk">String to represent.</param>
         /// <param name="quality">Quality of the media file to associate with this string.</param>
-        public JunkString(string junk, MediaFileQuality? quality = null)// : this()
+        public JunkString(string junk, MediaFileQuality? quality = null)
         {
             String = junk;
+            Quality = quality;
+        }
+
+        /// <summary>
+        /// Creates a new JunkString.
+        /// </summary>
+        /// <param name="junk">String to represent.</param>
+        /// <param name="vetoedSuffixes">Suffixes to this JunkString to veto.</param>
+        /// <param name="quality">Quality of the media file to associate with this string.</param>
+        public JunkString(string junk, string[] vetoedSuffixes, MediaFileQuality? quality = null)
+        {
+            String = junk;
+            VetoedSuffixes = vetoedSuffixes;
             Quality = quality;
         }
 
@@ -72,7 +90,18 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         /// <returns>Negitive if before, positive if after or zero if equal in sort order.</returns>
         public int CompareTo(JunkString other)
         {
-            return String.Compare(String, other.String, StringComparison.OrdinalIgnoreCase);
+            var i = string.CompareOrdinal(String, 0, other.String, 0, String.Length);
+            if (i == 0 && VetoedSuffixes != null)
+            {
+                foreach (var vetoedSuffix in VetoedSuffixes)
+                {
+                    if (string.CompareOrdinal(vetoedSuffix, 0, other.String, String.Length, vetoedSuffix.Length) == 0)
+                    {
+                        return vetoedSuffix.Length < other.String.Length ? 1 : -1;
+                    }
+                }
+            }
+            return i;
         }
 
         /// <summary>
