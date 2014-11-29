@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text.RegularExpressions;
+using MediaFileParser.MediaTypes.MediaFile.Junk;
 
 namespace MediaFileParser.MediaTypes.MediaFile
 {
