@@ -133,7 +133,7 @@ namespace MediaFileParser.ModeManagers
             if (_confirm || !file.Test())
             {
                 var orig = file.ToString("O.E");    // prevent repetitive ToString()
-                if (orig != clea || !String.Equals(orig, clea, StringComparison.CurrentCultureIgnoreCase) ||
+                if (orig != clea || !String.Equals(orig, clea, StringComparison.OrdinalIgnoreCase) ||
                     NormalisePath(destination) != NormalisePath(file.Location))
                 {
                     move = ConfirmMove(file, destination);
