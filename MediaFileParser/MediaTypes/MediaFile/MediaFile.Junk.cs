@@ -20,9 +20,9 @@ namespace MediaFileParser.MediaTypes.MediaFile
         private static readonly JunkContainer JunkStrings = new JunkContainer
         {
             "(", "xor", "aph", "ac3", "rerip", "repack", "proper", "notv", "uncut", "xvid", "saints", "caph", "rip", "xvid", "uncut",
-            "[vtv]", "ppvrip", "real", "full-rip", "ntsc", "web-rip", "webrip", "webdl", "web-dl", "h.264", "x264", "divx", "french",
+            "[vtv]", "ppvrip", {"real", new []{"ity"}, null}, "full-rip", "ntsc", "web-rip", "webrip", "webdl", "web-dl", "h.264", "x264", "divx", "french",
             "truefrench", "unrated", "limited", "rapax-249", "readnfo", "korsub",
-            {"cam", MediaFileQuality.LowQuality}, {"ts", MediaFileQuality.LowQuality}, {"wp", MediaFileQuality.LowQuality},
+            {"cam", new[]{"e","p","i"}, MediaFileQuality.LowQuality}, {"ts", MediaFileQuality.LowQuality}, {"wp", MediaFileQuality.LowQuality},
             {"tc", MediaFileQuality.LowQuality}, {"ppv", MediaFileQuality.MediumQuality}, {"ddc", MediaFileQuality.MediumQuality},
             {"r5", MediaFileQuality.MediumToHighQuality}, {"hq", MediaFileQuality.HighQuality}, {"ws", MediaFileQuality.LowToMediumQuality},
             {"dvd", MediaFileQuality.MediumToHighQuality}, {"dts", MediaFileQuality.MediumToHighQuality},

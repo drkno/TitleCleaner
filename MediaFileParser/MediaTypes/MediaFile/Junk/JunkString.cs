@@ -27,6 +27,11 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         public MediaFileQuality? Quality { get; private set; }
 
         /// <summary>
+        /// Suffixes of this JunkString that are vetoed from being matched in a comparison.
+        /// </summary>
+        public string[] VetoedSuffixes { get; private set; }
+
+        /// <summary>
         /// Creates a new JunkString.
         /// </summary>
         /// <param name="junk">String to represent.</param>
@@ -34,6 +39,19 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         public JunkString(string junk, MediaFileQuality? quality = null)
         {
             String = junk;
+            Quality = quality;
+        }
+
+        /// <summary>
+        /// Creates a new JunkString.
+        /// </summary>
+        /// <param name="junk">String to represent.</param>
+        /// <param name="vetoedSuffixes">Suffixes to this JunkString to veto.</param>
+        /// <param name="quality">Quality of the media file to associate with this string.</param>
+        public JunkString(string junk, string[] vetoedSuffixes, MediaFileQuality? quality = null)
+        {
+            String = junk;
+            VetoedSuffixes = vetoedSuffixes;
             Quality = quality;
         }
 
@@ -54,8 +72,13 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         /// <returns>true if the object represents the same string, false otherwise</returns>
         public override bool Equals(object obj)
         {
+            var junkString = obj as JunkString;
+            if (junkString != null)
+            {
+                return junkString.Quality == Quality && junkString.String == String;
+            }
             var s = obj as string;
-            return s != null ? string.Equals(s, String) : ReferenceEquals(this, obj);
+            return s != null && string.Equals(s, String);
         }
 
         /// <summary>
@@ -67,7 +90,18 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         /// <returns>Negitive if before, positive if after or zero if equal in sort order.</returns>
         public int CompareTo(JunkString other)
         {
-            return String.Compare(String, other.String, StringComparison.OrdinalIgnoreCase);
+            var i = string.CompareOrdinal(String, 0, other.String, 0, String.Length);
+            if (i == 0 && VetoedSuffixes != null)
+            {
+                foreach (var vetoedSuffix in VetoedSuffixes)
+                {
+                    if (string.CompareOrdinal(vetoedSuffix, 0, other.String, String.Length, vetoedSuffix.Length) == 0)
+                    {
+                        return vetoedSuffix.Length < other.String.Length ? 1 : -1;
+                    }
+                }
+            }
+            return i;
         }
 
         /// <summary>
@@ -86,7 +120,7 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         /// <returns>true if this JunkString starts with other JunkString, otherwise false</returns>
         public bool StartsWith(JunkString str)
         {
-            return String.StartsWith(str.String, StringComparison.InvariantCultureIgnoreCase);
+            return String.StartsWith(str.String, StringComparison.OrdinalIgnoreCase);
         }
 
         /// <summary>
@@ -96,7 +130,7 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         /// <returns>true if this JunkString starts with the string, otherwise false</returns>
         public bool StartsWith(string str)
         {
-            return String.StartsWith(str, StringComparison.InvariantCultureIgnoreCase);
+            return String.StartsWith(str, StringComparison.OrdinalIgnoreCase);
         }
     }
 }
