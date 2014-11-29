@@ -28,7 +28,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// <summary>
         /// List of sectors of the media file name.
         /// </summary>
-        protected List<string> SectorList = new List<string>();
+        protected SectorList SectorList;
 
         /// <summary>
         /// Storage of the default ToString() output format.
@@ -94,7 +94,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
 
             // Raw
             file = Origional;
-            SectorList.AddRange(file.Split(DelimChars, StringSplitOptions.RemoveEmptyEntries));
+            SectorList = new SectorList(file.Split(DelimChars, StringSplitOptions.RemoveEmptyEntries));
 
             DefaultCount = SectorList.Count;
 
@@ -406,7 +406,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// <param name="index">Index of the array to read and replace.</param>
         /// <param name="roman">Also convert roman numerals.</param>
         /// <returns>Success.</returns>
-        protected static bool FromNumberWord(ref List<string> arr, int index, bool roman = false)
+        protected static bool FromNumberWord(ref SectorList arr, int index, bool roman = false)
         {
             NumberWord word;
             if (!Enum.TryParse(arr[index], true, out word))
