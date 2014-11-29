@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
+using System.Text;
 using System.Text.RegularExpressions;
 
 #endregion
@@ -177,6 +178,11 @@ namespace MediaFileParser.MediaTypes.MediaFile
         public uint Part { get; protected set; }
 
         /// <summary>
+        /// Quality of the media file.
+        /// </summary>
+        public MediaFileQuality? Quality { get; protected set; }
+        
+        /// <summary>
         /// Folder this file is stored in.
         /// </summary>
         public string Folder
@@ -305,12 +311,12 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// <returns>The string representation of this object.</returns>
         public string ToString(string str)
         {
-            var result = "";
+            var result = new StringBuilder();
             for (var i = 0; i < str.Length; i++)
             {
-                result += ToString(ref str, ref i);
+                result.Append(ToString(ref str, ref i));
             }
-            return result;
+            return result.ToString();
         }
 
         /// <summary>
