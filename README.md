@@ -19,6 +19,9 @@ CLI:<br />
 ---
 Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0.23.14334/tc-cli.zip)
 <br /><code>tc-cli.exe [OPTION]...</code>
+<br /><b>Usage Examples:</b><br />
+*<code>tc-cli.exe -i -c -v "N - \SS\Ee?( - T).E"</code><br />This will ask for confirmation, query the TVDB and output TV files in the format <code>SeriesName - SXXEXX.ext</code> or <code>SeriesName - SXXEXX - EpisodeTitle.ext</code> if EpisodeTitle exists.<br />
+*<code>tc-cli.exe -s "C?( Y)?( (P)).E"</code><br />This will output files in the default format, optionally appending Year and file part number if they are known.
 
 	If no options are specified defaults will be used.
 	-m, --mode
