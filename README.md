@@ -10,10 +10,12 @@ Library:<br />
 ---
 Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0.23.14334/TitleCleanerLib.zip).
 Examples of how to use are the tc-cli and tc-gui projects. Also included is XML documentation and a pdb debugging file.
+A general overview of the classes in the library can be seen below:<br />
+![Overview image of the library class layout.](./Overview.png)
 
 GUI:<br />
 ---
-Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0.23.14334/tc-gui.zip)
+Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0.23.14334/tc-gui.zip). Usage of the GUI is fairly self explanatory however any part that is undocumented works in a similar if not identical way to the CLI interface below. If a feature is undocumented, unexplained or otherwise refer to the CLI options and documentation for more information.
 
 CLI:<br />
 ---
@@ -83,7 +85,8 @@ Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/do
 		is otherwise unchanged. This option is mutually exclusive with -d. In test mode
 		this specifies a test .csv file to run.
 
-A full list of the test cases that TitleCleaner is run against (with default options) can be found  [here](https://github.com/mrkno/TitleCleaner/blob/master/MediaFileParser/Tests/tests.csv).
+A full list of the test cases that TitleCleaner is run against (with default options) can be found  [here](https://github.com/mrkno/TitleCleaner/blob/master/MediaFileParser/Tests/tests.csv).<br />
+5/2821 Tests are failing as of 18:55:09 NZST 30/11/14.<br />
 This list always requires expansion so feel free to contribute them in a similar csv format.
 
 This is an improved version of the original mess located here:
