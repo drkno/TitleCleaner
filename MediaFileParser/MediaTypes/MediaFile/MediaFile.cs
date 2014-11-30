@@ -78,7 +78,8 @@ namespace MediaFileParser.MediaTypes.MediaFile
         protected MediaFile(string file)
         {
             Origional = file;
-            Year = -1;
+            // ReSharper disable once DoNotCallOverridableMethodsInConstructor
+            Year = -1;  // no matter how we override, it should always be init to -1
 
             // Location
             int pathSep;
@@ -178,7 +179,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// <summary>
         /// Year that the media in this media file was made.
         /// </summary>
-        public int Year { get; protected set; }
+        public virtual int Year { get; protected set; }
 
         /// <summary>
         /// Part of the file if it is split into segments.
