@@ -38,13 +38,28 @@ Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/do
 		of the test cases to the specified file.
 		
 	-s, --format
-		{FORMAT} to use for output file naming.
+		{FORMAT} to use for output file naming. Supports the following characters:
+			L: Location
+			O: Origional Filename
+			C: Cleaned Filename
+			E: File Extension
+			Y: Year (or if year is unknown, current year)
+			P: Part of File
+			?: Only return next character group if it is not null/empty/whitespace
+			\: Return Next Character
 		
 	-v, --tformat
 		{FORMAT} to use for output TV file naming. This option overrides the -s option.
+		Supports the same characters as the -s option as well as:
+			T: Title of the Episode
+			N: Name of the Episode
+			S: Season Number of the Episode (Padded to 2sf)
+			s: Season Number of the Episode
+			e: Episode Number of the Episode
 		
 	-e, --mformat
 		{FORMAT} to use for output movie file naming. This option overrides the -s option.
+		Supports the same characters as the -s option.
 		
 	-h, --help
 		Display this help.
