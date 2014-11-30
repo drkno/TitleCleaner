@@ -174,20 +174,40 @@ namespace MediaFileParser.MediaTypes.TvFile
             {
                 // Avoid looking up unknown titles
                 if (!string.IsNullOrWhiteSpace(TitleVar) || !TvdbLookup || Name == "Unknown" || Episode.Count == 0) return TitleVar;
-                // Get episode
-                TvdbEpisode episode;
                 try
-                {
-                    episode = GetTvdbEpisode();
+                {   // Get episode
+                    var episode = GetTvdbEpisode();
+                    return episode.EpisodeName;
                 }
                 catch (Exception)
                 {
-                    episode = null;
+                    return TitleVar;
                 }
-                // Return name
-                return episode == null ? TitleVar : episode.EpisodeName;
             }
             protected set { TitleVar = value.Trim(TrimChars); }
+        }
+
+        /// <summary>
+        /// Year that this TV episode was made.
+        /// </summary>
+        public override int Year 
+        {
+            get
+            {
+                var yr = base.Year;
+                if (yr > 0 || !TvdbLookup) return yr;
+                try
+                {
+                    var episode = GetTvdbEpisode();
+                    base.Year = DateTime.Parse(episode.FirstAired).Year;
+                }
+                catch (Exception)
+                {
+                    Debug.WriteLine("Cannot get Year from TVDB.");
+                }
+                return yr;
+            }
+            protected set { base.Year = value; }
         }
         #endregion
 
