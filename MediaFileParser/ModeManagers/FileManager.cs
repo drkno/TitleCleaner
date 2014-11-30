@@ -42,6 +42,16 @@ namespace MediaFileParser.ModeManagers
         /// </summary>
         public event MoveDelegate OnFileMoveFailed;
         /// <summary>
+        /// Used for when accessing a file or directory results in an access denied error.
+        /// </summary>
+        /// <param name="sender">FileManager that sent this access denied message.</param>
+        /// <param name="e">Exception that caused this error.</param>
+        public delegate void AccessDeniedDelegate(FileManager sender, UnauthorizedAccessException e);
+        /// <summary>
+        /// Called when access to a file is denied.
+        /// </summary>
+        public event AccessDeniedDelegate OnAccessDenied;
+        /// <summary>
         /// Known media file extensions.
         /// </summary>
         private static readonly string[] FileExts =
@@ -221,7 +231,21 @@ namespace MediaFileParser.ModeManagers
                 fileFolder = Environment.CurrentDirectory;
             }
             var files = GetFileList(fileFolder);
-            return files.Select(file => GetMediaFile(file, type)).ToArray();
+            var mediaFiles = new List<MediaFile>();
+            var enumerator = files.GetEnumerator();
+            while (true)
+            {
+                try
+                {
+                    if (!enumerator.MoveNext()) break;
+                    mediaFiles.Add(GetMediaFile(enumerator.Current, type));
+                }
+                catch (UnauthorizedAccessException e)
+                {
+                    OnAccessDenied.Invoke(this, e);
+                }
+            }
+            return mediaFiles.ToArray();
         }
 
         /// <summary>
@@ -246,7 +270,7 @@ namespace MediaFileParser.ModeManagers
         /// <returns>List of paths.</returns>
         private static IEnumerable<string> GetFileList(string fileFolder)
         {
-            return File.Exists(fileFolder) ? new[] { Path.GetFullPath(fileFolder) } : Directory.GetFiles(fileFolder, "*.*", SearchOption.AllDirectories).Where(file => FileExts.Any(file.EndsWith));
+            return File.Exists(fileFolder) ? new[] { Path.GetFullPath(fileFolder) } : Directory.EnumerateFileSystemEntries(fileFolder, "*.*", SearchOption.AllDirectories).Where(file => FileExts.Any(file.EndsWith));
         }
 
         private static string GetMediaTypeDirectory(ref MediaFile file)
@@ -260,12 +284,10 @@ namespace MediaFileParser.ModeManagers
                 {
                     try
                     {
-                        var ind1 = s.IndexOf("[ts(", StringComparison.Ordinal);
-                        var sub2 = s.Substring(ind1);
-                        var ind2 = sub2.IndexOf(")]", StringComparison.Ordinal);
-                        var ts = sub2.Substring(4, ind2 - 4);
-                        sub2 = file.ToString(ts) + sub2.Substring(ind2 + 2);
-                        sub = sub.Substring(0, ind1) + sub2;
+                        var ind1 = sub.IndexOf("[ts(", StringComparison.Ordinal);
+                        var ind2 = sub.IndexOf(")]", ind1, StringComparison.Ordinal);
+                        var ts = sub.Substring(ind1 + 4, ind2 - ind1 - 4);
+                        sub = sub.Substring(0, ind1) + file.ToString(ts) + sub.Substring(ind2 + 2); 
                     }
                     catch (Exception) { Debug.WriteLine("Parsing media directory tostring failed."); }
                 }

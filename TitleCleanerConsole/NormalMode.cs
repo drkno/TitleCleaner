@@ -19,6 +19,7 @@ namespace TitleCleanerConsole
             fileManager.ConfirmAutomaticMove += FileManagerConfirmAutomaticMove;
             fileManager.OnFileMove += fileManager_OnFileMove;
             fileManager.OnFileMoveFailed += fileManager_OnFileMoveFailed;
+            fileManager.OnAccessDenied += fileManager_OnAccessDenied;
 
             TvFile.TvdbSearchSelectionRequired += TvFileTvdbSearchSelectionRequired;
             
@@ -34,6 +35,18 @@ namespace TitleCleanerConsole
             }
 
             Console.ForegroundColor = consoleColor;
+        }
+
+        private static void fileManager_OnAccessDenied(FileManager sender, UnauthorizedAccessException e)
+        {
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write('[');
+            Console.ForegroundColor = ConsoleColor.Yellow;
+            Console.Write("Erro");
+            Console.ForegroundColor = ConsoleColor.Gray;
+            Console.Write("]\t");
+            Console.ForegroundColor = ConsoleColor.Red;
+            Console.WriteLine(e.Message);
         }
 
         private static uint TvFileTvdbSearchSelectionRequired(TvdbSeries[] seriesSearch, string seriesName)
