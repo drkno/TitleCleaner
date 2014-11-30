@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Globalization;
 using System.IO;
-using System.Threading;
 using MediaFileParser.ModeManagers;
 
 namespace TitleCleanerConsole
@@ -32,24 +30,11 @@ namespace TitleCleanerConsole
 
             var manager = new TestManager(inputDir, type);
 
-            //manager.TestCaseDidFail += ManagerTestCaseDidFail;
-            //manager.TestCaseDidPass += ManagerTestCaseDidPass;
-            //manager.TestCaseEncounteredError += ManagerTestCaseEncounteredError;
+            manager.TestCaseDidFail += ManagerTestCaseDidFail;
+            manager.TestCaseDidPass += ManagerTestCaseDidPass;
+            manager.TestCaseEncounteredError += ManagerTestCaseEncounteredError;
 
-            const int rep = 100;
-            double time = 0;
-            for (var i = 0; i < rep; i++)
-            {
-                var timer = new Stopwatch();
-                timer.Start();
-                manager.RunTests();
-                timer.Stop();
-                time += timer.ElapsedMilliseconds;
-            }
-            time /= rep;
-            Console.WriteLine("Avg time: " + time + "\n");
-            
-            Console.ReadKey();
+            manager.RunTests();
 
             Console.ForegroundColor = ConsoleColor.White;
             Console.Write("\nPassed: ");
@@ -60,12 +45,11 @@ namespace TitleCleanerConsole
             Console.ForegroundColor = ConsoleColor.Red;
             Console.WriteLine(_failed);
 
-
             if (_failed != 0)
             {
                 Console.ForegroundColor = ConsoleColor.White;
                 Console.WriteLine("Press [f] to show list of failed tests or [any key] to quit.");
-                if (true)
+                if (Console.ReadKey(true).Key == ConsoleKey.F)
                 {
                     Console.ForegroundColor = ConsoleColor.Yellow;
                     Console.Write('{');
@@ -89,7 +73,7 @@ namespace TitleCleanerConsole
             if (!confirm) return;
             Console.ForegroundColor = ConsoleColor.White;
             Console.WriteLine("Press [any key] to quit.");
-            //Console.ReadKey(true);
+            Console.ReadKey(true);
         }
 
         private static void ManagerTestCaseEncounteredError(TestManager.TestCase testCase)
@@ -106,6 +90,11 @@ namespace TitleCleanerConsole
             Console.WriteLine(testCase.DestinationName);
 
             if (_writer != null) _writer.WriteLine(testCase.OrigionalName + "," + testCase.MediaFile);
+
+            if (_conf)
+            {
+                Console.ReadKey(true);
+            }
         }
 
         private static void ManagerTestCaseDidFail(TestManager.TestCase testCase)
@@ -124,6 +113,11 @@ namespace TitleCleanerConsole
             Console.WriteLine(new string(' ', testCase.Index.ToString(CultureInfo.InvariantCulture).Length + 11) + testCase.DestinationName);
 
             if (_writer != null) _writer.WriteLine(testCase.OrigionalName + "," + testCase.MediaFile);
+
+            if (_conf)
+            {
+                Console.ReadKey(true);
+            }
         }
 
         private static void ManagerTestCaseDidPass(TestManager.TestCase testCase)
