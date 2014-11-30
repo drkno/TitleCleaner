@@ -19,6 +19,9 @@ CLI:<br />
 ---
 Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0.23.14334/tc-cli.zip)
 <br /><code>tc-cli.exe [OPTION]...</code>
+<br /><b>Usage Examples:</b><br />
+*<code>tc-cli.exe -i -c -v "N - \SS\Ee?( - T).E"</code><br />This will ask for confirmation, query the TVDB and output TV files in the format <code>SeriesName - SXXEXX.ext</code> or <code>SeriesName - SXXEXX - EpisodeTitle.ext</code> if EpisodeTitle exists.<br />
+*<code>tc-cli.exe -s "C?( Y)?( (P)).E"</code><br />This will output files in the default format, optionally appending Year and file part number if they are known.
 
 	If no options are specified defaults will be used.
 	-m, --mode
@@ -38,13 +41,28 @@ Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/do
 		of the test cases to the specified file.
 		
 	-s, --format
-		{FORMAT} to use for output file naming.
+		{FORMAT} to use for output file naming. Supports the following characters:
+			L: Location
+			O: Origional Filename
+			C: Cleaned Filename
+			E: File Extension
+			Y: Year (or if year is unknown, current year)
+			P: Part of File
+			?: Only return next character group if it is not null/empty/whitespace
+			\: Return Next Character
 		
 	-v, --tformat
 		{FORMAT} to use for output TV file naming. This option overrides the -s option.
+		Supports the same characters as the -s option as well as:
+			T: Title of the Episode
+			N: Name of the Episode
+			S: Season Number of the Episode (Padded to 2sf)
+			s: Season Number of the Episode
+			e: Episode Number of the Episode
 		
 	-e, --mformat
 		{FORMAT} to use for output movie file naming. This option overrides the -s option.
+		Supports the same characters as the -s option.
 		
 	-h, --help
 		Display this help.
