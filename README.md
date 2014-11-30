@@ -8,16 +8,16 @@ If there is insufficient information the program will make a best effort approac
 
 Library:<br />
 ---
-Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0/TitleCleanerLib.zip).
+Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0.23.14334/TitleCleanerLib.zip).
 Examples of how to use are the tc-cli and tc-gui projects. Also included is XML documentation and a pdb debugging file.
 
 GUI:<br />
 ---
-Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0/tc-gui.zip)
+Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0.23.14334/tc-gui.zip)
 
 CLI:<br />
 ---
-Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0/tc-cli.zip)
+Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0.23.14334/tc-cli.zip)
 <br /><code>tc-cli.exe [OPTION]...</code>
 
 	If no options are specified defaults will be used.
