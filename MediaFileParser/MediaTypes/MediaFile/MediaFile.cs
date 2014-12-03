@@ -99,6 +99,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
             SectorList = new List<string>(file.Split(DelimChars, StringSplitOptions.RemoveEmptyEntries));
             
             int year = -1, removeStart = int.MaxValue;
+            var lastWasSingle = false;
             for (var i = 0; i < SectorList.Count; i++)
             {
                 // And add splits along num-letter boundries
@@ -122,11 +123,17 @@ namespace MediaFileParser.MediaTypes.MediaFile
                 // Merge alone letters. eg "A M" -> "AM"
                 if (Regex.IsMatch(SectorList[i], @"^[A-Z]$"))
                 {
-                    while (i + 1 != SectorList.Count && Regex.IsMatch(SectorList[i + 1], @"^[A-Z]$"))
+                    if (lastWasSingle)
                     {
-                        SectorList[i] += SectorList[i + 1];
-                        SectorList.RemoveAt(i + 1);
+                        SectorList[i - 1] += SectorList[i];
+                        SectorList.RemoveAt(i);
+                        i--;
                     }
+                    lastWasSingle = true;
+                }
+                else
+                {
+                    lastWasSingle = false;
                 }
 
                 // Detect part/disk numbers
