@@ -120,12 +120,13 @@ namespace MediaFileParser.MediaTypes.MediaFile
                 SectorList[i] = new string(a);
 
                 // Merge alone letters. eg "A M" -> "AM"
-                if (i > 0 && SectorList[i].Length == 1 && SectorList[i - 1].Length == 1 &&
-                    Regex.IsMatch(SectorList[i], @"[A-Z]") && Regex.IsMatch(SectorList[i - 1], @"[A-Z]"))
+                if (Regex.IsMatch(SectorList[i], @"^[A-Z]$"))
                 {
-                    i--;
-                    SectorList[i] += SectorList[i + 1];
-                    SectorList.RemoveAt(i + 1);
+                    while (i + 1 != SectorList.Count && Regex.IsMatch(SectorList[i + 1], @"^[A-Z]$"))
+                    {
+                        SectorList[i] += SectorList[i + 1];
+                        SectorList.RemoveAt(i + 1);
+                    }
                 }
 
                 // Detect part/disk numbers
