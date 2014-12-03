@@ -322,6 +322,15 @@ namespace MediaFileParser.MediaTypes.TvFile
         }
 
         /// <summary>
+        /// ToString implementation of the TV File.
+        /// </summary>
+        /// <returns>The default string representation of this object.</returns>
+        public override string ToString()
+        {
+            return ToString(DefaultFormatString);
+        }
+
+        /// <summary>
         /// Storage of the output directory for this media type.
         /// </summary>
         protected new static string TypeOutDirectory = "TV Shows|[ts(N)]|Season [ts(s)]";
