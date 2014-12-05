@@ -8,18 +8,18 @@ If there is insufficient information the program will make a best effort approac
 
 Library:<br />
 ---
-Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0.23.14334/TitleCleanerLib.zip).
+Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0.45.14337/TitleCleanerLib.zip).
 Examples of how to use are the tc-cli and tc-gui projects. Also included is XML documentation and a pdb debugging file.
 A general overview of the classes in the library can be seen below:<br />
 ![Overview image of the library class layout.](./Overview.png)
 
 GUI:<br />
 ---
-Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0.23.14334/tc-gui.zip). Usage of the GUI is fairly self explanatory however any part that is undocumented works in a similar if not identical way to the CLI interface below. If a feature is undocumented, unexplained or otherwise refer to the CLI options and documentation for more information.
+Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0.45.14337/tc-gui.zip). Usage of the GUI is fairly self explanatory however any part that is undocumented works in a similar if not identical way to the CLI interface below. If a feature is undocumented, unexplained or otherwise refer to the CLI options and documentation for more information.
 
 CLI:<br />
 ---
-Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0.23.14334/tc-cli.zip)
+Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/download/v2.0.45.14337/tc-cli.zip)
 <br /><code>tc-cli.exe [OPTION]...</code>
 <br /><b>Usage Examples:</b><br />
 *<code>tc-cli.exe -i -c -v "N - \SS\Ee?( - T).E"</code><br />This will ask for confirmation, query the TVDB and output TV files in the format <code>SeriesName - SXXEXX.ext</code> or <code>SeriesName - SXXEXX - EpisodeTitle.ext</code> if EpisodeTitle exists.<br />
