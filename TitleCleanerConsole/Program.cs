@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Globalization;
 using System.Reflection;
 using MediaFileParser.MediaTypes;
 using MediaFileParser.MediaTypes.MediaFile;
@@ -99,22 +100,22 @@ namespace TitleCleanerConsole
         {
             var p = new OptionSet
             {
-                { "m|mode",         "The {MODE} to run this application in (normal/test).",     v => _mode = v.ToLower().Trim() },
-                { "t|type",         "The {TYPE} of media files being input (tv/movie/auto).",   v => _type = GetType(v.ToLower().Trim()) },
+                { "m|mode",         "The {mode} to run this application in (normal/test).",     v => _mode = v.ToLower().Trim() },
+                { "t|type",         "The {type} of media files being input (tv/movie/auto).",   v => _type = GetType(v.ToLower().Trim()) },
                 { "i|tvdb",         "Retreives new missing tv episode names from the TVDB.",    v => TvFile.TvdbLookup = true },
                 { "c|confirm",      "Asks for confirmation on rename/move/test.",               v => _confirm = true },
-                { "o|out",          "Move media files to {DIRECTORY}. In test mode this " +
+                { "o|out",          "Move media files to {directory}. In test mode this " +
                                     "outputs the outcomes of the test cases to the specified " +
                                     "file.",                                                    v => _outputDir = v },
-                { "s|format",       "{FORMAT} to use for output file naming.",                  v => MediaFile.DefaultFormatString = v },
-                { "v|tformat",      "{FORMAT} to use for output TV file naming. This option " +
-                                    "overrides the -s option.",                                 v => TvFile.DefaultFormatString = v },
-                { "e|mformat",      "{FORMAT} to use for output movie file naming. This option " +
-                                    "overrides the -s option.",                                 v => MovieFile.DefaultFormatString = v },
+                { "s|format",       "{Format string} to use for output file naming.",           v => MediaFile.DefaultFormatString = v },
+                { "v|tformat",      "{Format string} to use for output TV file naming. This " +
+                                    "option overrides the -s option.",                          v => TvFile.DefaultFormatString = v },
+                { "e|mformat",      "{Format string} to use for output movie file naming. " +
+                                    "This option overrides the -s option.",                     v => MovieFile.DefaultFormatString = v },
                 { "h|help",         "Display this help.",                                       v => _help = true },
                 { "w|tvdir",        "Sets the output directory subdirectory for tv files.",     v => TvFile.TypeDirectory = v},
                 { "r|movdir",       "Sets the output directory subdirectory for movie files.",  v => MovieFile.TypeDirectory = v},
-                { "d|directory",    "The {DIRECTORY} to search for files. When used the " +
+                { "d|directory",    "The {directory} to search for files. When used the " +
                                     "directory provided will be searched instead of the current" +
                                     " directory for media files. This option is mutually " +
                                     "exclusive with -f.",
@@ -126,7 +127,7 @@ namespace TitleCleanerConsole
                         _inputDir = v;
                     }
                 },
-                { "f|file=",        "Cleans an individual {FILE} instead of searching. The behaviour " +
+                { "f|file",        "Cleans an individual {file} instead of searching. The behaviour " +
                                     "of the application is otherwise unchanged. This option is mutually" +
                                     " exclusive with -d.\n" +
                                     "In test mode this specifies a test .csv file to run.",
@@ -147,11 +148,15 @@ namespace TitleCleanerConsole
             var assembly = Assembly.GetExecutingAssembly();
             var fvi = FileVersionInfo.GetVersionInfo(assembly.Location);
 
+            var build = new DateTime(2000 + fvi.FilePrivatePart / 1000, 1, 1);
+            build = build.AddDays(int.Parse(fvi.FilePrivatePart.ToString(CultureInfo.InvariantCulture).Substring(2)) - 1);
+
             p.ShowHelp("Tidy up and relocate media files.","{appName} [OPTION]...",
                        "If no options are specified defaults will be used.",
                        null,
                        "Written by Matthew Knox.",
                        "Version:\t" + fvi.ProductVersion + " " + ((Environment.Is64BitProcess) ? "x64" : "x32") +
+                       "\nBuild:\t\tr" + fvi.FileBuildPart + " " + build.ToString("d") +
                        "\nCLR Version:\t" + Environment.Version +
                        "\nOS Version:\t" + Environment.OSVersion.VersionString +
                        "\nReport {appName} bugs and above information to the bug tracker at\n" +

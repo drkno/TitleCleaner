@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 
 #endregion
 
@@ -129,6 +130,10 @@ namespace TitleCleanerConsole
                         {
                             var arg = temp.Aggregate("", (current, t) => current + (t + " "));
                             arg = arg.Trim();
+                            if (arg.Length == 0 &&_options[optionRead].ExpectsArguments)
+                            {
+                                throw new OptionException("Option expects arguments and none provided.", arg);
+                            }
                             _options[optionRead].Action(arg);
                         }
                         catch (OptionException)
@@ -214,18 +219,37 @@ namespace TitleCleanerConsole
             /// <param name="description">Description of this option.</param>
             /// <param name="func">Action to perform when this option is specified.</param>
             /// <param name="style">Style of option to use.</param>
-            public Option(string options, string description, Action<string> func, OptionStyle style)
+            /// <param name="optionalArgs">If this is true, arguments will be treated as non compulsary ones.</param>
+            public Option(string options, string description, Action<string> func, OptionStyle style, bool optionalArgs = false)
             {
-                Description = description;
                 Action = func;
                 var spl = options.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries);
                 Arguments = spl.Select(s => OptionsPrefixes[(int) style + ((s.Length == 1) ? 0 : 1)] + s).ToArray();
+                var opts = new List<string>();
+                foreach (Match match in Regex.Matches(description, "{[^}]*}"))
+                {
+                    var val = match.Value.Substring(1, match.Length - 2);
+                    opts.Add(val.ToUpper());
+                    description = description.Substring(0, match.Index) + val +
+                                  description.Substring(match.Index + match.Length);
+                }
+                Description = description;
+                Options = opts.ToArray();
+                ExpectsArguments = opts.Count > 0 && !optionalArgs;
             }
 
             /// <summary>
             /// Arguments that this option provides.
             /// </summary>
             public string[] Arguments { get; private set; }
+            /// <summary>
+            /// Words to be displayed as options.
+            /// </summary>
+            public string[] Options { get; private set; }
+            /// <summary>
+            /// Specifies if this option requires arguments to be passed to it.
+            /// </summary>
+            public bool ExpectsArguments { get; private set; }
             /// <summary>
             /// Description of this option.
             /// </summary>
@@ -395,6 +419,15 @@ namespace TitleCleanerConsole
                     }
                     else
                     {
+                        if (p.Options.Length > 0)
+                        {
+                            Console.Write('\t');
+                            foreach (var t in p.Options)
+                            {
+                                Console.Write(" [" + t + "]");
+                            }
+                        }
+                        
                         Console.WriteLine();
                     }
                 }
