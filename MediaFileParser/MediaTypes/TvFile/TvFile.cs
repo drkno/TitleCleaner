@@ -56,13 +56,22 @@ namespace MediaFileParser.MediaTypes.TvFile
             {
                 if (NameVar != "Unknown") return NameVar;
                 var temp = GetSeasonFromDir();
-                if (temp == 0) return NameVar;
+                int none;
+                if ((temp == 0 && (Season <= 0 || Episode.Contains(0))) || int.TryParse(SectorList[0], out none)) return NameVar;
                 try   // in this case we are **fairly** certain that the containing dir is the program name
                 {
-                    var loc = Location;
-                    loc = loc.Substring(0, loc.LastIndexOfAny(PathSeperators));
-                    loc = loc.Substring(loc.LastIndexOfAny(PathSeperators) + 1);
-                    NameVar = loc;
+                    if (temp == 0)
+                    {
+                        var loc = Location;
+                        NameVar = loc.Substring(loc.LastIndexOfAny(PathSeperators) + 1);
+                    }
+                    else
+                    {
+                        var loc = Location;
+                        loc = loc.Substring(0, loc.LastIndexOfAny(PathSeperators));
+                        loc = loc.Substring(loc.LastIndexOfAny(PathSeperators) + 1);
+                        NameVar = loc;
+                    }
                 }
                 catch   // probably in drive root
                 {
