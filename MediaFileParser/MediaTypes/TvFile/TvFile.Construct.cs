@@ -171,12 +171,13 @@ namespace MediaFileParser.MediaTypes.TvFile
                 blockStart = SectorList.Count;
                 begin = blockEnd + 1;
             }
-            var name = "";//String.Join(" ", SectorList, begin, blockStart - begin);
+            var name = new StringBuilder(blockStart - begin);
             for (var i = begin; i < blockStart; i++)
             {
-                name += SectorList[i] + ((i + 1 != blockStart) ? " " : "");
+                name.Append(SectorList[i]);
+                name.Append(" ");
             }
-            Name = name;
+            Name = name.ToString();
 
             // Get show title (or swap if wrong way around)
             if (begin == 0)
