@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using MediaFileParser.MediaTypes.TvFile.Tvdb;
 
@@ -18,9 +19,29 @@ namespace MediaFileParser.MediaTypes.TvFile
     public partial class TvFile : MediaFile.MediaFile
     {
         /// <summary>
+        /// String to use for unknown.
+        /// </summary>
+        private const string UnknownString = "Unknown";
+        /// <summary>
+        /// String to use for special.
+        /// </summary>
+        private const string SpecialString = "Special";
+        /// <summary>
+        /// String to use for season.
+        /// </summary>
+        private const string SeasonString = "Season";
+        /// <summary>
+        /// String to use for series.
+        /// </summary>
+        private const string SeriesString = "Series";
+        /// <summary>
+        /// String to use for episode.
+        /// </summary>
+        private const string EpisodeString = "Episode";
+        /// <summary>
         /// Characters to trim from file names.
         /// </summary>
-        protected static char[] TrimChars = { ' ', '-', '.' };
+        protected static readonly char[] TrimChars = { ' ', '-', '.' };
         /// <summary>
         /// Temporary name of the episode variable.
         /// </summary>
@@ -40,8 +61,9 @@ namespace MediaFileParser.MediaTypes.TvFile
         /// <returns>Season number or 0 on failure.</returns>
         private uint GetSeasonFromDir()
         {
-            var match = Regex.Match(Folder, "((?<=((Season|Series).))[1-9][0-9]*|Specials?)", RegexOptions.IgnoreCase);
-            if (!match.Success || Regex.IsMatch(Folder, "Specials", RegexOptions.IgnoreCase)) return 0;
+            var match = Regex.Match(Folder, "((?<=((" + SeasonString + "|" + 
+                SeriesString + ").))[1-9][0-9]*|" + SpecialString + "s?)", RegexOptions.IgnoreCase);
+            if (!match.Success || Regex.IsMatch(Folder, SpecialString+"s?", RegexOptions.IgnoreCase)) return 0;
             uint season;
             uint.TryParse(match.Value, out season);
             return season;
@@ -54,7 +76,7 @@ namespace MediaFileParser.MediaTypes.TvFile
         {
             get
             {
-                if (NameVar != "Unknown") return NameVar;
+                if (NameVar != UnknownString) return NameVar;
                 var temp = GetSeasonFromDir();
                 int none;
                 if ((temp == 0 && (Season <= 0 || Episode.Contains(0))) || int.TryParse(SectorList[0], out none)) return NameVar;
@@ -93,7 +115,11 @@ namespace MediaFileParser.MediaTypes.TvFile
                 _season = GetSeasonFromDir();
                 return _season;
             }
-            protected set { _season = value; }
+            protected set
+            {
+                if (_season != 0 && _season != value) throw new Exception("Can't have an episode with multiple seasons.");
+                _season = value;
+            }
         }
 
         /// <summary>
@@ -144,7 +170,7 @@ namespace MediaFileParser.MediaTypes.TvFile
         public TvdbEpisode GetTvdbEpisode()
         {
             // Avoid looking up unknown titles
-            if (!string.IsNullOrWhiteSpace(TitleVar) || Name == "Unknown" || Episode.Count == 0) return null;
+            if (!string.IsNullOrWhiteSpace(TitleVar) || Name == UnknownString || Episode.Count == 0) return null;
             // Init API if not done already
             if (TvdbApiManager == null) TvdbApiManager = new Tvdb.Tvdb(TvdbApiKey);
             // Search for series
@@ -182,7 +208,7 @@ namespace MediaFileParser.MediaTypes.TvFile
             get
             {
                 // Avoid looking up unknown titles
-                if (!string.IsNullOrWhiteSpace(TitleVar) || !TvdbLookup || Name == "Unknown" || Episode.Count == 0) return TitleVar;
+                if (!string.IsNullOrWhiteSpace(TitleVar) || !TvdbLookup || Name == UnknownString || Episode.Count == 0) return TitleVar;
                 try
                 {   // Get episode
                     var episode = GetTvdbEpisode();
@@ -234,13 +260,13 @@ namespace MediaFileParser.MediaTypes.TvFile
         /// <returns>If a file is a tv file.</returns>
         public override bool Test()
         {
-            if (Episode.Count == 0 || ((Season == 0 || Episode.Contains(0)) && Name == "Unknown" && Title == ""))
+            if (Episode.Count == 0 || ((Season == 0 || Episode.Contains(0)) && Name == UnknownString && Title == ""))
             {
                 return false;
             }
 
             var earliest = SectorList.TakeWhile(sector => !Regex.Match(sector, "^[0-9]+$").Success).Count();
-            if (SectorList.Count > earliest && earliest >= 0 && Name == "Unknown"
+            if (SectorList.Count > earliest && earliest >= 0 && Name == UnknownString
                 && !(SectorList[earliest+1] == "-" || SectorList[earliest+1] == ":" || SectorList[earliest+1] == "."))
             {
                 return false;
@@ -296,13 +322,13 @@ namespace MediaFileParser.MediaTypes.TvFile
                 }
                 case 'e':
                 {
-                    var result = "";
+                    var result = new StringBuilder(Episode.Count);
                     for (var i = 0; i < Episode.Count; i++)
                     {
-                        result += Episode[i].ToString("00");
-                        result += (i + 1 != Episode.Count) ? "-" : "";
+                        result.Append(Episode[i].ToString("00"));
+                        result.Append((i + 1 != Episode.Count) ? "-" : "");
                     }
-                    return result;
+                    return result.ToString();
                 }
                 default:
                 {
@@ -342,7 +368,7 @@ namespace MediaFileParser.MediaTypes.TvFile
         /// <summary>
         /// Storage of the output directory for this media type.
         /// </summary>
-        protected new static string TypeOutDirectory = "TV Shows|[ts(N)]|Season [ts(s)]";
+        protected new static string TypeOutDirectory = "TV Shows|[ts(N)]|" + SeasonString + " [ts(s)]";
 
         /// <summary>
         /// Gets or sets the default directory name that this

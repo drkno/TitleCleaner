@@ -98,7 +98,7 @@ namespace MediaFileParser.MediaTypes.TvFile
                 }
 
                 // Get Season from explicit mention
-                if (Regex.IsMatch(SectorList[i], "season", RegexOptions.IgnoreCase) &&
+                if (Regex.IsMatch(SectorList[i], SeasonString, RegexOptions.IgnoreCase) &&
                     Regex.IsMatch(SectorList[i + 1], @"[0-9]{1,2}"))
                 {
                     i += 1;
@@ -114,7 +114,7 @@ namespace MediaFileParser.MediaTypes.TvFile
                 }
 
                 // Get Episode from explicit mention
-                if (Regex.IsMatch(SectorList[i], "episode", RegexOptions.IgnoreCase) &&
+                if (Regex.IsMatch(SectorList[i], EpisodeString, RegexOptions.IgnoreCase) &&
                     (Regex.IsMatch(SectorList[i + 1], @"[0-9]{1,2}") || FromNumberWord(ref SectorList, i + 1)))
                 {
                     i += 1;
@@ -200,7 +200,7 @@ namespace MediaFileParser.MediaTypes.TvFile
                 else
                 {
                     Title = Name;
-                    Name = "Unknown";
+                    Name = UnknownString;
                 }
             }
         }
