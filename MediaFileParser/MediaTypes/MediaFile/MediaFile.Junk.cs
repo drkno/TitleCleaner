@@ -35,7 +35,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
             {"dvdrip", MediaFileQuality.MediumToHighQuality},  {"camrip", MediaFileQuality.LowQuality},
             {"telesync", MediaFileQuality.LowQuality}, {"pdvd", MediaFileQuality.LowQuality}, {"workprint", MediaFileQuality.LowQuality},
             {"telecine", MediaFileQuality.LowQuality}, {"screener", MediaFileQuality.MediumQuality}, {"[hq]", MediaFileQuality.HighQuality},
-            {"dvdscreener", MediaFileQuality.MediumQuality}, {"bdscr", MediaFileQuality.HighQuality},
+            {"480p", MediaFileQuality.MediumQuality},{"dvdscreener", MediaFileQuality.MediumQuality}, {"bdscr", MediaFileQuality.HighQuality},
             {"dvd-rip", MediaFileQuality.MediumToHighQuality}, {"dvdr", MediaFileQuality.MediumToHighQuality},
             {"dvd-full", MediaFileQuality.MediumToHighQuality}, {"lossless", MediaFileQuality.HighQuality},
             {"dvd-5", MediaFileQuality.MediumToHighQuality}, {"720p", MediaFileQuality.MediumToHighQuality},
