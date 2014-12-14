@@ -10,22 +10,16 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
     public class JunkContainer : ICollection<JunkString>
     {
         /// <summary>
-        /// List to store short JunkStrings.
-        /// </summary>
-        private readonly Dictionary<int, JunkString> _shortJunk;
-
-        /// <summary>
         /// List to store long JunkStrings.
         /// </summary>
-        private readonly List<JunkString> _longJunk; 
+        private readonly List<JunkString> _junk; 
 
         /// <summary>
         /// Creates a new JunkContainer.
         /// </summary>
         public JunkContainer()
         {
-            _shortJunk = new Dictionary<int, JunkString>();
-            _longJunk = new List<JunkString>();
+            _junk = new List<JunkString>();
         }
 
         /// <summary>
@@ -34,7 +28,7 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         /// <returns>An enumerator.</returns>
         public IEnumerator<JunkString> GetEnumerator()
         {
-            return _longJunk.GetEnumerator();
+            return _junk.GetEnumerator();
         }
 
         /// <summary>
@@ -75,11 +69,7 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         /// <param name="item">JunkString to add.</param>
         public void Add(JunkString item)
         {
-            _longJunk.Add(item);
-            if (item.String.Length <= 3)
-            {
-                _shortJunk.Add(item.GetHashCode(), item);
-            }
+            _junk.Add(item);
             _sorted = false;
         }
 
@@ -93,8 +83,7 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         /// </summary>
         public void Clear()
         {
-            _shortJunk.Clear();
-            _longJunk.Clear();
+            _junk.Clear();
         }
 
         /// <summary>
@@ -102,33 +91,8 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         /// </summary>
         private void Sort()
         {
-            _longJunk.Sort(new StartsWithSortComparer());
+            _junk.Sort();//_startsWithComparer);
             _sorted = true;
-        }
-
-        /// <summary>
-        /// IComparer for sorting JunkStrings such that searching will result in the correct one.
-        /// </summary>
-        private class StartsWithSortComparer : IComparer<JunkString>
-        {
-            /// <summary>
-            /// Compare two JunkStrings to see if they are equal or start with each other
-            /// by getting their sort order.
-            /// </summary>
-            /// <param name="x">First JunkString to compare.</param>
-            /// <param name="y">Second JunkString to compare.</param>
-            /// <returns>Sort order of y relative to x.</returns>
-            public int Compare(JunkString x, JunkString y)
-            {
-                var xs = x.String;
-                var ys = y.String;
-
-                if (xs.Length < ys.Length)
-                {
-                    xs = xs.PadRight(ys.Length, '@');
-                }
-                return string.CompareOrdinal(xs, 0, ys, 0, xs.Length);
-            }
         }
 
         /// <summary>
@@ -143,14 +107,13 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
                 Sort();
             }
 
-            if (item.Length <= 3)
-            {
-                JunkString outVal;
-                _shortJunk.TryGetValue(item.GetHashCode(), out outVal);
-                return outVal;
-            }
-            var index = _longJunk.BinarySearch(item);
-            return index < 0 ? null : _longJunk[index];
+            var index = _junk.BinarySearch(item);
+            if (index >= 0) return _junk[index].JunkEquals(item) ? _junk[index] : null;
+            index = ~index;
+            if (index > _junk.Count || index == 0) return null;
+            if (_junk[index - 1].JunkEquals(item)) return _junk[index - 1];
+            if (index != _junk.Count && _junk[index].JunkEquals(item)) return _junk[index];
+            return null;
         }
 
         /// <summary>
@@ -208,46 +171,17 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         /// <returns>true if removal was successful, otherwise false</returns>
         public bool Remove(JunkString item)
         {
-            return (item.String.Length <= 3 && _shortJunk.Remove(item.GetHashCode()) && _longJunk.Remove(item)) ||
-                   _longJunk.Remove(item);
+            return _junk.Remove(item);
         }
 
         /// <summary>
         /// Gets the number of JunkStrings in this JunkContainer.
         /// </summary>
-        public int Count { get { return _longJunk.Count; } }
+        public int Count { get { return _junk.Count; } }
 
         /// <summary>
         /// Checks if this JunkContainer is read only. Always false.
         /// </summary>
         public bool IsReadOnly { get { return false; } }
-    }
-
-    /// <summary>
-    /// Junk String Extensions Class
-    /// </summary>
-    public static class StringExtender
-    {
-        /// <summary>
-        /// Determines whether the beginning of this string instance matches a specified JunkString.
-        /// </summary>
-        /// <param name="str">The string to compare to.</param>
-        /// <param name="startsWith">The JunkString to compare.</param>
-        /// <returns>true if value matches the beginning of this string; otherwise, false.</returns>
-        public static bool StartsWith(this string str, JunkString startsWith)
-        {
-            return str.StartsWith(startsWith.String);
-        }
-
-        /// <summary>
-        /// Determines whether this instance and another specified JunkString object have the same value.
-        /// </summary>
-        /// <param name="str">The string to compare to.</param>
-        /// <param name="obj">The JunkString to compare to this instance.</param>
-        /// <returns>true if the value of the value parameter is the same as this instance; otherwise, false.</returns>
-        public static bool EqualsJunk(this string str, JunkString obj)
-        {
-            return str.Equals(obj.String);
-        }
     }
 }
