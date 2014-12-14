@@ -132,5 +132,15 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         {
             return String.StartsWith(str, StringComparison.OrdinalIgnoreCase);
         }
+
+        /// <summary>
+        /// Compares this JunkString to another using the JunkString comparison rules.
+        /// </summary>
+        /// <param name="str">JunkString to compare.</param>
+        /// <returns>If they are equal.</returns>
+        public bool JunkEquals(JunkString str)
+        {
+            return (str.String.Length > 3 || str.String.Length == String.Length) && CompareTo(str) == 0;
+        }
     }
 }
