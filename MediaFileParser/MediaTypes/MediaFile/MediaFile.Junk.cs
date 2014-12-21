@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 using MediaFileParser.MediaTypes.MediaFile.Junk;
 
@@ -17,11 +18,11 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// <summary>
         /// Junk strings that are contained in filenames and their associated attributes.
         /// </summary>
-        private static readonly JunkContainer JunkStrings = new JunkContainer
+        protected static readonly JunkContainer JunkStrings = new JunkContainer
         {
             "(", "xor", "aph", "ac3", "rerip", "repack", "proper", "notv", "uncut", "xvid", "saints", "caph", "rip", "xvid", "uncut",
             "[vtv]", "ppvrip", {"real", new []{"ity"}, null}, "full-rip", "ntsc", "web-rip", "webrip", "webdl", "web-dl", "h.264", "x264", "divx", "french",
-            "truefrench", "unrated", "limited", "rapax-249", "readnfo", "korsub", "vraie", "vf", "dvd9", "dvd5", "dvd-9", "dvd-5",
+            "truefrench", "unrated", "limited", "rapax-249", "readnfo", "korsub", "vraie", "vf", "dvd9", "dvd5", "dvd-9", "dvd-5", {"by", new []{typeof(MovieFile.MovieFile)}},
             {"cam", new[]{"e","p","i"}, MediaFileQuality.LowQuality}, {"ts", MediaFileQuality.LowQuality}, {"wp", MediaFileQuality.LowQuality},
             {"tc", MediaFileQuality.LowQuality}, {"ppv", MediaFileQuality.MediumQuality}, {"ddc", MediaFileQuality.MediumQuality},
             {"r5", MediaFileQuality.MediumToHighQuality}, {"hq", MediaFileQuality.HighQuality}, {"ws", MediaFileQuality.LowToMediumQuality},
@@ -81,7 +82,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
             }
 
             var j = JunkStrings.Find(sec);
-            if (j == null) return;
+            if (j == null || (j.ApplicableTypes != null && !j.ApplicableTypes.Contains(GetType()))) return;
             Quality = j.Quality;
             if (removeStart > i) removeStart = i;
         }

@@ -55,6 +55,16 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         /// Adds a new JunkString to this container.
         /// </summary>
         /// <param name="junkString">string to represent with JunkString.</param>
+        /// <param name="applicableTypes">Types of file this JunkString is applicable to.</param>
+        public void Add(string junkString, Type[] applicableTypes)
+        {
+            Add(new JunkString(junkString, null, null, applicableTypes));
+        }
+
+        /// <summary>
+        /// Adds a new JunkString to this container.
+        /// </summary>
+        /// <param name="junkString">string to represent with JunkString.</param>
         /// <param name="vetoedSuffixes">JunkString suffixes that should not match when compared to the JunkString.</param>
         /// <param name="quality">Quality that the JunkString should represent.</param>
         public void Add(string junkString, string[] vetoedSuffixes, MediaFileQuality? quality)
@@ -87,11 +97,36 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         }
 
         /// <summary>
+        /// Compares JunkStrings so that they can be sorted approriately.
+        /// </summary>
+        private class JunkSort : IComparer<JunkString>
+        {
+            /// <summary>
+            /// Compares two JunkStrings and returns a sort order.
+            /// </summary>
+            /// <param name="x">First JunkString to compare.</param>
+            /// <param name="y">Second JunkString to compare.</param>
+            /// <returns>Sort order. Negative if less than, positive if greater than, zero if equal.</returns>
+            public int Compare(JunkString x, JunkString y)
+            {
+                if (y.StartsWith(x))
+                {
+                    return -1;
+                }
+                if (x.StartsWith(y))
+                {
+                    return 1;
+                }
+                return x.CompareTo(y);
+            }
+        }
+
+        /// <summary>
         /// Sorts the long junk list.
         /// </summary>
         private void Sort()
         {
-            _junk.Sort();//_startsWithComparer);
+            _junk.Sort(new JunkSort());
             _sorted = true;
         }
 

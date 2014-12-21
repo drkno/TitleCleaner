@@ -27,6 +27,11 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         public MediaFileQuality? Quality { get; private set; }
 
         /// <summary>
+        /// Types that this JunkString is applicable to.
+        /// </summary>
+        public Type[] ApplicableTypes { get; private set; }
+
+        /// <summary>
         /// Suffixes of this JunkString that are vetoed from being matched in a comparison.
         /// </summary>
         public string[] VetoedSuffixes { get; private set; }
@@ -48,11 +53,13 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         /// <param name="junk">String to represent.</param>
         /// <param name="vetoedSuffixes">Suffixes to this JunkString to veto.</param>
         /// <param name="quality">Quality of the media file to associate with this string.</param>
-        public JunkString(string junk, string[] vetoedSuffixes, MediaFileQuality? quality = null)
+        /// <param name="applicableTypes">Types of MediaFile that this JunkString is applicable to.</param>
+        public JunkString(string junk, string[] vetoedSuffixes, MediaFileQuality? quality = null, Type[] applicableTypes = null)
         {
             String = junk;
             VetoedSuffixes = vetoedSuffixes;
             Quality = quality;
+            ApplicableTypes = applicableTypes;
         }
 
         /// <summary>
