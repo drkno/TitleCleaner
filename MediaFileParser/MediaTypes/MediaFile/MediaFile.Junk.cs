@@ -21,7 +21,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
         {
             "(", "xor", "aph", "ac3", "rerip", "repack", "proper", "notv", "uncut", "xvid", "saints", "caph", "rip", "xvid", "uncut",
             "[vtv]", "ppvrip", {"real", new []{"ity"}, null}, "full-rip", "ntsc", "web-rip", "webrip", "webdl", "web-dl", "h.264", "x264", "divx", "french",
-            "truefrench", "unrated", "limited", "rapax-249", "readnfo", "korsub",
+            "truefrench", "unrated", "limited", "rapax-249", "readnfo", "korsub", "vraie", "vf", "dvd9", "dvd5", "dvd-9", "dvd-5",
             {"cam", new[]{"e","p","i"}, MediaFileQuality.LowQuality}, {"ts", MediaFileQuality.LowQuality}, {"wp", MediaFileQuality.LowQuality},
             {"tc", MediaFileQuality.LowQuality}, {"ppv", MediaFileQuality.MediumQuality}, {"ddc", MediaFileQuality.MediumQuality},
             {"r5", MediaFileQuality.MediumToHighQuality}, {"hq", MediaFileQuality.HighQuality}, {"ws", MediaFileQuality.LowToMediumQuality},
@@ -61,18 +61,22 @@ namespace MediaFileParser.MediaTypes.MediaFile
 
             if (Regex.IsMatch(SectorList[i], "^(([(][12][0-9]{3}[)])|([12][0-9]{3}))$"))
             {
-                var tempS = SectorList[i];
-                if (tempS[0] == '(')
+                if (sec[0] == '(')
                 {
-                    tempS = tempS.Substring(1, 4);
+                    sec = sec.Substring(1);
+                }
+
+                if (sec.Length > 4)
+                {
+                    sec = sec.Substring(0, 4);
                 }
 
                 int temp;
-                if (int.TryParse(tempS, out temp) && temp > YearStart && temp <= DateTime.Now.Year && i > year)
+                if (int.TryParse(sec, out temp) && temp > YearStart && temp <= DateTime.Now.Year && i > year)
                 {
                     Year = temp;
                     year = i;   // we've found the year (we think)
-                    SectorList[i] = tempS;
+                    SectorList[i] = sec;
                 }
             }
 

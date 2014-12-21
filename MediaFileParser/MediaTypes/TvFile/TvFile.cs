@@ -54,6 +54,10 @@ namespace MediaFileParser.MediaTypes.TvFile
         /// Storage for the season number.
         /// </summary>
         private uint _season;
+        /// <summary>
+        /// Set when this file is gaurenteed to be a TV file.
+        /// </summary>
+        private readonly bool _testGaurentee;
 
         /// <summary>
         /// Gets the season number from the current directory (if possible).
@@ -78,21 +82,36 @@ namespace MediaFileParser.MediaTypes.TvFile
             {
                 if (NameVar != UnknownString) return NameVar;
                 var temp = GetSeasonFromDir();
-                int none;
-                if ((temp == 0 && (Season <= 0 || Episode.Contains(0))) || int.TryParse(SectorList[0], out none)) return NameVar;
+                if ((temp == 0 && (Season <= 0 || Episode.Contains(0)))) return NameVar;
                 try   // in this case we are **fairly** certain that the containing dir is the program name
                 {
                     if (temp == 0)
                     {
                         var loc = Location;
-                        NameVar = loc.Substring(loc.LastIndexOfAny(PathSeperators) + 1);
+                        var spl = loc.Substring(loc.LastIndexOfAny(PathSeperators) + 1).Split(' ');
+                        var builder = new StringBuilder(spl.Length * 2);
+                        foreach (var s in spl)
+                        {
+                            builder.Append(ToUpperString(s));
+                            builder.Append(' ');
+                        }
+                        builder.Remove(builder.Length - 1, 1);
+                        NameVar = builder.ToString();
                     }
                     else
                     {
                         var loc = Location;
                         loc = loc.Substring(0, loc.LastIndexOfAny(PathSeperators));
                         loc = loc.Substring(loc.LastIndexOfAny(PathSeperators) + 1);
-                        NameVar = loc;
+                        var spl = loc.Split(' ');
+                        var builder = new StringBuilder(spl.Length * 2);
+                        foreach (var s in spl)
+                        {
+                            builder.Append(ToUpperString(s));
+                            builder.Append(' ');
+                        }
+                        builder.Remove(builder.Length - 1, 1);
+                        NameVar = builder.ToString();
                     }
                 }
                 catch   // probably in drive root
@@ -260,7 +279,17 @@ namespace MediaFileParser.MediaTypes.TvFile
         /// <returns>If a file is a tv file.</returns>
         public override bool Test()
         {
+            if (_testGaurentee)
+            {
+                return true;
+            }
+
             if (Episode.Count == 0 || ((Season == 0 || Episode.Contains(0)) && Name == UnknownString && Title == ""))
+            {
+                return false;
+            }
+
+            if (Season == 0 && Name == UnknownString)
             {
                 return false;
             }
@@ -277,9 +306,7 @@ namespace MediaFileParser.MediaTypes.TvFile
                 return false;
             }
 
-            return
-                Regex.IsMatch(Cleaned,
-                    @"[a-zA-Z0-9 ]*[ ]?[a-zA-Z0-9]+ - \[[0-9]{2}x[0-9]{2}(-[0-9]{2})?\]( - [a-zA-Z0-9&' -]*)?( \([0-9]+\))?");
+            return true;
         }
 
         /// <summary>

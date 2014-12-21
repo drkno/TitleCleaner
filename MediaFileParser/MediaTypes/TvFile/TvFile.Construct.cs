@@ -46,6 +46,7 @@ namespace MediaFileParser.MediaTypes.TvFile
                         Season = season;
                         if (i > blockEnd) blockEnd = i;
                         if (i < blockStart) blockStart = i;
+                        _testGaurentee = true;
                     }
                 }
                 else if (matches.Count != 0)
@@ -110,6 +111,7 @@ namespace MediaFileParser.MediaTypes.TvFile
                     Season = season;
                     if (i > blockEnd) blockEnd = i;
                     if (i < blockStart) blockStart = i - 1;
+                    _testGaurentee = true;
                     continue;
                 }
 
@@ -122,10 +124,17 @@ namespace MediaFileParser.MediaTypes.TvFile
                     Episode.Add(uint.Parse(SectorList[i]));
                     if (i > blockEnd) blockEnd = i;
                     if (i < blockStart) blockStart = i - 1;
+                    _testGaurentee = true;
+                }
+
+                matches = Regex.Matches(SectorList[i], @"[0-9]{1,2}(?=(\s?of\s?[0-9]{1,2}))", RegexOptions.IgnoreCase);
+                if (matches.Count == 1)
+                {
+                    Episode.Add(uint.Parse(matches[0].Value));
                 }
             }
             // Get Episode from a "00 Blah Blah.ext" type file
-            var initMatch = Regex.Match(SectorList[0], @"[0-9]{1,2}(?<![0-9])");
+            var initMatch = Regex.Match(SectorList[0], @"^[0-9]{1,2}[^0-9]?$");
             if (Episode.Count == 0 && initMatch.Success)
             {
                 Episode.Add(uint.Parse(initMatch.Value));
@@ -136,9 +145,9 @@ namespace MediaFileParser.MediaTypes.TvFile
             // Episode/Season mixed into a short number
             var k = false;
             var j = -1;
-            for (var i = 0; i < SectorList.Count + ((j == -1) ? 0 : -1); i++)
+            for (var i = 1; i < SectorList.Count + ((j == -1) ? 0 : -1); i++)
             {
-                if (!Regex.IsMatch(SectorList[i], @"^[0-9]{1,3}$")) continue;
+                if (!Regex.IsMatch(SectorList[i], "^[0-9]{1,3}$") || Regex.IsMatch(SectorList[i-1], "^(a|the)$", RegexOptions.IgnoreCase)) continue;
                 if (k)
                 {
                     k = false;

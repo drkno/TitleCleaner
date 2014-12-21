@@ -6,6 +6,7 @@ using System.Globalization;
 using System.IO;
 using System.Text;
 using System.Text.RegularExpressions;
+using MediaFileParser.Common;
 
 #endregion
 
@@ -116,9 +117,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
                 if (String.IsNullOrEmpty(SectorList[i])) continue;
 
                 // Autocapitalise first letter in each word
-                var a = SectorList[i].ToCharArray();
-                a[0] = Char.ToUpper(a[0], CultureInfo.InvariantCulture);
-                SectorList[i] = new string(a);
+                SectorList[i] = ToUpperString(SectorList[i]);
 
                 // Merge alone letters. eg "A M" -> "AM"
                 if (Regex.IsMatch(SectorList[i], @"^[A-Z]$"))
@@ -137,7 +136,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
                 }
 
                 // Detect part/disk numbers
-                if (Regex.IsMatch(SectorList[i], "^(part|cd)([0-9]+)?$", RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace))
+                if (Regex.IsMatch(SectorList[i], "^(part|cd|disk)([0-9]+)?$", RegexOptions.IgnoreCase | RegexOptions.IgnorePatternWhitespace))
                 {                                // note: no dvd as this conflicts with junk names
                     var regex = Regex.Match(SectorList[i], "[0-9]+$", RegexOptions.IgnorePatternWhitespace);
                     if (!regex.Success && i + 1 < SectorList.Count)
@@ -287,7 +286,9 @@ namespace MediaFileParser.MediaTypes.MediaFile
                     {
                         if (str[ind + 1] == '(')
                         {
-                            inc = GetBracketedString(ref str, ind + 1, out sub) + 1;
+                            sub = str.GetBracketedString(ind + 1, ref _bracketedStringLookupDictionary);
+                            inc = sub.Length + 2;
+                            sub = string.IsNullOrWhiteSpace(sub) ? "" : ToString(sub);
                             if (string.IsNullOrWhiteSpace(sub) || sub == str.Substring(ind+1, inc-2) || sub.Length < inc-2)
                             {
                                 sub = "";   // bracket only contains escaped characters
@@ -340,65 +341,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// <summary>
         /// Dictionary to store bracketed strings so that they can be looked up quickly in repetitive cases.
         /// </summary>
-        private static readonly Dictionary<string, string> BracketedStringLookupDictionary = new Dictionary<string, string>();
-
-        /// <summary>
-        /// Gets a string between two matching brackets.
-        /// </summary>
-        /// <param name="input">Input string to get substring from.</param>
-        /// <param name="openBracket">Index of opening bracket.</param>
-        /// <param name="output">String to store result in. If no matching bracket is found 
-        /// the output value will be null.</param>
-        /// <returns>Length of the bracketed string (including brackets).</returns>
-        private int GetBracketedString(ref string input, int openBracket, out string output)
-        {
-            var lookup = input.Substring(openBracket);
-            if (BracketedStringLookupDictionary.ContainsKey(lookup))
-            {
-                output = BracketedStringLookupDictionary[lookup];
-                var len = output.Length + 1;
-                output = ToString(output);
-                return len;
-            }
-
-            var ind1 = openBracket + 1;
-            var stack = new Stack<char>();
-            stack.Push(input[openBracket]);
-            for (; ind1 < input.Length; ind1++)
-            {
-                if (stack.Count == 0)
-                {
-                    ind1--;
-                    break;
-                }
-                switch (input[ind1])
-                {
-                    case '(':
-                    {
-                        stack.Push(input[ind1]);
-                        break; 
-                    }
-                    case ')':
-                    {
-                        stack.Pop();
-                        break;
-                    }
-                }
-            }
-
-            if (stack.Count == 0)
-            {
-                output = input.Substring(openBracket + 1, ind1 - openBracket - 1);
-                BracketedStringLookupDictionary[lookup] = output;
-                output = ToString(output);
-            }
-            else
-            {
-                output = null;
-            }
-
-            return ind1 - openBracket;
-        }
+        private static Dictionary<string, string> _bracketedStringLookupDictionary = new Dictionary<string, string>();
 
         // ReSharper disable UnusedMember.Local
         // ReSharper disable InconsistentNaming
@@ -449,6 +392,18 @@ namespace MediaFileParser.MediaTypes.MediaFile
             var num = ((int)word).ToString(CultureInfo.InvariantCulture);
             arr[index] = num;
             return true;
+        }
+
+        /// <summary>
+        /// Converts a string to uppercase.
+        /// </summary>
+        /// <param name="str">String to make uppercase.</param>
+        /// <returns>Uppercase string.</returns>
+        protected string ToUpperString(string str)
+        {
+            var a = str.ToCharArray();
+            a[0] = Char.ToUpper(a[0], CultureInfo.InvariantCulture);
+            return new string(a);
         }
     }
 }

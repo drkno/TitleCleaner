@@ -5,7 +5,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Text.RegularExpressions;
+using System.Text;
+using MediaFileParser.Common;
 using MediaFileParser.MediaTypes;
 using MediaFileParser.MediaTypes.MediaFile;
 
@@ -273,27 +274,30 @@ namespace MediaFileParser.ModeManagers
             return File.Exists(fileFolder) ? new[] { Path.GetFullPath(fileFolder) } : Directory.EnumerateFileSystemEntries(fileFolder, "*.*", SearchOption.AllDirectories).Where(file => FileExts.Any(file.EndsWith));
         }
 
+        /// <summary>
+        /// Gets the directory to store this media type in when moving.
+        /// </summary>
+        /// <param name="file">Media file that is being moved.</param>
+        /// <returns>The path to the directory.</returns>
         private static string GetMediaTypeDirectory(ref MediaFile file)
         {
-            var result = "";
+            var result = new StringBuilder();
             var sp = file.OutputDirectory.Split('|');
             foreach (var s in sp)
             {
-                var sub = s;
-                while (Regex.IsMatch(sub, @".*\[ts\(.*\)\].*"))
+                int ind;
+                var res = s;
+                while ((ind = res.IndexOf("[ts(", StringComparison.Ordinal)) >= 0)
                 {
-                    try
-                    {
-                        var ind1 = sub.IndexOf("[ts(", StringComparison.Ordinal);
-                        var ind2 = sub.IndexOf(")]", ind1, StringComparison.Ordinal);
-                        var ts = sub.Substring(ind1 + 4, ind2 - ind1 - 4);
-                        sub = sub.Substring(0, ind1) + file.ToString(ts) + sub.Substring(ind2 + 2); 
-                    }
-                    catch (Exception) { Debug.WriteLine("Parsing media directory tostring failed."); }
+                    var str = res.GetBracketedString(ind + 3);
+                    var end = string.IsNullOrWhiteSpace(str) ? 0 : str.Length + 3;
+                    str = end == 0 ? "" : file.ToString(str);
+                    res = res.Substring(0, ind) + str + res.Substring(ind + 3 + end);
                 }
-                result += Path.DirectorySeparatorChar + sub;
+                result.Append(Path.DirectorySeparatorChar);
+                result.Append(res);
             }
-            return result;
+            return result.ToString();
         }
     }
 }
