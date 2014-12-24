@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 
 namespace MediaFileParser.MediaTypes.MediaFile.Junk
 {
@@ -32,6 +33,11 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         public Type[] ApplicableTypes { get; private set; }
 
         /// <summary>
+        /// Strings that should not appear next in lexical order after this one.
+        /// </summary>
+        public string[] VetoedNextStr { get; private set; }
+
+        /// <summary>
         /// Suffixes of this JunkString that are vetoed from being matched in a comparison.
         /// </summary>
         public string[] VetoedSuffixes { get; private set; }
@@ -54,12 +60,14 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         /// <param name="vetoedSuffixes">Suffixes to this JunkString to veto.</param>
         /// <param name="quality">Quality of the media file to associate with this string.</param>
         /// <param name="applicableTypes">Types of MediaFile that this JunkString is applicable to.</param>
-        public JunkString(string junk, string[] vetoedSuffixes, MediaFileQuality? quality = null, Type[] applicableTypes = null)
+        /// <param name="vetoedNextStr">Strings that should not appear after this one.</param>
+        public JunkString(string junk, string[] vetoedSuffixes, MediaFileQuality? quality = null, Type[] applicableTypes = null, string[] vetoedNextStr = null)
         {
             String = junk;
             VetoedSuffixes = vetoedSuffixes;
             Quality = quality;
             ApplicableTypes = applicableTypes;
+            VetoedNextStr = vetoedNextStr;
         }
 
         /// <summary>
@@ -148,6 +156,16 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         public bool JunkEquals(JunkString str)
         {
             return (str.String.Length > 3 || str.String.Length == String.Length) && CompareTo(str) == 0;
+        }
+
+        /// <summary>
+        /// Checks if a string can appear after this one.
+        /// </summary>
+        /// <returns>True if it can, false otherwise.</returns>
+        public bool CheckNextString(string next)
+        {
+            if (VetoedNextStr == null) return true;
+            return !VetoedNextStr.Contains(next.ToLower());
         }
     }
 }

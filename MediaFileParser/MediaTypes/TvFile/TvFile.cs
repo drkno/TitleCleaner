@@ -284,12 +284,12 @@ namespace MediaFileParser.MediaTypes.TvFile
                 return true;
             }
 
-            if (Episode.Count == 0 || ((Season == 0 || Episode.Contains(0)) && Name == UnknownString && Title == ""))
+            if (Episode.Count == 0 || ((Season == 0 || Episode.Contains(0)) && Name == UnknownString && string.IsNullOrWhiteSpace(Title)))
             {
                 return false;
             }
 
-            if (Season == 0 && Name == UnknownString)
+            if (Season == 0 && (Name == UnknownString || (Episode.Count == 1 && Episode[0] > 20 && string.IsNullOrWhiteSpace(Title))))
             {
                 return false;
             }
@@ -300,8 +300,8 @@ namespace MediaFileParser.MediaTypes.TvFile
             {
                 return false;
             }
-
-            if (Season == 0 && Title == "" && Name.Split(' ').Length < 2)
+            
+            if (Season == 0 && string.IsNullOrWhiteSpace(Title) && Name.Split(' ').Length < 2)
             {
                 return false;
             }

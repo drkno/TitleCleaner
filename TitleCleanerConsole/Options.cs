@@ -480,6 +480,7 @@ namespace TitleCleanerConsole
     /// <summary>
     /// Exception that is thrown when there is an error with the options specified.
     /// </summary>
+    [Serializable]
     public class OptionException : Exception
     {
         /// <summary>

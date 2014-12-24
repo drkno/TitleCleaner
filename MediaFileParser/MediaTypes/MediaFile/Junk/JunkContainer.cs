@@ -56,9 +56,10 @@ namespace MediaFileParser.MediaTypes.MediaFile.Junk
         /// </summary>
         /// <param name="junkString">string to represent with JunkString.</param>
         /// <param name="applicableTypes">Types of file this JunkString is applicable to.</param>
-        public void Add(string junkString, Type[] applicableTypes)
+        /// <param name="vetoedNextStr">Strings that should not appear after this one.</param>
+        public void Add(string junkString, Type[] applicableTypes, string[] vetoedNextStr)
         {
-            Add(new JunkString(junkString, null, null, applicableTypes));
+            Add(new JunkString(junkString, null, null, applicableTypes, vetoedNextStr));
         }
 
         /// <summary>
