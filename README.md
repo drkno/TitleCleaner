@@ -85,8 +85,8 @@ Download latest release [here](https://github.com/mrkno/TitleCleaner/releases/do
 		is otherwise unchanged. This option is mutually exclusive with -d. In test mode
 		this specifies a test .csv file to run.
 
-A full list of the test cases that TitleCleaner is run against (with default options) can be found  [here](https://github.com/mrkno/TitleCleaner/blob/master/MediaFileParser/Tests/tests.csv).<br />
-5/2821 Tests are failing as of 18:55:09 NZST 30/11/14.<br />
+A full list of the test cases that TitleCleaner is run against (with default options) can be found  [here](https://github.com/mrkno/TitleCleaner/blob/master/MediaFileParser/Tests/tests_paths.csv).<br />
+8/5647 Tests are failing as of 18:55:09 NZST 30/11/14.<br />
 This list always requires expansion so feel free to contribute them in a similar csv format.
 
 This is an improved version of the original mess located here:
