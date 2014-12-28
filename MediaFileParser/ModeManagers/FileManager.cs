@@ -140,16 +140,21 @@ namespace MediaFileParser.ModeManagers
             }
 
             var clea = PathSanitiseName(file.ToString());
+            var orig = file.ToString("O.E");    // prevent repetitive ToString()
+
             var move = true;
-            if (_confirm || !file.Test())
+            var equal = String.Equals(orig, clea, StringComparison.OrdinalIgnoreCase)
+                && NormalisePath(destination) == NormalisePath(file.Location);
+            if ((_confirm || !file.Test()) && !equal)
             {
-                var orig = file.ToString("O.E");    // prevent repetitive ToString()
-                if (orig != clea || !String.Equals(orig, clea, StringComparison.OrdinalIgnoreCase) ||
-                    NormalisePath(destination) != NormalisePath(file.Location))
-                {
-                    move = ConfirmMove(file, destination);
-                }
+                move = ConfirmMove(file, destination);
             }
+            else if (equal)
+            {
+                NotifyOnMove(file, destination, true);
+                return;
+            }
+
             if (!move)
             {
                 NotifyOnMove(file, destination, false);
