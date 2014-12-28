@@ -1,4 +1,8 @@
 ﻿using System;
+using System.IO;
+using System.Linq;
+using System.Xml.Serialization;
+using MediaFileParser.MediaTypes.TvFile.Tvdb.Cache;
 
 namespace MediaFileParser.MediaTypes.TvFile.Tvdb
 {
@@ -16,34 +20,70 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
             set { TvdbDetailedSeries.ApiKey = value; }
         }
 
-        /// <summary>
-        /// Server time for API caching. TODO: Implement
-        /// </summary>
-        public TvdbApiTime ServerTime { get; protected set; }
+        private TvdbApiTime _serverTime;
 
         /// <summary>
-        /// Sets if each consecutive lookup will be stored in a memory cache.
-        /// Disable this for low memory platforms as is memory intensive.
+        /// Server time for API caching.
         /// </summary>
-        public bool UseCache
+        public TvdbApiTime ServerTime
         {
-            get { return TvdbApiRequest.UseCache; }
-            set { TvdbApiRequest.UseCache = value; }
+            get
+            {
+                var path = Path.Combine(PersistentCacheLocation, "time.xml");
+                if (_serverTime != null || !File.Exists(path)) return _serverTime;
+                var reader = new StreamReader(path);
+                var ser = new XmlSerializer(typeof(TvdbApiTime));
+                _serverTime = (TvdbApiTime)ser.Deserialize(reader);
+                reader.Close();
+                return _serverTime;
+            }
+            protected set
+            {
+                _serverTime = value;
+                if (CacheType != TvdbCacheType.PersistentMemory) return;
+                var path = Path.Combine(PersistentCacheLocation, "time.xml");
+                var writer = new StreamWriter(path);
+                var ser = new XmlSerializer(typeof(TvdbApiTime));
+                ser.Serialize(writer, value);
+                writer.Close();
+            }
+        }
+
+        /// <summary>
+        /// Sets the type of cache that will be used for each consecutive lookup.
+        /// </summary>
+        public TvdbCacheType CacheType
+        {
+            get { return TvdbApiRequest.CacheType; }
+            set { TvdbApiRequest.CacheType = value; }
+        }
+
+        /// <summary>
+        /// Sets the persistent cache storage location. If this is not specified the
+        /// persistent cache will be in the same directory as the executable.
+        /// </summary>
+        public string PersistentCacheLocation
+        {
+            get { return TvdbApiRequest.PersistentCacheLocation; }
+            set { TvdbApiRequest.PersistentCacheLocation = value; }
         }
 
         /// <summary>
         /// Instantiates a new copy of the TVDB API helper class
         /// </summary>
         /// <param name="apiKey">API Key to use for lookups</param>
-        /// <param name="useCache">Use the memory lookup cache</param>
-        public Tvdb(string apiKey, bool useCache = true)
+        /// <param name="cacheType">Type of cache to use. Defaults to memory and persistent.</param>
+        /// <param name="persistentCacheLocation">Location of persistent cache (if one is to be used).</param>
+        public Tvdb(string apiKey, TvdbCacheType cacheType = TvdbCacheType.PersistentMemory, string persistentCacheLocation = null)
         {
             // Set the key.
             ApiKey = apiKey;
+            // Set persistent cache location if one is specified
+            if (persistentCacheLocation != null) PersistentCacheLocation = persistentCacheLocation;
+            // Set the type of cache that will be used.
+            CacheType = cacheType;
             // Must have the server time as a part of the API spec.
-            ServerTime = TvdbApiTime.TvdbServerTime();
-            // Set if the cache will be enabled.
-            UseCache = useCache;
+            ServerTime = TvdbApiTime.TvdbServerTime(CacheType, ServerTime == null ? 0 : ServerTime.Time);
         }
 
         /// <summary>
@@ -63,7 +103,8 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
         /// <returns>Detailed series information or null if failure.</returns>
         public TvdbDetailedSeries LookupId(uint id)
         {
-            return TvdbDetailedSeries.GetDetailedSeries(id);
+            var index = ServerTime.Episodes.BinarySearch(id);
+            return TvdbDetailedSeries.GetDetailedSeries(id, index >= 0 && index < ServerTime.Episodes.Count);
         }
 
         /// <summary>
@@ -71,7 +112,7 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
         /// WARNING:
         /// Will retreive all series information and episodes when used
         /// so that API usage is minimised. DO NOT USE if you plan to
-        /// do this multiple times AND UseCache is set to false.
+        /// do this multiple times AND CacheType is set to None.
         /// </summary>
         /// <param name="id">Series TVDB id.</param>
         /// <param name="season">Season number.</param>

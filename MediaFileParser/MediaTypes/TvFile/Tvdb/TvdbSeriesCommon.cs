@@ -3,31 +3,67 @@ using System.Xml.Serialization;
 
 namespace MediaFileParser.MediaTypes.TvFile.Tvdb
 {
+    /// <summary>
+    /// Common attributes returned from different API calls.
+    /// </summary>
     [Serializable]
     [XmlType("Series", AnonymousType = true)]
     public class TvdbSeriesCommon
     {
+        /// <summary>
+        /// This class should be inherited, so constructor should
+        /// not be called except in derived type.
+        /// </summary>
         protected TvdbSeriesCommon() { }
-
-        [XmlElement(ElementName = "seriesid")]
-        public uint SeriesId { get; set; }
-        [XmlElement(ElementName = "language")]
-        public string Language { get; set; }
-        [XmlElement(ElementName = "SeriesName")]
-        public string SeriesName { get; set; }
-        [XmlElement(ElementName = "banner")]
-        public string Banner { get; set; }
-        [XmlElement(ElementName = "Overview")]
-        public string Overview { get; set; }
-        [XmlElement(DataType = "date", ElementName = "FirstAired")]
-        public DateTime FirstAired { get; set; }
-        [XmlElement(ElementName = "Network")]
-        public string Network { get; set; }
+        /// <summary>
+        /// ID used by the TVDB to uniquely identify this TV Show.
+        /// </summary>
+        [XmlElement(ElementName = "id")]
+        public uint TvdbId { get; set; }
+        /// <summary>
+        /// ID used by the IMDB to uniquely identify this TV Show.
+        /// </summary>
         [XmlElement(ElementName = "IMDB_ID")]
         public string ImdbId { get; set; }
+        /// <summary>
+        /// ID used by the Zap2It to uniquely identify this TV Show.
+        /// </summary>
         [XmlElement(ElementName = "zap2it_id")]
         public string Zap2ItId { get; set; }
-        [XmlElement(ElementName = "id")]
-        public uint Id { get; set; }
+        /// <summary>
+        /// ID used by the TVDB to uniquely identify this TV Show series.
+        /// </summary>
+        [XmlElement(ElementName = "seriesid")]
+        public uint SeriesId { get; set; }
+        /// <summary>
+        /// Language of the TV Show that this TVDB record refers to.
+        /// </summary>
+        [XmlElement(ElementName = "language")]
+        public string Language { get; set; }
+        /// <summary>
+        /// Name of the series.
+        /// </summary>
+        [XmlElement(ElementName = "SeriesName")]
+        public string SeriesName { get; set; }
+        /// <summary>
+        /// URL of a banner image for this TV Show.
+        /// </summary>
+        [XmlElement(ElementName = "banner")]
+        public string Banner { get; set; }
+        /// <summary>
+        /// Description of this TV Show.
+        /// </summary>
+        [XmlElement(ElementName = "Overview")]
+        public string Description { get; set; }
+        /// <summary>
+        /// Date that this TV Show first aired.
+        /// </summary>
+        [XmlElement(DataType = "date", ElementName = "FirstAired")]
+        public DateTime FirstAired { get; set; }
+        /// <summary>
+        /// Network that created this TV Show.
+        /// </summary>
+        [XmlElement(ElementName = "Network")]
+        public string Network { get; set; }
     }
 }

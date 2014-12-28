@@ -4,10 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using MediaFileParser.MediaTypes.TvFile.Tvdb;
+using MediaFileParser.MediaTypes.TvFile.Tvdb.Cache;
 
 #endregion
 
@@ -191,7 +193,11 @@ namespace MediaFileParser.MediaTypes.TvFile
             // Avoid looking up unknown titles
             if (!string.IsNullOrWhiteSpace(TitleVar) || Name == UnknownString || Episode.Count == 0) return null;
             // Init API if not done already
-            if (TvdbApiManager == null) TvdbApiManager = new Tvdb.Tvdb(TvdbApiKey);
+            if (TvdbApiManager == null)
+            {
+                TvdbApiManager = new Tvdb.Tvdb(TvdbApiKey, TvdbCacheType.PersistentMemory,
+                    Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData), "TitleCleaner"));
+            }
             // Search for series
             var seriesList = TvdbApiManager.Search(Name);
             // No selection required, just assume (unless confirmation is always required
@@ -199,7 +205,7 @@ namespace MediaFileParser.MediaTypes.TvFile
             if (seriesList.Length == 1 && !TvdbLookupConfirm)
             {
                 // Get episode
-                var seriesId = seriesList[0].Id;
+                var seriesId = seriesList[0].TvdbId;
                 episode = TvdbApiManager.LookupEpisode(seriesId, Season, Episode[0]);
                 // Return episode
                 return episode;

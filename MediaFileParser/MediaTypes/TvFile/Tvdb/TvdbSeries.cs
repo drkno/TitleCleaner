@@ -21,7 +21,7 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
         public static TvdbSeries[] GetTvdbSeriesSearch(string series)
         {
             series = series.ToLower().Trim();
-            var seriesSearch = TvdbApiRequest.PerformApiRequestAndDeserialize<SeriesSearch>(GetSeriesUrl(series));
+            var seriesSearch = TvdbApiRequest.PerformApiRequestAndDeserialize<SeriesSearch>(GetSeriesUrl(series), false, true);
             return seriesSearch.Series;
         }
 
@@ -30,9 +30,11 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
             return "GetSeries.php?seriesname=" + seriesName;
         }
 
-        public TvdbDetailedSeries GetDetailedInformation()
+        public TvdbDetailedSeries GetDetailedInformation(TvdbApiTime time = null)
         {
-            return TvdbDetailedSeries.GetDetailedSeries(Id);
+            if (time == null) return TvdbDetailedSeries.GetDetailedSeries(TvdbId, false);
+            var ind = time.Series.BinarySearch(TvdbId);
+            return TvdbDetailedSeries.GetDetailedSeries(TvdbId, ind >= 0 && ind < time.Series.Count);
         }
     }
 }

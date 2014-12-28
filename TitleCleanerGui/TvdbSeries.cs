@@ -16,7 +16,7 @@ namespace TitleCleanerGui
             _series = series;
             InitializeComponent();
             labelTitle.Text = _series.SeriesName;
-            richTextBoxDescription.Text = _series.Overview;
+            richTextBoxDescription.Text = _series.Description;
         }
 
         public EventHandler SeriesSelected { get; set; }

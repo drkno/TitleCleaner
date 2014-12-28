@@ -37,7 +37,7 @@ namespace TitleCleanerGui
             var series = sender as TvdbSeriesB;
             if (series != null)
             {
-                _selection = series.Id;
+                _selection = series.TvdbId;
             }
             Close();
         }

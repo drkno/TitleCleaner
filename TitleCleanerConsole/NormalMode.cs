@@ -61,7 +61,7 @@ namespace TitleCleanerConsole
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine("(" + num + "): " + series.SeriesName);
                 Console.ForegroundColor = ConsoleColor.Gray;
-                Console.WriteLine(series.Overview + "\n");
+                Console.WriteLine(series.Description + "\n");
             }
 
             Console.ForegroundColor = ConsoleColor.White;
@@ -78,7 +78,7 @@ namespace TitleCleanerConsole
                 Console.ForegroundColor = ConsoleColor.Gray;
             }
             Console.WriteLine();
-            return result == 0 ? 0 : seriesSearch[result-1].Id;
+            return result == 0 ? 0 : seriesSearch[result-1].TvdbId;
         }
 
         private static bool GetBool(string b, out bool res)

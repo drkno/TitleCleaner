@@ -64,6 +64,9 @@
     <Compile Include="MediaTypes\MediaFile\Junk\JunkString.cs" />
     <Compile Include="MediaTypes\MediaFile\Junk\JunkStringExtensions.cs" />
     <Compile Include="MediaTypes\MediaFile\MediaFileQuality.cs" />
+    <Compile Include="MediaTypes\TvFile\Tvdb\Cache\TvdbCacheProvider.cs" />
+    <Compile Include="MediaTypes\TvFile\Tvdb\Cache\TvdbCacheType.cs" />
+    <Compile Include="MediaTypes\TvFile\Tvdb\TvdbEpisode.cs" />
     <Compile Include="MediaTypes\TvFile\TvFile.Construct.cs" />
     <Compile Include="ModeManagers\FileManager.cs" />
     <Compile Include="MediaTypes\MediaFile\MediaFile.cs" />
@@ -108,7 +111,7 @@
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <ProjectExtensions>
     <VisualStudio>
-      <UserProperties BuildVersion_UpdateAssemblyVersion="True" BuildVersion_UpdateFileVersion="True" BuildVersion_BuildVersioningStyle="None.None.Increment.YearDayOfYear" />
+      <UserProperties BuildVersion_BuildVersioningStyle="None.None.Increment.YearDayOfYear" BuildVersion_UpdateFileVersion="True" BuildVersion_UpdateAssemblyVersion="True" />
     </VisualStudio>
   </ProjectExtensions>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
