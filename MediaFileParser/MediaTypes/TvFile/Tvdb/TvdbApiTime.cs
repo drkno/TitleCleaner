@@ -1,35 +1,65 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Xml.Serialization;
 using MediaFileParser.MediaTypes.TvFile.Tvdb.Cache;
 
 namespace MediaFileParser.MediaTypes.TvFile.Tvdb
 {
-    [XmlType(AnonymousType = true)]
-    [XmlRoot(Namespace = "", IsNullable = false, ElementName = "Items")]
+    /// <summary>
+    /// Keep track of API time to check for updates.
+    /// </summary>
+    [Serializable, XmlType(AnonymousType = true), XmlRoot(Namespace = "", IsNullable = false, ElementName = "Items")]
     public class TvdbApiTime
     {
+        /// <summary>
+        /// This class should not be instantiated.
+        /// </summary>
         protected TvdbApiTime() { }
 
-        [XmlElement("Time")]
+        /// <summary>
+        /// Unix epoch time of this API update.
+        /// </summary>
+        [XmlElement(ElementName = "Time")]
         public uint Time { get; set; }
 
-        [XmlElement("Episode")]
+        /// <summary>
+        /// Episodes that have changed since the specified epoch time.
+        /// </summary>
+        [XmlElement(ElementName = "Episode")]
         public List<uint> Episodes { get; set; }
 
-        [XmlElement("Series")]
+        /// <summary>
+        /// Series that have changed since the specified epoch time.
+        /// </summary>
+        [XmlElement(ElementName = "Series")]
         public List<uint> Series { get; set; }
 
-        public static TvdbApiTime TvdbServerTime(TvdbCacheType cacheType, uint previousTime = 0)
+        /// <summary>
+        /// Gets the current TVDB epoch time.
+        /// </summary>
+        /// <param name="request">Request to use.</param>
+        /// <param name="previousTime">Previous time.</param>
+        /// <returns>A TvdbApiTime representation.</returns>
+        public static TvdbApiTime TvdbServerTime(TvdbApiRequest request, uint previousTime)
         {
-            var ut = cacheType == TvdbCacheType.None || previousTime == 0 ? UpdateType.Time : UpdateType.All;
-            var st = TvdbApiRequest.PerformApiRequestAndDeserialize<TvdbApiTime>(GetUpdateUrl(ut, previousTime), true, true);
-            st.Series.Sort();
-            st.Episodes.Sort();
+            Debug.WriteLine("-> TvdbApiTime::TvdbServerTime request=\"" + request + "\" previousTime=\"" + previousTime + " Called");
+            var ut = request.CacheProvider.CacheType == TvdbCacheType.None || previousTime == 0 ? UpdateType.Time : UpdateType.All;
+            var st = request.PerformApiRequestAndDeserialize<TvdbApiTime>(GetUpdateUrl(ut, previousTime), string.Empty, true, true);
+            if (st.Series != null) st.Series.Sort();
+            if (st.Episodes != null) st.Episodes.Sort();
             return st;
         }
 
+        /// <summary>
+        /// Determines the URL to use for retreiving the API time.
+        /// </summary>
+        /// <param name="type">Type of update to perform.</param>
+        /// <param name="previousTime">Time of previous updates.</param>
+        /// <returns>API url to update resource.</returns>
         private static string GetUpdateUrl(UpdateType type, uint previousTime)
         {
+            Debug.WriteLine("-> TvdbApiTime::GetUpdateUrl type=\"" + type + "\" previousTime=\"" + previousTime + " Called");
             string t;
             switch (type)
             {
@@ -42,11 +72,26 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
             return "Updates.php?type=" + t;
         }
 
+        /// <summary>
+        /// Types of update that can be performed.
+        /// </summary>
         private enum UpdateType
         {
+            /// <summary>
+            /// Gets current time.
+            /// </summary>
             Time,
+            /// <summary>
+            /// Gets current time and changed series/episodes since last time.
+            /// </summary>
             All,
+            /// <summary>
+            /// Gets current time and changed episodes since last time.
+            /// </summary>
             Episode,
+            /// <summary>
+            /// Gets current time and changed series since last time.
+            /// </summary>
             Series
         }
     }

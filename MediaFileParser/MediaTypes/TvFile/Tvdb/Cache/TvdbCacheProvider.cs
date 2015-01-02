@@ -1,35 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Xml.Serialization;
 
 namespace MediaFileParser.MediaTypes.TvFile.Tvdb.Cache
 {
+    /// <summary>
+    /// Handles the caching of API requests.
+    /// </summary>
     public class TvdbCacheProvider : Dictionary<string, object>
     {
-        private const string FileExtension = ".tvdbCache";
-        private bool _cacheLocationLoaded;
+        /// <summary>
+        /// File extension to use for cache files.
+        /// </summary>
+        private const string FileExtension = ".xml";
 
-        public TvdbCacheType CacheType
-        {
-            get { return _cacheType; }
-            set { _cacheType = value; }
-        }
+        /// <summary>
+        /// Type of cache to provide.
+        /// </summary>
+        public TvdbCacheType CacheType { get; protected set; }
 
-        private string _cacheLocation = Environment.CurrentDirectory;
-        private TvdbCacheType _cacheType = TvdbCacheType.None;
-
-        public string Location
+        /// <summary>
+        /// Location of the persistent cache. Defaults to the current directory if not specified.
+        /// </summary>
+        public string PersistentCacheLocation
         {
             get { return _cacheLocation; }
-            set
+            protected set
             {
-                if (_cacheLocationLoaded)
-                {
-                    throw new Exception("Persistent cache cannot be moved after it is in use.");
-                }
-
+                Debug.WriteLine("-> TvdbCacheProvider::Location::set value=\"" + value + "\" Called");
                 try
                 {
                     if (File.Exists(value))
@@ -43,43 +44,171 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb.Cache
                 }
                 catch (Exception e)
                 {
+                    Debug.WriteLine("!> TvdbCacheProvider::Location threw an exception: " + e);
                     throw new ArgumentException("The provided cache location was invalid.", "value", e);
                 }
                 _cacheLocation = value;
             }
         }
 
-        public new bool ContainsKey(string key)
+        /// <summary>
+        /// API time of entries in this cache.
+        /// </summary>
+        public uint LastApiTime { get; private set; }
+
+        /// <summary>
+        /// Sets the API time of the entries of this cache.
+        /// </summary>
+        /// <param name="time">New API time, must be in the future relative to the current time.</param>
+        public void SetApiTime(TvdbApiTime time)
         {
-            if (CacheType == TvdbCacheType.None)
+            Debug.WriteLine("-> TvdbCacheProvider::SetApiTime time=\"" + time + "\" Called");
+            if (time.Time < LastApiTime)
             {
-                return false;
+                throw new Exception("API time changes must be futuristic.");
             }
 
-            key = Path.GetInvalidFileNameChars().Aggregate(key, (current, c) => current.Replace(c, ' '));
+            var ts = EpochToDateTime(time.Time) - EpochToDateTime(LastApiTime);
+            LastApiTime = time.Time;
+            if (ts.Days >= 30)
+            {
+                foreach (var key in Keys)
+                {
+                    if (CacheType == TvdbCacheType.PersistentMemory)
+                    {
+                        RemoveFromPersistentCache(key);
+                    }
+                    Remove(key);
+                }
+            }
+            else
+            {
+                var keys = Keys.ToArray();
+                foreach (var key in keys)
+                {
+                    var spl = key.Split('~');
+                    uint id;
+                    if (spl.Length != 2 || !uint.TryParse(spl[0], out id)) continue;
+                    var ind = -1;
+                    switch (spl[1])
+                    {
+                        case "series":
+                        {
+                            ind = time.Series.BinarySearch(id);
+                            break;
+                        }
+                        case "episode":
+                        {
+                            ind = time.Episodes.BinarySearch(id);
+                            break;
+                        }
+                    }
+                    if (ind < 0) continue;
+                    if (CacheType == TvdbCacheType.PersistentMemory)
+                    {
+                        RemoveFromPersistentCache(key);
+                    }
+                    Remove(key);
+                }
+            }
 
-            if (!_cacheLocationLoaded)
+            var timeLoc = Path.Combine(PersistentCacheLocation, "time.ini");
+            try
+            {
+                var writer = new StreamWriter(timeLoc);
+                writer.WriteLine(time.Time);
+                writer.Close();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Saving time to persistent cache failed.");
+                Debug.WriteLine("!> TvdbCacheProvider::SetApiTime threw an exception: " + e);
+            }
+        }
+
+        private static DateTime EpochToDateTime(double epoch)
+        {
+            Debug.WriteLine("-> TvdbCacheProvider::EpochToDateTime epoch=\"" + epoch + "\" Called");
+            return new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(epoch);
+        }
+
+        private void RemoveFromPersistentCache(string key)
+        {
+            Debug.WriteLine("-> TvdbCacheProvider::RemoveFromPersistentCache key=\"" + key + "\" Called");
+            var fileLocation = key + "~" + this[key].GetType() + FileExtension;
+            fileLocation = Path.GetInvalidFileNameChars().Aggregate(fileLocation, (current, c) => current.Replace(c, ' '));
+            fileLocation = Path.Combine(PersistentCacheLocation, fileLocation);
+            File.Delete(fileLocation);
+        }
+
+        /// <summary>
+        /// Backing field of the Location property.
+        /// </summary>
+        private string _cacheLocation;
+
+        /// <summary>
+        /// Creates a new cache provider for persistent storage of API requests.
+        /// </summary>
+        /// <param name="cacheType">Type of cache to provide.</param>
+        /// <param name="persistentCacheLocation">Location to store the persistent cache.
+        /// If null will default to current directory.</param>
+        public TvdbCacheProvider(TvdbCacheType cacheType, string persistentCacheLocation)
+        {
+            Debug.WriteLine("-> TvdbCacheProvider::_cstr cacheType=\"" + cacheType + "\" persistentCacheLocation=\"" + persistentCacheLocation + "\" Called");
+            LastApiTime = 0;
+            CacheType = cacheType;
+            PersistentCacheLocation = persistentCacheLocation ?? Environment.CurrentDirectory;
+            if (cacheType == TvdbCacheType.PersistentMemory)
             {
                 LoadFromPersistentCache();
             }
+        }
 
+        /// <summary>
+        /// Determines if a key exists in the cache dictionary.
+        /// </summary>
+        /// <param name="key">Key to search for.</param>
+        /// <returns>True if key is in cache dictionary, false otherwise.</returns>
+        public new bool ContainsKey(string key)
+        {
+            Debug.WriteLine("-> TvdbCacheProvider::ContainsKey key=\"" + key + "\" Called");
+            if (CacheType == TvdbCacheType.None) return false;
+            key = Path.GetInvalidFileNameChars().Aggregate(key, (current, c) => current.Replace(c, ' '));
             return base.ContainsKey(key);
         }
 
+        /// <summary>
+        /// Gets a request response from the dictionary.
+        /// </summary>
+        /// <param name="key">Key to get response for.</param>
+        /// <returns>Associated object to the request key.</returns>
         public new object this[string key]
         {
             get { return InternalGet(key); }
             set { InternalAdd(key, value, false); }
         }
 
+        /// <summary>
+        /// Adds an item to the cache dictionary.
+        /// </summary>
+        /// <param name="key">Key for the item to add.</param>
+        /// <param name="value">Response object for key.</param>
+        /// <param name="ignorePersistentCache">True to avoid adding to the persistent cache.</param>
         public void Add(string key, object value, bool ignorePersistentCache)
         {
             InternalAdd(key, value, ignorePersistentCache);
         }
 
+        /// <summary>
+        /// Adds an item to the cache dictionary.
+        /// </summary>
+        /// <param name="key">Key for the item to add.</param>
+        /// <param name="value">Response object for key.</param>
+        /// <param name="ignorePersistentCache">True to avoid adding to the persistent cache.</param>
         private void InternalAdd(string key, object value, bool ignorePersistentCache)
         {
-            if (CacheType == TvdbCacheType.None)
+            Debug.WriteLine("-> TvdbCacheProvider::InternalAdd key=\"" + key + "\" value=\"" + value + "\" ignorePersistentCache=\"" + ignorePersistentCache + "\" Called");
+            if (CacheType == TvdbCacheType.None || string.IsNullOrWhiteSpace(key))
             {
                 return;
             }
@@ -93,25 +222,29 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb.Cache
             }
         }
 
+        /// <summary>
+        /// Gets a request response from the dictionary.
+        /// </summary>
+        /// <param name="key">Key to get response for.</param>
+        /// <returns>Associated object to the request key.</returns>
         private object InternalGet(string key)
         {
+            Debug.WriteLine("-> TvdbCacheProvider::InternalGet key=\"" + key + "\" Called");
             if (CacheType == TvdbCacheType.None)
             {
                 return null;
             }
-
-            if (!_cacheLocationLoaded)
-            {
-                LoadFromPersistentCache();
-            }
-
             key = Path.GetInvalidFileNameChars().Aggregate(key, (current, c) => current.Replace(c, ' '));
             return base[key];
         }
 
+        /// <summary>
+        /// Loads requests from the persistent cache into the dictionary.
+        /// </summary>
         private void LoadFromPersistentCache()
         {
-            var files = Directory.EnumerateFileSystemEntries(Location, "*" + FileExtension);
+            Debug.WriteLine("-> TvdbCacheProvider::LoadFromPersistentCache Called");
+            var files = Directory.EnumerateFileSystemEntries(PersistentCacheLocation, "*" + FileExtension);
             foreach (var file in files)
             {
                 var key = Path.GetFileNameWithoutExtension(file);
@@ -124,22 +257,44 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb.Cache
                 if (type == null) continue;
                 key = key.Substring(0, ind);
                 if (string.IsNullOrWhiteSpace(key)) continue;
-                var reader = new StreamReader(file);
+                var reader = new FileStream(file, FileMode.Open);
                 var ser = new XmlSerializer(type);
                 var deserialized = ser.Deserialize(reader);
                 reader.Close();
                 base[key] = deserialized;
             }
 
-            _cacheLocationLoaded = true;
+            var timeLoc = Path.Combine(PersistentCacheLocation, "time.ini");
+            if (!File.Exists(timeLoc)) return;
+            try
+            {
+                var reader = new StreamReader(timeLoc);
+                var line = reader.ReadLine();
+                if (!string.IsNullOrWhiteSpace(line))
+                {
+                    LastApiTime = uint.Parse(line);
+                }
+                reader.Close();
+            }
+            catch (Exception e)
+            {
+                Debug.WriteLine("Reading time from persistent cache failed.");
+                Debug.WriteLine("!> TvdbCacheProvider::LoadFromPersistentCache threw an exception: " + e);
+            }
         }
 
+        /// <summary>
+        /// Adds a request to the persistent cache.
+        /// </summary>
+        /// <param name="key">Key to use for storage and retreival.</param>
+        /// <param name="value">Request object to store.</param>
         private void AddToPersistentCache(string key, object value)
         {
+            Debug.WriteLine("-> TvdbCacheProvider::AddToPersistentCache key=\"" + key + "\" value=\"" + value + "\" Called");
             var fileLocation = key + "~" + value.GetType() + FileExtension;
             fileLocation = Path.GetInvalidFileNameChars().Aggregate(fileLocation, (current, c) => current.Replace(c, ' '));
-            fileLocation = Path.Combine(Location, fileLocation);
-            var cacheWriter = new StreamWriter(fileLocation);
+            fileLocation = Path.Combine(PersistentCacheLocation, fileLocation);
+            var cacheWriter = new FileStream(fileLocation, FileMode.Create);
             var x = new XmlSerializer(value.GetType());
             x.Serialize(cacheWriter, value);
             cacheWriter.Close();

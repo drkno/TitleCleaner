@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace MediaFileParser.MediaTypes.TvFile.Tvdb.Cache
+﻿namespace MediaFileParser.MediaTypes.TvFile.Tvdb.Cache
 {
     /// <summary>
     /// Type of cache to use when retreiving from the TVDB.

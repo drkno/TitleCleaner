@@ -13,36 +13,73 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
     /// </summary>
     public class TvdbApiRequest
     {
-        #region Cache
-        // Dictionary to store requests if caching is enabled. Will reduce API usage for repetitive calls.
-        private static readonly TvdbCacheProvider RuntimeApiCache = new TvdbCacheProvider();
-        //private static readonly Dictionary<string, object> RuntimeApiCache = new Dictionary<string, object>();
-
-        public static TvdbCacheType CacheType
+        /// <summary>
+        /// Creates a new request object for making API calls.
+        /// </summary>
+        /// <param name="apiKey">API key to use for requests.</param>
+        /// <param name="tvdbCacheProvider">The cache provider to use for persistent API requests.</param>
+        public TvdbApiRequest(string apiKey, TvdbCacheProvider tvdbCacheProvider)
         {
-            get { return RuntimeApiCache.CacheType; } 
-            set { RuntimeApiCache.CacheType = value; }
+            Debug.WriteLine("-> TvdbApiRequest::_cstr tvdbCacheProvider=\"" + tvdbCacheProvider + "\" Called");
+            _cookieContainer = new CookieContainer();
+            ApiKey = apiKey;
+            CacheProvider = tvdbCacheProvider;
+            var time = TvdbApiTime.TvdbServerTime(this, CacheProvider.LastApiTime);
+            CacheProvider.SetApiTime(time);
         }
 
-        public static string PersistentCacheLocation
+        /// <summary>
+        /// API key to use for requests.
+        /// </summary>
+        public string ApiKey { get; private set; }
+
+        #region Cache
+        /// <summary>
+        /// Dictionary to store requests if caching is enabled. Will reduce API usage for repetitive calls.
+        /// </summary>
+        public TvdbCacheProvider CacheProvider { get; private set; }
+
+        /// <summary>
+        /// Location of the persistent storage cache (if required).
+        /// Defaults to current directory if not set.
+        /// </summary>
+        public string PersistentCacheLocation
         {
-            get { return RuntimeApiCache.Location; }
-            set { RuntimeApiCache.Location = value; }
+            get { return CacheProvider.PersistentCacheLocation; }
         }
         
         #endregion
 
+        /// <summary>
+        /// URL path to the primary mirror of the TVDB.
+        /// </summary>
         private const string MirrorPath = "http://thetvdb.com/api/";
-        private static string _userAgent = "TvdbRequestManager/2.2b (C#, part of TitleCleaner, like Gecko)";
-        public static string UserAgent
+
+        /// <summary>
+        /// Backing field of the user agent property.
+        /// </summary>
+        private string _userAgent = "TvdbRequestManager/2.2 (C#, part of TitleCleaner, like Gecko)";
+
+        /// <summary>
+        /// User Agent to use with each API request.
+        /// </summary>
+        public string UserAgent
         {
             get { return _userAgent; }
             set { _userAgent = value; }
         }
 
-        private static CookieContainer _cookieContainer = new CookieContainer();
+        /// <summary>
+        /// Cookie container so that cookies from requests to the API are persistent.
+        /// </summary>
+        private CookieContainer _cookieContainer;
 
-        protected static Stream PerformApiRequest(string url)
+        /// <summary>
+        /// Performs a request to the API and gets the result as a stream.
+        /// </summary>
+        /// <param name="url">API sub-URL to use for the request.</param>
+        /// <returns>Result of the API request as a stream.</returns>
+        private Stream PerformApiRequest(string url)
         {
             Debug.WriteLine("-> TvdbApiRequest::PerformApiRequest url=\"" + url + "\" Called");
             var webRequest = (HttpWebRequest) WebRequest.Create(MirrorPath + url);
@@ -59,6 +96,7 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
                 var responseStream = webResponse.GetResponseStream();
                 if (responseStream == null)
                 {
+                    Debug.WriteLine("!> TvdbApiRequest::PerformApiRequest is throwing an exception: No data was returned from lookup.");
                     throw new Exception("No data was returned from lookup.");
                 }
                 var reader = new StreamReader(responseStream);
@@ -73,33 +111,41 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
             return stream;
         }
 
-        public static T PerformApiRequestAndDeserialize<T>(string url, bool ignoreCache = false, bool ignorePersistentCache = false)
+        /// <summary>
+        /// Performs a request to the TVDB API and returns the resultant object.
+        /// </summary>
+        /// <typeparam name="T">Type of the object to return.</typeparam>
+        /// <param name="url">API sub-URL to use for the request.</param>
+        /// <param name="cacheKey">Key to use for cache storage of this request.</param>
+        /// <param name="ignoreCurrentCache">Ignores existing cache entries for this request.</param>
+        /// <param name="ignorePersistentCache">Does not add this request to the persistent cache.</param>
+        /// <returns>Object returned for the API request.</returns>
+        public T PerformApiRequestAndDeserialize<T>(string url, string cacheKey, bool ignoreCurrentCache = false, bool ignorePersistentCache = false)
         {
+            Debug.WriteLine("-> TvdbApiRequest::PerformApiRequestAndDeserialize url=\"" + url + "\" cacheKey=\"" + cacheKey +
+                "\" ignoreCurrentCache=\"" + ignoreCurrentCache + "\" ignorePersistentCache=\"" + ignorePersistentCache + "\" Called");
             try
             {
                 // Retreive previous api request from the cache
-                if (RuntimeApiCache.ContainsKey(url))
-                {
-                    return (T) RuntimeApiCache[url];
-                }
+                if (CacheProvider.ContainsKey(cacheKey)) return (T)CacheProvider[cacheKey];
 
                 // Perform api request and deserialize
                 var stream = PerformApiRequest(url);
-                var ser = new XmlSerializer(typeof (T));
+                var ser = new XmlSerializer(typeof(T));
                 var deserialized = (T) ser.Deserialize(stream);
 
                 // Add to cache if cache is enabled
-                if (CacheType != TvdbCacheType.None)
+                if (CacheProvider.CacheType != TvdbCacheType.None)
                 {
-                    RuntimeApiCache.Add(url, deserialized, ignorePersistentCache);
+                    CacheProvider.Add(cacheKey, deserialized, ignorePersistentCache);
                 }
 
                 return deserialized;
             }
             catch (Exception e)
             {
-                Debug.WriteLine("-> TvdbApiRequest::PerformApiRequestAndDeserialize threw an exception: " + e);
-                return default(T);
+                Debug.WriteLine("!> TvdbApiRequest::PerformApiRequestAndDeserialize threw an exception: " + e);
+                return default(T); // request probably failed so return null for safe abort
             }
         }
     }

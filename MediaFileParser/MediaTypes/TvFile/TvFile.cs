@@ -259,7 +259,7 @@ namespace MediaFileParser.MediaTypes.TvFile
                 try
                 {
                     var episode = GetTvdbEpisode();
-                    base.Year = DateTime.Parse(episode.FirstAired).Year;
+                    base.Year = episode.FirstAiredDate.Year;
                 }
                 catch (Exception)
                 {
