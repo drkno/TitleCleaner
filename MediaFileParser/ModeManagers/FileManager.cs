@@ -248,7 +248,7 @@ namespace MediaFileParser.ModeManagers
                 }
                 catch (UnauthorizedAccessException e)
                 {
-                    OnAccessDenied.Invoke(this, e);
+                    if (OnAccessDenied != null) OnAccessDenied.Invoke(this, e);
                 }
             }
             return mediaFiles.ToArray();
