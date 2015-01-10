@@ -24,8 +24,7 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
             _cookieContainer = new CookieContainer();
             ApiKey = apiKey;
             CacheProvider = tvdbCacheProvider;
-            var time = TvdbApiTime.TvdbServerTime(this, CacheProvider.LastApiTime);
-            CacheProvider.SetApiTime(time);
+            PerformCacheUpdate();
         }
 
         /// <summary>
@@ -47,7 +46,35 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
         {
             get { return CacheProvider.PersistentCacheLocation; }
         }
-        
+
+        /// <summary>
+        /// Minimum time between cache timeouts in seconds. Defaults to 86400 seconds (24hrs).
+        /// </summary>
+        public uint CacheTimeout
+        {
+            get { return _cacheTimeout; }
+            set { _cacheTimeout = value; }
+        }
+
+        /// <summary>
+        /// Backing field for CacheTimeout.
+        /// </summary>
+        private uint _cacheTimeout = 86400;
+
+        /// <summary>
+        /// Performs an API update request if appropriate. This is controlled by the API timeout key.
+        /// </summary>
+        /// <returns>If updates were made.</returns>
+        public bool PerformCacheUpdate()
+        {
+            Debug.WriteLine("-> TvdbApiRequest::PerformCacheUpdate Called");
+            var sec = (DateTime.Now - TvdbCacheProvider.EpochToDateTime(CacheProvider.LastApiTime)).Seconds;
+            if (sec < _cacheTimeout) return false;
+            var time = TvdbApiTime.TvdbServerTime(this, CacheProvider.LastApiTime);
+            CacheProvider.SetApiTime(time);
+            return true;
+        }
+
         #endregion
 
         /// <summary>

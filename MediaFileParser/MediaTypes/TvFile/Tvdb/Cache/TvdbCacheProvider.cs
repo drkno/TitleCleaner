@@ -126,12 +126,21 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb.Cache
             }
         }
 
-        private static DateTime EpochToDateTime(double epoch)
+        /// <summary>
+        /// Gets the DateTime for a UNIX epoch.
+        /// </summary>
+        /// <param name="epoch">Seconds from the epoch.</param>
+        /// <returns>A DateTime representing the time since the epoch.</returns>
+        public static DateTime EpochToDateTime(double epoch)
         {
             Debug.WriteLine("-> TvdbCacheProvider::EpochToDateTime epoch=\"" + epoch + "\" Called");
             return new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(epoch);
         }
 
+        /// <summary>
+        /// Removes a key from the persistent cache.
+        /// </summary>
+        /// <param name="key">Key to remove.</param>
         private void RemoveFromPersistentCache(string key)
         {
             Debug.WriteLine("-> TvdbCacheProvider::RemoveFromPersistentCache key=\"" + key + "\" Called");

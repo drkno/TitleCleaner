@@ -33,6 +33,15 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
         }
 
         /// <summary>
+        /// Minimum time between cache update checks in seconds. Defaults to 86400 seconds (24hrs).
+        /// </summary>
+        public uint CacheTimeout
+        {
+            get { return TvdbApiRequest.CacheTimeout; }
+            set { TvdbApiRequest.CacheTimeout = value; }
+        }
+
+        /// <summary>
         /// Request object to use for each successive API call.
         /// </summary>
         public TvdbApiRequest TvdbApiRequest { get; protected set; }
@@ -98,6 +107,16 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
                 Debug.WriteLine("!> Tvdb::LookupEpisode threw an exception: " + e);
                 return null;
             }
+        }
+
+        /// <summary>
+        /// Performs an API update request if appropriate. This is controlled by the API timeout key.
+        /// </summary>
+        /// <returns>If updates were made.</returns>
+        public bool UpdateCache()
+        {
+            Debug.WriteLine("-> Tvdb::UpdateCache Called");
+            return TvdbApiRequest.PerformCacheUpdate();
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Xml.Serialization;
+using MediaFileParser.MediaTypes.TvFile.Tvdb.Cache;
 
 namespace MediaFileParser.MediaTypes.TvFile.Tvdb
 {
@@ -226,7 +227,7 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
             /// Last time any changes were made to the series. Throws an exception if null.
             /// </summary>
             [XmlIgnore]
-            public DateTime LastUpdatedDateTime { get { return new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(uint.Parse(LastUpdatedString)); } }
+            public DateTime LastUpdatedDateTime { get { return TvdbCacheProvider.EpochToDateTime(uint.Parse(LastUpdatedString)); } }
 
             /// <summary>
             /// A string which should be appended to http://thetvdb.com/banners/ to determine the actual location of the artwork. Returns the highest voted poster for the requested series. Can be null.
