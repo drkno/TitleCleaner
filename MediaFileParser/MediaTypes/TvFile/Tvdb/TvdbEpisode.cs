@@ -71,16 +71,18 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
         /// <summary>
         /// Was meant to be used to aid in scrapping of actual DVD's but has never been populated properly.
         /// Any information returned in this field shouldn't be trusted. Will usually be null. 
+        /// 
+        /// This field has been deprecated and should not be trusted.
         /// </summary>
-        [Obsolete("This field has been deprecated and should not be trusted.")]
         [XmlElement(ElementName = "DVD_chapter")]
         public string DvdChapter { get; set; }
 
         /// <summary>
         /// Was meant to be used to aid in scrapping of actual DVD's but has never been populated properly.
         /// Any information returned in this field shouldn't be trusted. Will usually be null.
+        /// 
+        /// This field has been deprecated and should not be trusted.
         /// </summary>
-        [Obsolete("This field has been deprecated and should not be trusted.")]
         [XmlElement(ElementName = "DVD_discid")]
         public string DvdDiscId { get; set; }
 

@@ -17,16 +17,61 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
         protected TvdbSeriesCommon() { }
 
         /// <summary>
-        /// ID used by the TVDB to uniquely identify this TV Show series.
+        /// ID used by the TVDB to uniquely identify this TV Show.
         /// </summary>
-        [XmlElement("SeriesID")]
-        public uint SeriesId { get; set; }
+        [XmlIgnore]
+        public uint TvdbId { get; protected set; }
+
+        /// <summary>
+        /// ID used by the TVDB to uniquely identify this TV Show.
+        /// Used for compatibility with older XML files, use TvdbId instead.
+        /// </summary>
+        [XmlElement(ElementName = "id"), Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+        public string ObsoleteSerializeId
+        {
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    TvdbId = uint.Parse(value);
+                }
+            }
+            get { return TvdbId.ToString(); }
+        }
+
+        /// <summary>
+        /// ID used by the TVDB to uniquely identify this TV Show series.
+        /// Used for compatibility with older XML files, use TvdbId instead.
+        /// </summary>
+        [XmlElement("SeriesID"), Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+        public string ObsoleteSerializeSeriesId
+        {
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    TvdbId = uint.Parse(value);
+                }
+            }
+            get { return TvdbId.ToString(); }
+        }
 
         /// <summary>
         /// Sets the ID used by the TVDB to uniquely identify this TV Show series.
+        /// Used for compatibility with older XML files, use TvdbId instead.
         /// </summary>
-        [XmlElement("seriesid"), Obsolete("Used for compatibility with older XML files, use SeriesId instead.")]
-        public uint SeriesIdSetter { set { SeriesId = value; } }
+        [XmlElement("seriesid"), Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+        public string ObsoleteSerializeSeriesIdLower
+        {
+            set
+            {
+                if (!string.IsNullOrWhiteSpace(value))
+                {
+                    TvdbId = uint.Parse(value);
+                }
+            }
+            get { return TvdbId.ToString(); }
+        }
 
         /// <summary>
         /// Language of the TV Show that this TVDB record refers to.
@@ -37,8 +82,8 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
         /// <summary>
         /// Language of the TV Show that this TVDB record refers to.
         /// </summary>
-        [XmlElement("language"), Obsolete("Used for compatibility with older XML files, use Language instead.")]
-        public string LanguageSetter { set { Language = value; } }
+        [XmlElement("language"), Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+        public string ObsoleteSerializeLanguage { set { Language = value; } get { return Language; } }
 
         /// <summary>
         /// Name of the series.
@@ -75,10 +120,5 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
         /// </summary>
         [XmlElement(ElementName = "zap2it_id")]
         public string Zap2ItId { get; set; }
-        /// <summary>
-        /// ID used by the TVDB to uniquely identify this TV Show.
-        /// </summary>
-        [XmlElement(ElementName = "id")]
-        public uint TvdbId { get; set; }
     }
 }

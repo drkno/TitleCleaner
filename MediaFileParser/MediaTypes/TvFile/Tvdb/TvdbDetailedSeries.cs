@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Linq;
 using System.Xml.Serialization;
@@ -15,7 +16,6 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
         /// <summary>
         /// Class should not be instantiated.
         /// </summary>
-        [Obsolete]
         protected TvdbDetailedSeries(){}
 
         /// <summary>
@@ -133,11 +133,26 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
             public string[] Genre { get { return GenreString.Split(new[] {'|'}, StringSplitOptions.RemoveEmptyEntries); } }
 
             /// <summary>
+            /// Not in use. Defaults to 0. 
+            /// </summary>
+            [XmlIgnore]
+            public uint NetworkId { get; protected set; }
+
+            /// <summary>
             /// Not in use. Can be null. 
             /// </summary>
-            [Obsolete]
-            [XmlElement("NetworkID")]
-            public uint NetworkId { get; set; }
+            [XmlElement("NetworkID"), Browsable(false), EditorBrowsable(EditorBrowsableState.Never)]
+            public string ObsoleteSerializeNetworkId
+            {
+                get { return NetworkId.ToString(); }
+                set
+                {
+                    if (!string.IsNullOrWhiteSpace(value))
+                    {
+                        NetworkId = uint.Parse(value);
+                    }
+                }
+            }
 
             /// <summary>
             /// The average rating our users have rated the series out of 10, rounded to 1 decimal place. Can be null. 
