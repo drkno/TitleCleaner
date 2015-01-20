@@ -13,6 +13,7 @@ namespace TitleCleanerConsole
     {
         private static bool _help;
         private static bool _confirm;
+        private static bool _copy;
         private static Type _type;
         private static string _mode;
         private static string _inputDir;
@@ -48,7 +49,7 @@ namespace TitleCleanerConsole
                 {
                     case "normal":
                     {
-                        NormalMode.Run(_confirm, _inputDir, _outputDir, _type);
+                        NormalMode.Run(_confirm, _inputDir, _outputDir, _type, _copy);
                         break;
                     }
                     case "test":
@@ -113,6 +114,7 @@ namespace TitleCleanerConsole
                 { "e|mformat",      "{Format string} to use for output movie file naming. " +
                                     "This option overrides the -s option.",                     v => MovieFile.DefaultFormatString = v },
                 { "h|help",         "Display this help.",                                       v => _help = true },
+                { "p|copy",         "Only copy, don't move files. Requires the -o option.",     v => _copy = true},
                 { "w|tvdir",        "Sets the output directory subdirectory for tv files.",     v => TvFile.TypeDirectory = v},
                 { "r|movdir",       "Sets the output directory subdirectory for movie files.",  v => MovieFile.TypeDirectory = v},
                 { "d|directory",    "The {directory} to search for files. When used the " +

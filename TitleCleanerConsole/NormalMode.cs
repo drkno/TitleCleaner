@@ -10,7 +10,7 @@ namespace TitleCleanerConsole
     class NormalMode
     {
         private static bool _conf;
-        public static void Run(bool confirm, string inputDir, string outputDir, Type mediaType)
+        public static void Run(bool confirm, string inputDir, string outputDir, Type mediaType, bool copyOnly)
         {
             _conf = confirm;
             var consoleColor = Console.ForegroundColor;
@@ -24,7 +24,7 @@ namespace TitleCleanerConsole
             TvFile.TvdbSearchSelectionRequired += TvFileTvdbSearchSelectionRequired;
             
             var mediaFiles = fileManager.GetMediaFileList(inputDir);
-            fileManager.MoveFiles(mediaFiles, outputDir);
+            fileManager.MoveFiles(mediaFiles, outputDir, copyOnly);
 
             Console.ForegroundColor = ConsoleColor.Yellow;
             Console.WriteLine("----\nComplete");
