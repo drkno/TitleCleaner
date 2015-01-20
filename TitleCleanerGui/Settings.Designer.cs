@@ -68,6 +68,8 @@
             this.label14 = new System.Windows.Forms.Label();
             this.textBoxMovieName = new System.Windows.Forms.TextBox();
             this.label8 = new System.Windows.Forms.Label();
+            this.label17 = new System.Windows.Forms.Label();
+            this.checkBoxCopy = new System.Windows.Forms.CheckBox();
             this.panelButtons.SuspendLayout();
             this.flowLayoutButtonsPanel.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -79,7 +81,7 @@
             // 
             this.panelButtons.Controls.Add(this.flowLayoutButtonsPanel);
             this.panelButtons.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panelButtons.Location = new System.Drawing.Point(0, 397);
+            this.panelButtons.Location = new System.Drawing.Point(0, 396);
             this.panelButtons.MaximumSize = new System.Drawing.Size(0, 30);
             this.panelButtons.Name = "panelButtons";
             this.panelButtons.Size = new System.Drawing.Size(573, 30);
@@ -212,6 +214,8 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.label17);
+            this.groupBox2.Controls.Add(this.checkBoxCopy);
             this.groupBox2.Controls.Add(this.labelInputDirDesc);
             this.groupBox2.Controls.Add(this.buttonInputDir);
             this.groupBox2.Controls.Add(this.labelInputDir);
@@ -233,7 +237,7 @@
             this.groupBox2.Controls.Add(this.textBoxOutputDir);
             this.groupBox2.Location = new System.Drawing.Point(12, 12);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(549, 178);
+            this.groupBox2.Size = new System.Drawing.Size(549, 202);
             this.groupBox2.TabIndex = 10;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "General";
@@ -389,7 +393,7 @@
             this.groupBoxTv.Controls.Add(this.textBoxTvName);
             this.groupBoxTv.Controls.Add(this.label3);
             this.groupBoxTv.Controls.Add(this.checkBoxTvdb);
-            this.groupBoxTv.Location = new System.Drawing.Point(12, 193);
+            this.groupBoxTv.Location = new System.Drawing.Point(12, 216);
             this.groupBoxTv.Name = "groupBoxTv";
             this.groupBoxTv.Size = new System.Drawing.Size(549, 99);
             this.groupBoxTv.TabIndex = 11;
@@ -454,7 +458,7 @@
             this.groupBoxMovie.Controls.Add(this.label14);
             this.groupBoxMovie.Controls.Add(this.textBoxMovieName);
             this.groupBoxMovie.Controls.Add(this.label8);
-            this.groupBoxMovie.Location = new System.Drawing.Point(12, 295);
+            this.groupBoxMovie.Location = new System.Drawing.Point(12, 318);
             this.groupBoxMovie.Name = "groupBoxMovie";
             this.groupBoxMovie.Size = new System.Drawing.Size(549, 73);
             this.groupBoxMovie.TabIndex = 12;
@@ -518,12 +522,34 @@
             this.label8.Text = "Movie Name";
             this.label8.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
+            // label17
+            // 
+            this.label17.Font = new System.Drawing.Font("Arial Narrow", 6F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label17.Location = new System.Drawing.Point(231, 167);
+            this.label17.Name = "label17";
+            this.label17.Size = new System.Drawing.Size(312, 30);
+            this.label17.TabIndex = 29;
+            this.label17.Text = "Copy instead of moving files.";
+            this.label17.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // checkBoxCopy
+            // 
+            this.checkBoxCopy.AutoSize = true;
+            this.checkBoxCopy.CheckAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.checkBoxCopy.Location = new System.Drawing.Point(36, 174);
+            this.checkBoxCopy.Name = "checkBoxCopy";
+            this.checkBoxCopy.Size = new System.Drawing.Size(76, 18);
+            this.checkBoxCopy.TabIndex = 28;
+            this.checkBoxCopy.Text = "Copy Only";
+            this.checkBoxCopy.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.checkBoxCopy.UseVisualStyleBackColor = true;
+            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 14F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.buttonCancel;
-            this.ClientSize = new System.Drawing.Size(573, 427);
+            this.ClientSize = new System.Drawing.Size(573, 426);
             this.Controls.Add(this.groupBoxMovie);
             this.Controls.Add(this.groupBoxTv);
             this.Controls.Add(this.groupBox2);
@@ -591,5 +617,7 @@
         private System.Windows.Forms.Label label15;
         private System.Windows.Forms.TextBox textBoxMovieFolder;
         private System.Windows.Forms.Label label16;
+        private System.Windows.Forms.Label label17;
+        private System.Windows.Forms.CheckBox checkBoxCopy;
     }
 }

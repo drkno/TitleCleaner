@@ -15,6 +15,7 @@ namespace TitleCleanerGui
 {
     public partial class MainWindow : Form
     {
+        private bool _copy;
         private bool _confirm;
         private uint _fail;
         private FileManager _fileManager;
@@ -57,6 +58,7 @@ namespace TitleCleanerGui
             _outputDir = settings.GetOuput();
             _type = settings.GetMediaType();
             _mode = settings.GetMode();
+            _copy = settings.GetCopy();
 
             if (_mode != 2)
             {
@@ -178,7 +180,7 @@ namespace TitleCleanerGui
         {
             foreach (int i in listViewMediaFiles.CheckedIndices)
             {
-                _fileManager.MoveFile(_mediaFiles[i], _outputDir);
+                _fileManager.MoveFile(_mediaFiles[i], _outputDir, _copy);
             }
         }
 

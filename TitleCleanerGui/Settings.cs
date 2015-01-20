@@ -13,6 +13,7 @@ namespace TitleCleanerGui
     public partial class Settings : Form
     {
         private bool _confirm;
+        private bool _copy;
         private int _fileType;
         private string _input;
         private int _mode;
@@ -123,6 +124,7 @@ namespace TitleCleanerGui
 
         private void ComboBoxModeSelectedIndexChanged(object sender, EventArgs e)
         {
+            checkBoxCopy.Enabled = true;
             switch (comboBoxMode.SelectedIndex)
             {
                 case 0:
@@ -150,6 +152,7 @@ namespace TitleCleanerGui
                     labelOutput.Text = "Test CSV Output";
                     labelDirFiles.Text = "Location to output a CSV file summarising the tests.";
                     textBoxInputDir.Text = "None";
+                    checkBoxCopy.Enabled = false;
                     break;
                 }
             }
@@ -231,6 +234,7 @@ namespace TitleCleanerGui
             _output = textBoxOutputDir.Text;
             _fileType = comboBoxFileType.SelectedIndex;
             _mode = comboBoxMode.SelectedIndex;
+            _copy = checkBoxCopy.Checked;
 
             if ((_mode == 1 || _mode == 2) && _input == "None")
             {
@@ -315,6 +319,11 @@ namespace TitleCleanerGui
                     groupBoxTv.Enabled = false;
                     break;
             }
+        }
+
+        public bool GetCopy()
+        {
+            return _copy;
         }
     }
 }
