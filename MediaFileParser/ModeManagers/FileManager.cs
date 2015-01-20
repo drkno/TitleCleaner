@@ -114,11 +114,12 @@ namespace MediaFileParser.ModeManagers
         /// </summary>
         /// <param name="files">Files to move/rename.</param>
         /// <param name="destination">Destination to move files to.</param>
-        public void MoveFiles(IEnumerable<MediaFile> files, string destination = "")
+        /// <param name="copyOnly">Set if the files are only to be copied, not moved.</param>
+        public void MoveFiles(IEnumerable<MediaFile> files, string destination = "", bool copyOnly = false)
         {
             foreach (var mediaFile in files)
             {
-                MoveFile(mediaFile, destination);
+                MoveFile(mediaFile, destination, copyOnly);
             }
         }
 
@@ -127,7 +128,8 @@ namespace MediaFileParser.ModeManagers
         /// </summary>
         /// <param name="file">MediaFile to move/rename.</param>
         /// <param name="destination">Destination to move/rename the file to.</param>
-        public void MoveFile(MediaFile file, string destination = "")
+        /// <param name="copyOnly">Set if the file is only to be copied, not moved.</param>
+        public void MoveFile(MediaFile file, string destination = "", bool copyOnly = false)
         {
             if (string.IsNullOrWhiteSpace(destination))
             {
@@ -165,7 +167,15 @@ namespace MediaFileParser.ModeManagers
             {
                 var path = Path.Combine(destination, clea);
                 Directory.CreateDirectory(destination);
-                File.Move(Path.Combine(file.Location, file.ToString("O.E")), path);
+                var dest = Path.Combine(file.Location, file.ToString("O.E"));
+                if (copyOnly)
+                {
+                    File.Copy(dest, path);
+                }
+                else
+                {
+                    File.Move(dest, path);
+                }
                 NotifyOnMove(file, destination, true);
             }
             catch (Exception e)
