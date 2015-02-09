@@ -68,7 +68,7 @@ namespace MediaFileParser.MediaTypes.TvFile.Tvdb
         public bool PerformCacheUpdate()
         {
             Debug.WriteLine("-> TvdbApiRequest::PerformCacheUpdate Called");
-            var sec = (DateTime.Now - TvdbCacheProvider.EpochToDateTime(CacheProvider.LastApiTime)).Seconds;
+            var sec = (DateTime.Now - TvdbCacheProvider.EpochToDateTime(CacheProvider.LastApiTime)).TotalSeconds;
             if (sec < _cacheTimeout) return false;
             var time = TvdbApiTime.TvdbServerTime(this, CacheProvider.LastApiTime);
             CacheProvider.SetApiTime(time);
