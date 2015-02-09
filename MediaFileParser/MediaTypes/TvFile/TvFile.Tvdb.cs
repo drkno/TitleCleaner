@@ -45,6 +45,11 @@ namespace MediaFileParser.MediaTypes.TvFile
         public static event TvdbSearchSelectionRequiredEvent TvdbSearchSelectionRequired;
 
         /// <summary>
+        /// Stores reference to a previous lookup of this episode.
+        /// </summary>
+        protected TvdbEpisode _tvdbEpisode;
+
+        /// <summary>
         /// Gets the TVDB representation of this episode.
         /// </summary>
         /// <returns></returns>
@@ -52,6 +57,8 @@ namespace MediaFileParser.MediaTypes.TvFile
         {
             // Avoid looking up unknown titles
             if (!string.IsNullOrWhiteSpace(TitleVar) || Name == UnknownString || Episode.Count == 0) return null;
+            // Return previous lookup if already done
+            if (_tvdbEpisode != null) return _tvdbEpisode;
             // Init API if not done already
             if (TvdbApiManager == null)
             {
@@ -60,15 +67,14 @@ namespace MediaFileParser.MediaTypes.TvFile
             }
             // Search for series
             var seriesList = TvdbApiManager.Search(Name);
-            // No selection required, just assume (unless confirmation is always required
-            TvdbEpisode episode;
+            // No selection required, just assume (unless confirmation is always required)
             if (seriesList.Length == 1 && !TvdbLookupConfirm)
             {
                 // Get episode
                 var seriesId = seriesList[0].TvdbId;
-                episode = TvdbApiManager.LookupEpisode(seriesId, Season, Episode[0]);
+                _tvdbEpisode = TvdbApiManager.LookupEpisode(seriesId, Season, Episode[0]);
                 // Return episode
-                return episode;
+                return _tvdbEpisode;
             }
             if (seriesList.Length <= 1 && (!TvdbLookupConfirm || seriesList.Length <= 0)) return null;
             // Selection required...
@@ -80,9 +86,9 @@ namespace MediaFileParser.MediaTypes.TvFile
             // 0 is a sentinal "none of them" value
             if (id == 0) return null;
             // Get episode
-            episode = TvdbApiManager.LookupEpisode(id, Season, Episode[0]);
+            _tvdbEpisode = TvdbApiManager.LookupEpisode(id, Season, Episode[0]);
             // Return episode
-            return episode;
+            return _tvdbEpisode;
         }
 
         /// <summary>
@@ -106,6 +112,8 @@ namespace MediaFileParser.MediaTypes.TvFile
             }
             protected set { TitleVar = value.Trim(TrimChars); }
         }
+
+
 
         /// <summary>
         /// Year that this TV episode was made.
