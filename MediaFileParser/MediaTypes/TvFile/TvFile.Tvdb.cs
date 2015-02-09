@@ -47,18 +47,18 @@ namespace MediaFileParser.MediaTypes.TvFile
         /// <summary>
         /// Stores reference to a previous lookup of this episode.
         /// </summary>
-        protected TvdbEpisode _tvdbEpisode;
+        protected TvdbEpisode TvdbEpisode;
 
         /// <summary>
         /// Gets the TVDB representation of this episode.
         /// </summary>
-        /// <returns></returns>
+        /// <returns>The TVDB equivilent of this episode.</returns>
         public TvdbEpisode GetTvdbEpisode()
         {
             // Avoid looking up unknown titles
             if (!string.IsNullOrWhiteSpace(TitleVar) || Name == UnknownString || Episode.Count == 0) return null;
             // Return previous lookup if already done
-            if (_tvdbEpisode != null) return _tvdbEpisode;
+            if (TvdbEpisode != null) return TvdbEpisode;
             // Init API if not done already
             if (TvdbApiManager == null)
             {
@@ -72,70 +72,36 @@ namespace MediaFileParser.MediaTypes.TvFile
             {
                 // Get episode
                 var seriesId = seriesList[0].TvdbId;
-                _tvdbEpisode = TvdbApiManager.LookupEpisode(seriesId, Season, Episode[0]);
+                TvdbEpisode = TvdbApiManager.LookupEpisode(seriesId, Season, Episode[0]);
                 // Return episode
-                return _tvdbEpisode;
+                return TvdbEpisode;
             }
             if (seriesList.Length <= 1 && (!TvdbLookupConfirm || seriesList.Length <= 0)) return null;
             // Selection required...
             if (TvdbSearchSelectionCache == null) TvdbSearchSelectionCache = new Dictionary<string, uint>();
             var searchCacheName = Name.ToLower();
-            var id = TvdbSearchSelectionCache.ContainsKey(searchCacheName) ? TvdbSearchSelectionCache[searchCacheName] : TvdbSearchSelectionRequired(seriesList, Name);
+            Debug.Assert(TvdbSearchSelectionRequired != null, "TvdbSearchSelectionRequired != null");
+            var id = TvdbSearchSelectionCache.ContainsKey(searchCacheName) ? TvdbSearchSelectionCache[searchCacheName] : TvdbSearchSelectionRequired.Invoke(seriesList, Name);
             // Add search selection to cache
             if (!TvdbSearchSelectionCache.ContainsKey(searchCacheName)) TvdbSearchSelectionCache.Add(searchCacheName, id);
             // 0 is a sentinal "none of them" value
             if (id == 0) return null;
             // Get episode
-            _tvdbEpisode = TvdbApiManager.LookupEpisode(id, Season, Episode[0]);
+            TvdbEpisode = TvdbApiManager.LookupEpisode(id, Season, Episode[0]);
             // Return episode
-            return _tvdbEpisode;
+            return TvdbEpisode;
         }
 
         /// <summary>
-        /// Gets the title of the episode.
+        /// Sets the fields of this TVFile based on a returned TVDB episode.
         /// </summary>
-        public string Title
+        private void SetTvdbFields()
         {
-            get
-            {
-                // Avoid looking up unknown titles
-                if (!string.IsNullOrWhiteSpace(TitleVar) || !TvdbLookup || Name == UnknownString || Episode.Count == 0) return TitleVar;
-                try
-                {   // Get episode
-                    var episode = GetTvdbEpisode();
-                    return episode.EpisodeName;
-                }
-                catch (Exception)
-                {
-                    return TitleVar;
-                }
-            }
-            protected set { TitleVar = value.Trim(TrimChars); }
-        }
-
-
-
-        /// <summary>
-        /// Year that this TV episode was made.
-        /// </summary>
-        public override int Year
-        {
-            get
-            {
-                var yr = base.Year;
-                if (yr > 0 || !TvdbLookup) return yr;
-                try
-                {
-                    var episode = GetTvdbEpisode();
-                    base.Year = episode.FirstAiredDate.Year;
-                }
-                catch (Exception)
-                {
-                    Debug.WriteLine("Cannot get Year from TVDB.");
-                }
-                return yr;
-            }
-            protected set { base.Year = value; }
+            var episode = GetTvdbEpisode();
+            Title = episode.EpisodeName;
+            try { Year = episode.FirstAiredDate.Year; } catch { Debug.WriteLine("Failed to set Year from TVDB"); }
+            if (Season != episode.SeasonNumber) Season = episode.SeasonNumber;
+            if (!Episode.Contains(episode.EpisodeNumber)) Episode.Add(episode.EpisodeNumber);
         }
     }
 }

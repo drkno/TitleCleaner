@@ -73,6 +73,28 @@ namespace MediaFileParser.MediaTypes.TvFile
         }
 
         /// <summary>
+        /// Gets the title of the episode.
+        /// </summary>
+        public string Title
+        {
+            get
+            {
+                // Avoid looking up unknown titles
+                if (!string.IsNullOrWhiteSpace(TitleVar) || !TvdbLookup || Name == UnknownString || Episode.Count == 0) return TitleVar;
+                try
+                {   // Get episode
+                    SetTvdbFields();
+                    return TitleVar;
+                }
+                catch (Exception)
+                {
+                    return TitleVar;
+                }
+            }
+            protected set { TitleVar = value.Trim(TrimChars); }
+        }
+
+        /// <summary>
         /// Gets the series name.
         /// </summary>
         public string Name
@@ -144,6 +166,20 @@ namespace MediaFileParser.MediaTypes.TvFile
         /// Gets the episode numbers of this episode.
         /// </summary>
         public List<uint> Episode { get; protected set; }
+
+        /// <summary>
+        /// Year that this TV episode was made.
+        /// </summary>
+        public override int Year
+        {
+            get
+            {
+                if (base.Year > 0 || !TvdbLookup) return base.Year;
+                SetTvdbFields();
+                return base.Year;
+            }
+            protected set { base.Year = value; }
+        }
 
         /// <summary>
         /// Gets a cleaner file name.
