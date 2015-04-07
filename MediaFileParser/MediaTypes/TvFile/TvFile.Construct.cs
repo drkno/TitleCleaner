@@ -60,7 +60,7 @@ namespace MediaFileParser.MediaTypes.TvFile
                 }
 
                 // Get Episode from an E00 block
-                matches = Regex.Matches(SectorList[i], @"(e|E)[0-9]{1,2}(-[0-9]{1,2})?");
+                matches = Regex.Matches(SectorList[i], @"(e|E)(([0-9]{1,2})|" + SpecialShortString + ")(-[0-9]{1,2})?");
                 if (matches.Count > 0)
                 {
                     foreach (Match match in matches)
@@ -77,7 +77,7 @@ namespace MediaFileParser.MediaTypes.TvFile
                         var split = match.Value.Substring(1).Split('-');
                         foreach (var s in split)
                         {
-                            Episode.Add(uint.Parse(s));
+                            Episode.Add(s == SpecialShortString ? 0 : uint.Parse(s));
                         }
                     }
                     if (i > blockEnd) blockEnd = i;
@@ -126,7 +126,7 @@ namespace MediaFileParser.MediaTypes.TvFile
                     if (i < blockStart) blockStart = i - 1;
                     _testGaurentee = true;
                 }
-
+                
                 matches = Regex.Matches(SectorList[i], @"[0-9]{1,2}(?=(\s?of\s?[0-9]{1,2}))", RegexOptions.IgnoreCase);
                 if (matches.Count == 1)
                 {

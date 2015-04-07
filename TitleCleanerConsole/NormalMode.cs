@@ -7,10 +7,10 @@ using MediaFileParser.MediaTypes.MediaFile;
 
 namespace TitleCleanerConsole
 {
-    class NormalMode
+    public static class NormalMode
     {
         private static bool _conf;
-        public static void Run(bool confirm, string inputDir, string outputDir, Type mediaType, bool copyOnly)
+        public static void Run(bool confirm, string inputDir, string outputDir, bool copyOnly)
         {
             _conf = confirm;
             var consoleColor = Console.ForegroundColor;

@@ -49,7 +49,7 @@ namespace TitleCleanerConsole
                 {
                     case "normal":
                     {
-                        NormalMode.Run(_confirm, _inputDir, _outputDir, _type, _copy);
+                        NormalMode.Run(_confirm, _inputDir, _outputDir, _copy);
                         break;
                     }
                     case "test":

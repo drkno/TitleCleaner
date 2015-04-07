@@ -145,7 +145,7 @@ namespace MediaFileParser.ModeManagers
             var orig = file.ToString("O.E");    // prevent repetitive ToString()
 
             var move = true;
-            var equal = String.Equals(orig, clea, StringComparison.OrdinalIgnoreCase)
+            var equal = string.Equals(orig, clea, StringComparison.OrdinalIgnoreCase)
                 && NormalisePath(destination) == NormalisePath(file.Location);
             if ((_confirm || !file.Test()) && !equal)
             {
@@ -230,7 +230,7 @@ namespace MediaFileParser.ModeManagers
         /// <returns>A list of MediaFiles.</returns>
         public MediaFile[] GetMediaFileList(Type type = null)
         {
-            return GetMediaFileList(String.Empty, type);
+            return GetMediaFileList(string.Empty, type);
         }
 
         /// <summary>

@@ -26,6 +26,10 @@ namespace MediaFileParser.MediaTypes.TvFile
         /// </summary>
         private const string SpecialString = "Special";
         /// <summary>
+        /// String to use for special, when shortened.
+        /// </summary>
+        private const string SpecialShortString = "SP";
+        /// <summary>
         /// String to use for season.
         /// </summary>
         private const string SeasonString = "Season";
@@ -265,6 +269,7 @@ namespace MediaFileParser.MediaTypes.TvFile
                 }
                 case 'e':
                 {
+                    if (Episode.Count > 0 && Episode[0] == 0) return SpecialShortString;
                     var result = new StringBuilder(Episode.Count);
                     for (var i = 0; i < Episode.Count; i++)
                     {
