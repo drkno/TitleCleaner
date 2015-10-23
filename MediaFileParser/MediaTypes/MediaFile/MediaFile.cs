@@ -20,7 +20,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// <summary>
         /// Delimeter chars of separator strings.
         /// </summary>
-        protected static readonly char[] DelimChars = {',', '.', '_', ' '};
+        private static readonly char[] DelimChars = {',', '.', '_', ' '};
 
         /// <summary>
         /// OS Path Separators

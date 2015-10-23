@@ -58,6 +58,15 @@ namespace MediaFileParser.MediaTypes.TvFile
                         throw new Exception("Can't have an episode with multiple seasons.");
                     }
                 }
+                
+                // Replace special episode with episode 0
+                matches = Regex.Matches(SectorList[i], @"[0-9]{1,2}(x|X|e|E)(" + SpecialShortString + ")");
+                if (matches.Count == 1)
+                {
+                    var match = matches[0].Groups[2];
+                    SectorList[i] = SectorList[i].Substring(0, match.Index) + "00" +
+                                    SectorList[i].Substring(match.Index + match.Length);
+                }
 
                 // Get Episode from an E00 block
                 matches = Regex.Matches(SectorList[i], @"(e|E)(([0-9]{1,2})|" + SpecialShortString + ")(-[0-9]{1,2})?");

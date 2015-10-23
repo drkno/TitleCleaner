@@ -18,9 +18,9 @@ namespace MediaFileParser.MediaTypes.MediaFile
         /// <summary>
         /// Junk strings that are contained in filenames and their associated attributes.
         /// </summary>
-        protected static readonly JunkContainer JunkStrings = new JunkContainer
+        private static readonly JunkContainer JunkStrings = new JunkContainer
         {
-            "(", "xor", "aph", "ac3", "rerip", "repack", "proper", "notv", "uncut", "xvid", "saints", "caph", "rip", "xvid", "uncut",
+            "(", "xor", "aph", "ac3", "rerip", "repack", "proper", "notv", "uncut", "xvid", "saints", "caph", "rip", "xvid", "uncut", "hd-ts",
             "[vtv]", "ppvrip", {"real", new []{"ity"}, null}, "full-rip", "ntsc", "web-rip", "webrip", "webdl", "web-dl", "h.264", "x264", "divx", "french",
             "truefrench", "unrated", "limited", "rapax-249", "readnfo", "korsub", "vraie", "vf", "dvd9", "dvd5", "dvd-9", "dvd-5", {"by", new []{typeof(MovieFile.MovieFile)}, new []{"a","the","me", "you", null}},
             {"cam", new[]{"e","p","i"}, MediaFileQuality.LowQuality}, {"ts", MediaFileQuality.LowQuality}, {"wp", MediaFileQuality.LowQuality},
@@ -48,7 +48,7 @@ namespace MediaFileParser.MediaTypes.MediaFile
             {"bdrip", MediaFileQuality.HighQuality}, {"brrip", MediaFileQuality.HighQuality}, {"blu-ray", MediaFileQuality.HighQuality},
             {"bluray", MediaFileQuality.HighQuality}, {"bd25", MediaFileQuality.HighQuality}, {"bd50", MediaFileQuality.HighQuality},
             {"1080", MediaFileQuality.HighQuality},  {"[dvdrip]", MediaFileQuality.MediumToHighQuality},
-            {"hdrip", MediaFileQuality.HighQuality}
+            {"hdrip", MediaFileQuality.HighQuality}, {"hc", new []{"on"}, MediaFileQuality.LowToMediumQuality}
         };
 
         /// <summary>

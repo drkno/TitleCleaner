@@ -21,42 +21,52 @@ namespace MediaFileParser.MediaTypes.TvFile
         /// String to use for unknown.
         /// </summary>
         private const string UnknownString = "Unknown";
+
         /// <summary>
         /// String to use for special.
         /// </summary>
         private const string SpecialString = "Special";
+
         /// <summary>
         /// String to use for special, when shortened.
         /// </summary>
         private const string SpecialShortString = "SP";
+
         /// <summary>
         /// String to use for season.
         /// </summary>
         private const string SeasonString = "Season";
+
         /// <summary>
         /// String to use for series.
         /// </summary>
         private const string SeriesString = "Series";
+
         /// <summary>
         /// String to use for episode.
         /// </summary>
         private const string EpisodeString = "Episode";
+
         /// <summary>
         /// Characters to trim from file names.
         /// </summary>
         protected static readonly char[] TrimChars = { ' ', '-', '.' };
+
         /// <summary>
         /// Temporary name of the episode variable.
         /// </summary>
         protected string NameVar;
+
         /// <summary>
         /// Temporary title of the episode variable.
         /// </summary>
         protected string TitleVar;
+
         /// <summary>
         /// Storage for the season number.
         /// </summary>
         private uint _season;
+
         /// <summary>
         /// Set when this file is gaurenteed to be a TV file.
         /// </summary>
@@ -214,7 +224,7 @@ namespace MediaFileParser.MediaTypes.TvFile
                 return false;
             }
 
-            var earliest = SectorList.TakeWhile(sector => !Regex.Match(sector, "^[0-9]+$").Success).Count();
+            var earliest = SectorList.TakeWhile(sector => !Regex.Match(sector, "^([0-9]+)|(SP)$").Success).Count();
             if (SectorList.Count > earliest && earliest >= 0 && Name == UnknownString
                 && !(SectorList[earliest+1] == "-" || SectorList[earliest+1] == ":" || SectorList[earliest+1] == "."))
             {

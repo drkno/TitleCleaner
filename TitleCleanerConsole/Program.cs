@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 using MediaFileParser.MediaTypes;
 using MediaFileParser.MediaTypes.MediaFile;
@@ -14,6 +15,7 @@ namespace TitleCleanerConsole
         private static bool _help;
         private static bool _confirm;
         private static bool _copy;
+        private static bool _debug;
         private static Type _type;
         private static string _mode;
         private static string _inputDir;
@@ -49,7 +51,7 @@ namespace TitleCleanerConsole
                 {
                     case "normal":
                     {
-                        NormalMode.Run(_confirm, _inputDir, _outputDir, _copy);
+                        NormalMode.Run(_confirm, _inputDir, _outputDir, _copy, _debug);
                         break;
                     }
                     case "test":
@@ -108,6 +110,7 @@ namespace TitleCleanerConsole
                 { "o|out",          "Move media files to {directory}. In test mode this " +
                                     "outputs the outcomes of the test cases to the specified " +
                                     "file.",                                                    v => _outputDir = v },
+                { "~|debug",        "Enables debug logging.",                                   v => _debug = true },
                 { "s|format",       "{Format string} to use for output file naming.",           v => MediaFile.DefaultFormatString = v },
                 { "v|tformat",      "{Format string} to use for output TV file naming. This " +
                                     "option overrides the -s option.",                          v => TvFile.DefaultFormatString = v },

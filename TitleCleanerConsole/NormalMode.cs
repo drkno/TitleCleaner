@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using MediaFileParser.MediaTypes.TvFile;
 using MediaFileParser.MediaTypes.TvFile.Tvdb;
 using MediaFileParser.ModeManagers;
@@ -10,8 +11,17 @@ namespace TitleCleanerConsole
     public static class NormalMode
     {
         private static bool _conf;
-        public static void Run(bool confirm, string inputDir, string outputDir, bool copyOnly)
+        private static StreamWriter _logWriter;
+
+        public static void Run(bool confirm, string inputDir, string outputDir, bool copyOnly, bool debug)
         {
+            if (debug)
+            {
+                _logWriter = new StreamWriter(Path.Combine(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData),
+                    "TitleCleaner", "clean.log"), true);
+            }
+
             _conf = confirm;
             var consoleColor = Console.ForegroundColor;
 
@@ -121,6 +131,11 @@ namespace TitleCleanerConsole
 
         private static void fileManager_OnFileMove(MediaFile file, string destination)
         {
+            if (_logWriter != null)
+            {
+                _logWriter.WriteLine(file.Origional.Replace(",", "") + "," + file.Cleaned.Replace(",", ""));
+            }
+
             Console.ForegroundColor = ConsoleColor.Gray;
             Console.Write('[');
             Console.ForegroundColor = ConsoleColor.Green;
